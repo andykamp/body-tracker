@@ -14,7 +14,13 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@/auth/*": ["apps/diet/auth/*"],
+      "@/diet-server/*": ["libs/diet-server/src/*"],
+      "@/diet/*": ["apps/diet/src/*"],
+      "@/ui/*": ["libs/ui/src/*"],
+      "@body-tracker/ui": ["libs/ui/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
