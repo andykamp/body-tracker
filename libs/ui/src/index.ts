@@ -1,1 +1,1 @@
-export * from './lib/ui';
+import "global.css"
