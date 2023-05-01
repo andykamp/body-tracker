@@ -15,10 +15,10 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@/auth-client/*": ["libs/auth-client/src/*"],
       "@/auth/*": ["libs/auth/src/*"],
+      "@/auth-client/*": ["libs/auth-client/src/*"],
       "@/diet-server/*": ["libs/diet-server/src/*"],
-      "@/diet/*": ["apps/diet/src/*"],
+      "@/diet/*": ["apps/diet/*"],
       "@/ui/*": ["libs/ui/src/*"]
     }
   },

@@ -1,17 +1,25 @@
-import "./global.css"
+'use client'
+import './globals.css'
+import { AuthContextProvider } from '@/auth-client/firebase/AuthContext'
 
-type LayoutProps = {
-children: React.ReactNode
+type RootLayoutProps = {
+  children: React.ReactNode
 }
 
-export default function Layout({ children }:LayoutProps) {
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
-   <html lang="en">
-    <head>
-       <title>Next.js</title>
-    </head>
-     <body>
-        {children}
+    <html lang="en">
+      {/*
+        <head /> will contain the components returned by the nearest parent
+        head.js. Find out more at https://beta.nextjs.org/docs/api-reference/file-conventions/head
+      */}
+      <head />
+      <body>
+        <AuthContextProvider>
+          {children}
+        </AuthContextProvider>
       </body>
-    </html>)
+    </html>
+  )
 }
+

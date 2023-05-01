@@ -1,8 +1,46 @@
-import { AppProps } from "next/app";
-function CustomApp({ Component, pageProps }: AppProps) {
+'use client'
+import React from "react";
+import { useAuthRedirect } from "../../utils/auth.utils";
+import Navbar from '@/ui/Navbar'
+import { usePathname } from "next/navigation";
+import { NAVIGATION_ROUTES_CONSOLE } from "@/diet/app/constants"
+import { signInWithGoogle, signOutOfGoogle } from "@/auth-client/firebase/auth.api"
+import { useRouter } from "next/navigation";
+
+function Page() {
+  const user = useAuthRedirect()
+  const pathname = usePathname()
+  const router = useRouter()
+
+  const signIn = async () => {
+    try {
+      await signInWithGoogle();
+      router.push("/console")
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const signOut = async () => {
+    try {
+      await signOutOfGoogle();
+      router.push("/home")
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
-      <div className="bg-pink-50 h-[300px]">Welcome to diet!</div>
-  );
+    <>
+      <Navbar
+        user={user}
+        signIn={signIn}
+        signOut={signOut}
+        navigation={NAVIGATION_ROUTES_CONSOLE}
+        pathname={pathname}
+      />
+      <h1>Only logged in users can view this page</h1>
+    </>
+  )
 }
 
-export default CustomApp;
+export default Page;

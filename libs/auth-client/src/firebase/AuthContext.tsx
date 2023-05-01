@@ -35,6 +35,8 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     return () => unsubscribe();
   }, []);
 
+  console.log('user', user);
+
   return (
     <AuthContext.Provider value={{ user, loading }}>
       {loading ? <div>Loading...</div> : children}
