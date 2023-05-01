@@ -1,77 +1,68 @@
-import * as t from "@/diet-server/diet.types"
-import * as f from "@/diet-server/user/__support__/user.fixtures";
+import * as t from "@/diet-server/diet.types";
+import * as fixtures from "@/diet-server/diet.fixtures"; // Assuming the fixtures are imported
+import { USERS_FIXTURE } from "./__support__/daily.fixtures";
 
-const USERS: t.Users = f.USERS_FIXTURE;
-
-/**
- * Adds a new user.
- *
- * @param {string} id - The ID of the user to add.
- * @returns {ResponseResult} An object containing success status and a message.
- */
-export function addUser(id: string): t.ResponseResult {
-  if (USERS[id]) {
-    return {
-      success: false,
-      message: "User already exists",
-    };
+// Add a daily meal to the user's meal history
+function addDailyMeal(userId: string, meal: t.Meal): t.ResponseResult {
+  const user: t.User = fixtures.users[userId];
+  if (!user) {
+    return { success: false, message: "User not found" };
   }
 
-  USERS[id] = { products: {}, meals: {} };
-  return {
-    success: true,
-    message: "User added successfully",
-  };
-}
-
-/**
- * Updates an existing user.
- *
- * @param {string} id - The ID of the user to update.
- * @param {Partial<t.User>} input - The updated user details.
- * @returns {ResponseResult} An object containing success status and a message.
- */
-export function updateUser(id: string, input: Partial<t.User>): t.ResponseResult {
-  if (!USERS[id]) {
-    return {
-      success: false,
-      message: "User not found",
-    };
+  const dailyDiet: t.DailyDiet = USERS_FIXTURE.dailyDiets[new Date().toISOString().slice(0, 10)];
+  if (!dailyDiet) {
+    return { success: false, message: "Daily diet not found" };
   }
 
-  USERS[id] = { ...USERS[id], ...input };
-  return {
-    success: true,
-    message: "User updated successfully",
-  };
+  dailyDiet.meals[meal.name] = meal;
+  return { success: true, message: "Meal added successfully" };
 }
 
-/**
- * Deletes an existing user.
- *
- * @param {string} id - The ID of the user to delete.
- * @returns {ResponseResult} An object containing success status and a message.
- */
-export function deleteUser(id: string): t.ResponseResult {
-  if (!USERS[id]) {
-    return {
-      success: false,
-      message: "User not found",
-    };
+// Calculate the user's daily calorie intake
+function calculateDailyCalories(userId: string, daily?: t.DailyDiet): number {
+  // get the user's daily diet from the database
+  if(!daily) {}// ...get daily
+
+  let totalCalories = 0;
+  for (const meal of Object.values(daily.meals)) {
+    totalCalories += meal.calories || 0;
   }
-
-  delete USERS[id];
-  return {
-    success: true,
-    message: "User deleted successfully",
-  };
+  return totalCalories;
 }
 
-const userApi = {
-  addUser,
-  updateUser,
-  deleteUser,
+// Calculate the user's daily protein intake
+function calculateDailyProteins(userId: string, daily?: t.DailyDiet): number {
+  // get the user's daily diet from the database
+  if(!daily) {}// ...get daily
+
+  let totalProteins = 0;
+  for (const meal of Object.values(daily.meals)) {
+    totalProteins += meal.protein || 0;
+  }
+  return totalProteins;
+}
+
+// Calculate the user's missing calorie intake from yesterday
+function calculateYesterdaysMissingCalories(userId: string, yesterdaysDaily: t.DailyDiet): number {
+  const dailyCalories = calculateDailyCalories(userId, yesterdaysDaily);
+  const targetCalories = fixtures.users[userId].targetCalories;
+  return targetCalories - dailyCalories
+}
+
+// Calculate the user's missing protein intake from yesterday
+function calculateYesterdaysMissingProtein(userId: string, yesterdaysDaily: t.DailyDiet): number {
+  const dailyProteins = calculateDailyProteins(userId, yesterdaysDaily);
+  const targetProteins = fixtures.users[userId].targetProteins; 
+  return targetProteins - dailyProteins
+}
+
+const dailyApi = {
+  addDailyMeal,
+  calculateDailyCalories,
+  calculateDailyProteins,
+  calculateYesterdaysMissingCalories,
+  calculateYesterdaysMissingProtein,
 };
 
-export type UserApi = typeof userApi;
-export default userApi;
+export type DailyApi = typeof dailyApi;
+export default dailyApi;
