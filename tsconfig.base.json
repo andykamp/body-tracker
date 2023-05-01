@@ -15,11 +15,11 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@/auth/*": ["apps/diet/auth/*"],
+      "@/auth-client/*": ["libs/auth-client/src/*"],
+      "@/auth/*": ["libs/auth/src/*"],
       "@/diet-server/*": ["libs/diet-server/src/*"],
       "@/diet/*": ["apps/diet/src/*"],
-      "@/ui/*": ["libs/ui/src/*"],
-      "@body-tracker/ui": ["libs/ui/src/index.ts"]
+      "@/ui/*": ["libs/ui/src/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]
