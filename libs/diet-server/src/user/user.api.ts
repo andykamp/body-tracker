@@ -1,5 +1,6 @@
 import * as t from "@/diet-server/diet.types"
 import * as f from "@/diet-server/user/__support__/user.fixtures";
+import { createUser } from "./user.utils";
 
 const USERS: t.Users = f.USERS_FIXTURE;
 
@@ -17,7 +18,7 @@ export function addUser(id: string): t.ResponseResult {
     };
   }
 
-  USERS[id] = { products: {}, meals: {} };
+  USERS[id] = createUser(id) 
   return {
     success: true,
     message: "User added successfully",

@@ -186,6 +186,10 @@ export function deleteMealToUser(
 }
 
 const mealApi = {
+  // getMeal,
+  // getMealToUser,
+  // getMeals,
+  // getMealsToUser,
   addMeal,
   addMealToUser,
   updateMeal,

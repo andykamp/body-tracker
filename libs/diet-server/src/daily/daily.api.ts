@@ -1,10 +1,11 @@
 import * as t from "@/diet-server/diet.types";
-import * as fixtures from "@/diet-server/diet.fixtures"; // Assuming the fixtures are imported
+import * as f from "@/diet-server/user/__support__/user.fixtures";
 import { USERS_FIXTURE } from "./__support__/daily.fixtures";
+
 
 // Add a daily meal to the user's meal history
 function addDailyMeal(userId: string, meal: t.Meal): t.ResponseResult {
-  const user: t.User = fixtures.users[userId];
+  const user: t.User = f.USERS_FIXTURE[userId];
   if (!user) {
     return { success: false, message: "User not found" };
   }
@@ -18,10 +19,50 @@ function addDailyMeal(userId: string, meal: t.Meal): t.ResponseResult {
   return { success: true, message: "Meal added successfully" };
 }
 
+export function getDaily(userId: string, date: string): t.DailyDiet {
+  return f.USERS_FIXTURE[userId][date];
+}
+
+
+// Update a daily diet for a given user and date
+export function updateDaily(userId: string, date: string, updatedDailyDiet: Partial<t.DailyDiet>): t.ResponseResult {
+  const user: t.User = f.USERS_FIXTURE[userId];
+  if (!user) {
+    return { success: false, message: "User not found" };
+  }
+
+  const dailyDiet: t.DailyDiet = user.daily[date];
+  if (!dailyDiet) {
+    return { success: false, message: "Daily diet not found" };
+  }
+
+  // Update the daily diet properties
+  Object.assign(dailyDiet, updatedDailyDiet);
+  dailyDiet.updatedAt = new Date();
+
+  return { success: true, message: "Daily diet updated successfully" };
+}
+
+// Remove a daily diet for a given user and date
+export function removeDaily(userId: string, date: string): t.ResponseResult {
+  const user: t.User = f.USERS_FIXTURE[userId];
+  if (!user) {
+    return { success: false, message: "User not found" };
+  }
+
+  const dailyDiet: t.DailyDiet = user.daily[date];
+  if (!dailyDiet) {
+    return { success: false, message: "Daily diet not found" };
+  }
+
+  // Remove the daily diet from the user's daily diets
+  delete user.daily[date];
+
+  return { success: true, message: "Daily diet removed successfully" };
+}
+
 // Calculate the user's daily calorie intake
-function calculateDailyCalories(userId: string, daily?: t.DailyDiet): number {
-  // get the user's daily diet from the database
-  if(!daily) {}// ...get daily
+function calculateDailyCalories(userId: string, daily: t.DailyDiet): number {
 
   let totalCalories = 0;
   for (const meal of Object.values(daily.meals)) {
@@ -31,10 +72,7 @@ function calculateDailyCalories(userId: string, daily?: t.DailyDiet): number {
 }
 
 // Calculate the user's daily protein intake
-function calculateDailyProteins(userId: string, daily?: t.DailyDiet): number {
-  // get the user's daily diet from the database
-  if(!daily) {}// ...get daily
-
+function calculateDailyProteins(userId: string, daily: t.DailyDiet): number {
   let totalProteins = 0;
   for (const meal of Object.values(daily.meals)) {
     totalProteins += meal.protein || 0;
@@ -45,19 +83,22 @@ function calculateDailyProteins(userId: string, daily?: t.DailyDiet): number {
 // Calculate the user's missing calorie intake from yesterday
 function calculateYesterdaysMissingCalories(userId: string, yesterdaysDaily: t.DailyDiet): number {
   const dailyCalories = calculateDailyCalories(userId, yesterdaysDaily);
-  const targetCalories = fixtures.users[userId].targetCalories;
+  const targetCalories = f.USERS_FIXTURE[userId].targetCalories;
   return targetCalories - dailyCalories
 }
 
 // Calculate the user's missing protein intake from yesterday
 function calculateYesterdaysMissingProtein(userId: string, yesterdaysDaily: t.DailyDiet): number {
   const dailyProteins = calculateDailyProteins(userId, yesterdaysDaily);
-  const targetProteins = fixtures.users[userId].targetProteins; 
+  const targetProteins = f.USERS_FIXTURE[userId].targetProteins;
   return targetProteins - dailyProteins
 }
 
 const dailyApi = {
   addDailyMeal,
+  getDaily,
+  updateDaily,
+  removeDaily,
   calculateDailyCalories,
   calculateDailyProteins,
   calculateYesterdaysMissingCalories,

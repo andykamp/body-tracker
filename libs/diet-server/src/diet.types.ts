@@ -4,8 +4,12 @@ export type ResponseResult = {
 };
 
 export type User = {
+  id: string;
+  daily: DailyDiets;
   products: Products;
   meals: Meals;
+  targetCalories: number;
+  targetProteins: number;
 }
 
 export type Users = {
@@ -17,6 +21,8 @@ export type Product = {
   protein?: number;
   calories?: number;
   grams?: number;
+  createdAt: Date;
+  updatedAt?: Date;
 }
 
 export type Products = {
@@ -29,9 +35,24 @@ export type Meal = {
   protein?: number;
   calories?: number;
   totalGrams?: number;
+  fromCustomDaily?: boolean; // shows if it is not a stored Meal. But nice to use for future suggestions on autocomplete
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export type Meals = {
   [key: string]: Meal;
 }
 
+export type DailyDiet = {
+  id: string;
+  createdAt: Date;
+  updatedAt?: Date;
+  meals: Meals;
+  date: Date,
+}
+
+export type DailyDiets = {
+  [key: string]: DailyDiet;
+
+}

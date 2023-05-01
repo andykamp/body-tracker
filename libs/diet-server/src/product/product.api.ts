@@ -129,6 +129,10 @@ export function deleteProductToUser(userId: string, key: string): t.ResponseResu
 }
 
 const productApi = {
+  // getProduct,
+  // getProductToUser,
+  // getProducts,
+  // getProductsToUser,
   getValidProduct,
   addProductToUser,
   addProduct,

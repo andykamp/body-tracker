@@ -12,6 +12,8 @@ export function seedUpdateUser(
   const userData = {
     products: {},
     meals: {},
+    targetCalories: 0,
+    targetProteins: 0,
     ...data,
   };
 
