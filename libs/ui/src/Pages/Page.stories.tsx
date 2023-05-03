@@ -1,5 +1,5 @@
 import { StoryFn, Meta } from '@storybook/react';
-import Page from './page';
+import Page from './Page';
 
 export default {
   title: 'Components/Pages/Page',
