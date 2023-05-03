@@ -20,6 +20,7 @@ export function getValidProduct(product: t.Product): t.Product {
     protein: product.protein || 0,
     calories: product.calories || 0,
     grams: product.grams,
+    createdAt: product.createdAt || new Date(),
   };
 }
 
