@@ -1,6 +1,7 @@
 'use client'
 import './globals.css'
 import { AuthContextProvider } from '@/auth-client/firebase/AuthContext'
+import { Analytics } from '@vercel/analytics/react'
 
 type RootLayoutProps = {
   children: React.ReactNode
@@ -18,6 +19,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <AuthContextProvider>
           {children}
         </AuthContextProvider>
+        <Analytics/>
       </body>
     </html>
   )
