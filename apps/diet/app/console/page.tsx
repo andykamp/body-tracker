@@ -3,7 +3,7 @@ import React from "react";
 import { useAuthRedirect } from "../../utils/auth.utils";
 import Navbar from '@/ui/Navbar'
 import { usePathname } from "next/navigation";
-import { NAVIGATION_ROUTES_CONSOLE } from "@/diet/app/constants"
+import { NAVIGATION_ROUTES_CONSOLE, ROUTES_CONSOLE } from "@/diet/app/constants"
 import { signInWithGoogle, signOutOfGoogle } from "@/auth-client/firebase/auth.api"
 import { useRouter } from "next/navigation";
 
@@ -15,7 +15,7 @@ function Page() {
   const signIn = async () => {
     try {
       await signInWithGoogle();
-      router.push("/console")
+      router.push(ROUTES_CONSOLE.console)
     } catch (error) {
       console.error(error);
     }
@@ -23,7 +23,7 @@ function Page() {
   const signOut = async () => {
     try {
       await signOutOfGoogle();
-      router.push("/home")
+      router.push(ROUTES_CONSOLE.home)
     } catch (error) {
       console.error(error);
     }

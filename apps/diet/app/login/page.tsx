@@ -2,6 +2,7 @@
 import GoogleLoginButton from '@/ui/GoogleLoginButton'
 import { signInWithGoogle } from "@/auth-client/firebase/auth.api"
 import { useRouter } from "next/navigation";
+import { ROUTES_CONSOLE } from "@/diet/app/constants"
 
 function Page() {
   const router = useRouter()
@@ -10,7 +11,7 @@ function Page() {
     try {
       await signInWithGoogle();
       console.log('route to google', );
-      router.push("/console")
+      router.push(ROUTES_CONSOLE.console)
     } catch (error) {
       console.error(error);
     }
