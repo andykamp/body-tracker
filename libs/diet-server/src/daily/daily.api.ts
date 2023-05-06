@@ -2,9 +2,29 @@ import * as t from "@/diet-server/diet.types";
 import * as f from "@/diet-server/user/__support__/user.fixtures";
 import { USERS_FIXTURE } from "./__support__/daily.fixtures";
 
+export function getTodaysDailyKey() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = (now.getMonth() + 1).toString().padStart(2, '0');
+  const day = now.getDate().toString().padStart(2, '0');
 
+  return `${year}${month}${day}`;
+}
+
+type GetDailyInput={
+  userId: string, 
+  dateKey: string
+}
+export async function getDaily({userId, dateKey}:GetDailyInput): Promise<t.DailyDiet> {
+  return f.USERS_FIXTURE[userId][dateKey];
+}
+
+type AddDailyMealInput={
+  userId: string, 
+  meal: t.Meal
+}
 // Add a daily meal to the user's meal history
-function addDailyMeal(userId: string, meal: t.Meal): t.ResponseResult {
+export async function addDailyMeal({userId, meal}:AddDailyMealInput): Promise<t.Meal | t.ResponseResult> {
   const user: t.User = f.USERS_FIXTURE[userId];
   if (!user) {
     return { success: false, message: "User not found" };
@@ -16,13 +36,8 @@ function addDailyMeal(userId: string, meal: t.Meal): t.ResponseResult {
   }
 
   dailyDiet.meals[meal.name] = meal;
-  return { success: true, message: "Meal added successfully" };
+  return  dailyDiet.meals[meal.name] 
 }
-
-export function getDaily(userId: string, date: string): t.DailyDiet {
-  return f.USERS_FIXTURE[userId][date];
-}
-
 
 // Update a daily diet for a given user and date
 export function updateDaily(userId: string, date: string, updatedDailyDiet: Partial<t.DailyDiet>): t.ResponseResult {
@@ -95,8 +110,9 @@ function calculateYesterdaysMissingProtein(userId: string, yesterdaysDaily: t.Da
 }
 
 const dailyApi = {
-  addDailyMeal,
+  getTodaysDailyKey,
   getDaily,
+  addDailyMeal,
   updateDaily,
   removeDaily,
   calculateDailyCalories,

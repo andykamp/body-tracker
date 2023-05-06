@@ -7,6 +7,9 @@ import { NAVIGATION_ROUTES_CONSOLE, ROUTES_CONSOLE } from "@/diet/app/constants"
 import { signInWithGoogle, signOutOfGoogle } from "@/auth-client/firebase/auth.api"
 import { useRouter } from "next/navigation";
 import Page from "@/ui/Page";
+import DailyPage from "./daily/page";
+import MealsAndProductsPage from "./mealsAndProducts/page";
+import ProfilePage from "./profile/page";
 
 function ConsolePage() {
   const user = useAuthRedirect()
@@ -41,6 +44,11 @@ function ConsolePage() {
       />
       <Page>
         <h1>Only logged in users can view this page</h1>
+        <div className="flex gap-2 bg-red">
+        <DailyPage />
+        <MealsAndProductsPage />
+        <ProfilePage/>
+        </div>
       </Page>
     </>
   )

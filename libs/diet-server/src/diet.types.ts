@@ -21,7 +21,7 @@ export type Product = {
   protein?: number;
   calories?: number;
   grams?: number;
-  createdAt: Date;
+  createdAt?: Date;
   updatedAt?: Date;
 }
 

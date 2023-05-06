@@ -1,5 +1,6 @@
 import { auth } from '@/auth/firebase/config';
 import { signInWithPopup, signOut, GoogleAuthProvider, getAdditionalUserInfo } from "firebase/auth";
+import { addUser } from "@/diet-server/user/user.api";
 
 const provider = new GoogleAuthProvider();
 
@@ -7,12 +8,19 @@ export async function signInWithGoogle() {
   try {
     const result = await signInWithPopup(auth, provider)
     // This gives you a Google Access Token. You can use it to access the Google API.
+    const userInfo = getAdditionalUserInfo(result)
+    console.log('userInfo',userInfo,  userInfo.isNewUser);
+    if (userInfo.isNewUser) {
+      console.log('addingUser',);
+      const r = await addUser(result.user.uid)
+      console.log('r',r );
+    }
+
     const credential = GoogleAuthProvider.credentialFromResult(result);
     const token = credential?.accessToken;
     // The signed-in user info.
     const user = result.user;
     // IdP data available using getAdditionalUserInfo(result)
-    const userInfo = getAdditionalUserInfo(result)
     console.log('userInfo', token, user, userInfo);
   } catch (error) {
     // Handle Errors here.

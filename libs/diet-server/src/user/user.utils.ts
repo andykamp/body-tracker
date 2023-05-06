@@ -1,8 +1,9 @@
 import * as t from "@/diet-server/diet.types"
 
-export function createUser(userId: string): t.User {
+export function createUser(uid: string): t.User {
  return {
-    id: userId,
+    id: uid,
+    daily: {},
     products: {},
     meals: {},
     targetCalories: 0,

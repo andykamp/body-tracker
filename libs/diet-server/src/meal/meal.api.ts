@@ -3,8 +3,49 @@ import * as f from "@/diet-server/meal/__support__/meal.fixtures";
 import productApi from "@/diet-server/product/product.api";
 import { USERS_FIXTURE } from "@/diet-server/user/__support__/user.fixtures";
 
-export function addMeal(meal: t.Meal): void {
+type GetMealInput = {
+  name: string
+}
+
+export async function getMeal({ name }: GetMealInput): Promise<t.Meal> {
+  return f.MEALS_FIXTURES[name];
+}
+
+type GetMealsInput = {
+}
+
+export async function getMeals({ }: GetMealsInput): Promise<t.Meals> {
+  return f.MEALS_FIXTURES;
+}
+
+type GetMealToUserInput = {
+  userId: string;
+  name: string
+}
+
+export async function getMealToUser({ name }: GetMealToUserInput): Promise<t.Meal> {
+  return f.MEALS_FIXTURES[name];
+}
+
+type GetMealsToUserInput = {
+  userId: string;
+}
+
+export async function getMealsToUser({ }: GetMealsToUserInput): Promise<t.Meals> {
+  return f.MEALS_FIXTURES;
+}
+
+type AddMealInput = {
+  meal: t.Meal
+}
+
+export async function addMeal({ meal }: AddMealInput): Promise<t.ResponseResult> {
   f.MEALS_FIXTURES[meal.name] = meal;
+  // Return a success result.
+  return {
+    success: true,
+    message: "Meal added successfully",
+  };
 }
 
 export type AddMealToUserInput = {
@@ -21,7 +62,7 @@ export type AddMealToUserInput = {
  *
  * @returns {t.ResponseResult} The result object containing a success flag and a message indicating the success or failure of the operation.
  */
-export function addMealToUser(input: AddMealToUserInput): t.ResponseResult {
+export async function addMealToUser(input: AddMealToUserInput): Promise<t.ResponseResult> {
   const { userId, name, products } = input;
 
   // Retrieve the user data from the fixture data using the user ID.
@@ -60,7 +101,7 @@ export function addMealToUser(input: AddMealToUserInput): t.ResponseResult {
       }
     } else {
       // If the item is an object, assume it is a new product to be added to the user's product list.
-      const addProductResult = productApi.addProductToUser(userId, item);
+      const addProductResult = await productApi.addProductToUser({ userId, product: item });
 
       // If the add product operation fails, return the error result.
       if (!addProductResult.success) {
@@ -186,10 +227,10 @@ export function deleteMealToUser(
 }
 
 const mealApi = {
-  // getMeal,
-  // getMealToUser,
-  // getMeals,
-  // getMealsToUser,
+  getMeal,
+  getMealToUser,
+  getMeals,
+  getMealsToUser,
   addMeal,
   addMealToUser,
   updateMeal,

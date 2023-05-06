@@ -5,8 +5,9 @@ import { usePathname } from "next/navigation";
 import { NAVIGATION_ROUTES_HOME, ROUTES_CONSOLE } from "@/diet/app/constants"
 import { signInWithGoogle } from "@/auth-client/firebase/auth.api"
 import { useRouter } from "next/navigation";
+import Page from "@/ui/Page";
 
-export default function Page() {
+function HomePage() {
   const pathname = usePathname()
   const router = useRouter()
 
@@ -20,14 +21,16 @@ export default function Page() {
     }
   };
   return (
-    <>
+    <Page>
       <Navbar
         signIn={signIn}
         navigation={NAVIGATION_ROUTES_HOME}
         pathname={pathname}
       />
       <h1>This is the main page</h1>
-    </>
+    </Page>
   )
 
 }
+
+export default HomePage

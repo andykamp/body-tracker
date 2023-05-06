@@ -6,7 +6,7 @@ const USERS: t.Users = USERS_FIXTURE;
 
 const products: t.Products = f.PRODUCTS_FIXTURE;
 
-export function getValidProduct(product: t.Product): t.Product {
+export function parseToValidProduct(product: t.Product): t.Product {
   if (!product.name) {
     throw new Error("Product name is required");
   }
@@ -24,14 +24,49 @@ export function getValidProduct(product: t.Product): t.Product {
   };
 }
 
-async export function addProduct(input: t.Product): t.ResponseResult {
-  const newProduct: t.Product = getValidProduct(input);
+type GetProductInput = {
+  name: string
+}
 
-  const key = input.name
+export async function getProduct({ name }: GetProductInput): Promise<t.Product> {
+  return products[name];
+}
+
+type GetProductToUserInput = {
+  userId: string
+  name: string
+}
+
+export async function getProductToUser({ userId, name }: GetProductToUserInput): Promise<t.Product> {
+  return USERS[userId].products[name];
+}
+
+type GetProductsInput = {
+}
+
+export async function getProducts({ }: GetProductsInput): Promise<t.Products> {
+  return products;
+}
+
+type GetProductsToUserInput = {
+  userId: string
+}
+
+export async function getProductsToUser({ userId }: GetProductsToUserInput): Promise<t.Products> {
+  return USERS[userId].products;
+}
+
+type AddProductInput = {
+  product: t.Product
+}
+export async function addProduct({ product }: AddProductInput): Promise<t.ResponseResult> {
+  const newProduct: t.Product = parseToValidProduct(product);
+
+  const key = product.name
 
   const r = await baseApi.makeReqAndExec<t.Product>({
     proc: "addProduct",
-    vars: input
+    vars: product
   })
 
 
@@ -49,8 +84,12 @@ async export function addProduct(input: t.Product): t.ResponseResult {
   };
 }
 
-export function addProductToUser(userId: string, input: t.Product): t.ResponseResult {
-  const newProduct: t.Product = { ...input };
+type AddProductToUserInput = {
+  userId: string,
+  product: t.Product
+}
+export async function addProductToUser({ userId, product }: AddProductToUserInput): Promise<t.ResponseResult> {
+  const newProduct: t.Product = { ...product };
 
   if (!USERS[userId]) {
     return {
@@ -59,7 +98,7 @@ export function addProductToUser(userId: string, input: t.Product): t.ResponseRe
     };
   }
 
-  const key = input.name
+  const key = product.name
 
   if (USERS[userId].products[key]) {
     return {
@@ -136,11 +175,11 @@ export function deleteProductToUser(userId: string, key: string): t.ResponseResu
 }
 
 const productApi = {
-  // getProduct,
-  // getProductToUser,
-  // getProducts,
-  // getProductsToUser,
-  getValidProduct,
+  getProduct,
+  getProductToUser,
+  getProducts,
+  getProductsToUser,
+  parseToValidProduct,
   addProductToUser,
   addProduct,
   deleteProduct,

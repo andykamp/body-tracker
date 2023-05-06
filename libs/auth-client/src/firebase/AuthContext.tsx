@@ -1,12 +1,12 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import {
   onAuthStateChanged,
-  User,
 } from 'firebase/auth';
 import { auth } from '@/auth/firebase/config';
+import { User } from '@/auth-client/firebase/auth.types'
 
 interface AuthContextValue {
-  user: User | null;
+  user: User;
   loading?: boolean;
 }
 
@@ -19,7 +19,7 @@ interface AuthContextProviderProps {
 }
 
 export function AuthContextProvider({ children }: AuthContextProviderProps) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {

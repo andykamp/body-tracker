@@ -7,6 +7,8 @@
 - decide how to manage xxforCurrentUser and if that is neccesarry
 
 
+## State management
+- SWR vs react-query
 
 - state management
     - make each page/tab render declarativly from a root useQuery

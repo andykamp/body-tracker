@@ -1,4 +1,6 @@
-type PageProps = {
+import { ComponentProps } from "react";
+
+type PageProps = ComponentProps<'div'> &{
   children: React.ReactNode;
 }
 

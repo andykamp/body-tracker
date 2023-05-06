@@ -1,5 +1,5 @@
 import * as t from '@/common/api/api.types'
-import apiCache from '@/common/api/api.cache'
+// import apiCache from '@/common/api/api.cache'
 import firebaseApi from '@/common/api/api.firebase'
 
 const API_TO_USE = process.env.API_TO_USE || "firebase"
@@ -22,23 +22,23 @@ async function makeReqAndExec<Out extends Record<string, unknown>>(
   try {
     let cacheKey: string
 
-    if (cache) {
-      cacheKey = apiCache.generateKey(input)
-      const res = await apiCache.get<Out>(cacheKey)
-      if (res) {
-        // cache hits
-        return res
-      }
-    }
+    // if (cache) {
+    //   cacheKey = apiCache.generateKey(input)
+    //   const res = await apiCache.get<Out>(cacheKey)
+    //   if (res) {
+    //     // cache hits
+    //     return res
+    //   }
+    // }
 
     const req = baseApi.makeRequest(proc)
     const res = await req?.(vars)
     const out = res 
 
     // write result to cache if cache is enabled
-    if (cache && cacheKey) {
-      await apiCache.set(cacheKey, out)
-    }
+    // if (cache && cacheKey) {
+    //   await apiCache.set(cacheKey, out)
+    // }
 
     return out
   } catch (e) {

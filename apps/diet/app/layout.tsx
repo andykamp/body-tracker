@@ -2,6 +2,13 @@
 import './globals.css'
 import { AuthContextProvider } from '@/auth-client/firebase/AuthContext'
 import { Analytics } from '@vercel/analytics/react'
+import {
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
+
+// Create a client
+const queryClient = new QueryClient()
 
 type RootLayoutProps = {
   children: React.ReactNode
@@ -17,9 +24,11 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <head />
       <body>
         <AuthContextProvider>
-          {children}
+          <QueryClientProvider client={queryClient}>
+            {children}
+          </QueryClientProvider>
         </AuthContextProvider>
-        <Analytics/>
+        <Analytics />
       </body>
     </html>
   )
