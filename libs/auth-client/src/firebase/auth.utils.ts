@@ -6,9 +6,10 @@ export function useAuth(): AuthObject | null {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user: any) => {
+    const unsubscribe = auth.onAuthStateChanged((user: User) => {
       if (user) {
         setUser({
+          uid: user.uid,
           email: user.email,
         });
       } else {

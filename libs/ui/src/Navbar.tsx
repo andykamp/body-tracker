@@ -19,10 +19,11 @@ type NavbarProps = {
   pathname?: string
   signIn?(): void,
   signOut?(): void
+  deleteAccount?(): void
 }
 
 export default function Navbar(props: NavbarProps) {
-  const { user, pathname, navigation, signIn, signOut } = props
+  const { user, pathname, navigation, signIn, signOut, deleteAccount } = props
   console.log('Navbar', user, pathname, navigation);
 
   return (
@@ -55,6 +56,7 @@ export default function Navbar(props: NavbarProps) {
                 user={user}
                 signIn={signIn}
                 signOut={signOut}
+                deleteAccount={deleteAccount}
               />
             </div>
           </div>

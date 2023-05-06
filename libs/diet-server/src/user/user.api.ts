@@ -57,25 +57,34 @@ export function updateUser(id: string, input: Partial<t.User>): t.ResponseResult
   };
 }
 
+type DeleteUserInput = {
+  uid: string
+}
 /**
  * Deletes an existing user.
  *
  * @param {string} id - The ID of the user to delete.
  * @returns {ResponseResult} An object containing success status and a message.
  */
-export function deleteUser(id: string): t.ResponseResult {
-  if (!USERS[id]) {
+export async function deleteUser({ uid }: DeleteUserInput): Promise<t.ResponseResult> {
+  try {
+    const r = await baseApi.makeReqAndExec<t.Product>({
+      proc: "deleteUser",
+      vars: {
+        uid
+      }
+    })
+    console.log('makeReqAndExec', r);
+    return {
+      success: true,
+      message: "User deleted successfully",
+    };
+  } catch (e) {
     return {
       success: false,
-      message: "User not found",
+      message: e
     };
   }
-
-  delete USERS[id];
-  return {
-    success: true,
-    message: "User deleted successfully",
-  };
 }
 
 const userApi = {

@@ -9,11 +9,13 @@ function classNames(...classes: string[]) {
 type ProfileProps = {
   user: any,
   signIn?(): void,
-  signOut?(): void
+  signOut?(): void,
+  deleteAccount?(): void
+
 }
 
 export default function Navbar(props: ProfileProps) {
-  const { user, signIn, signOut } = props
+  const { user, signIn, signOut, deleteAccount } = props
 
   return (
     <div className="ml-6 flex items-center">
@@ -54,6 +56,20 @@ export default function Navbar(props: ProfileProps) {
                   </button>
                 )}
               </Menu.Item>
+              <Menu.Item>
+                {({ active }) => (
+                  <button
+                    className={classNames(
+                      active ? 'bg-gray-100' : '',
+                      'flex w-full px-4 py-2 text-sm text-red-700'
+                    )}
+                    onClick={() => deleteAccount?.()}
+                  >
+                    Delete Account
+                  </button>
+                )}
+              </Menu.Item>
+
             </Menu.Items>
           </Transition>
         </Menu>

@@ -52,7 +52,7 @@ function DailyPage() {
       <button
         onClick={() => {
           mutation.mutate({
-            userId: "test-user",
+            userId: user.uid, 
             meal: createDailyMeal()
           })
         }}
