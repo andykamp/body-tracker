@@ -24,10 +24,16 @@ export function getValidProduct(product: t.Product): t.Product {
   };
 }
 
-export function addProduct(input: t.Product): t.ResponseResult {
-  const newProduct: t.Product = getValidProduct(input); 
+async export function addProduct(input: t.Product): t.ResponseResult {
+  const newProduct: t.Product = getValidProduct(input);
 
   const key = input.name
+
+  const r = await baseApi.makeReqAndExec<t.Product>({
+    proc: "addProduct",
+    vars: input
+  })
+
 
   if (products[key]) {
     return {

@@ -1,6 +1,7 @@
 import { Card, Title, Text } from '@tremor/react';
 import Search from '../search';
 import UsersTable from '../table';
+import Page from '../Page';
 
 
 export default function IndexPage({
@@ -19,7 +20,7 @@ export default function IndexPage({
   ]
 
   return (
-    <main className="p-4 md:p-10 mx-auto max-w-7xl">
+    <Page>
       <Title>Users</Title>
       <Text>
         A list of users retrieved from a MySQL database (PlanetScale).
@@ -28,6 +29,6 @@ export default function IndexPage({
       <Card className="mt-6">
         <UsersTable users={users} />
       </Card>
-    </main>
+    </Page>
   );
 }

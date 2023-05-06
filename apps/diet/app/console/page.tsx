@@ -6,8 +6,9 @@ import { usePathname } from "next/navigation";
 import { NAVIGATION_ROUTES_CONSOLE, ROUTES_CONSOLE } from "@/diet/app/constants"
 import { signInWithGoogle, signOutOfGoogle } from "@/auth-client/firebase/auth.api"
 import { useRouter } from "next/navigation";
+import Page from "@/ui/Page";
 
-function Page() {
+function ConsolePage() {
   const user = useAuthRedirect()
   const pathname = usePathname()
   const router = useRouter()
@@ -38,9 +39,11 @@ function Page() {
         navigation={NAVIGATION_ROUTES_CONSOLE}
         pathname={pathname}
       />
-      <h1>Only logged in users can view this page</h1>
+      <Page>
+        <h1>Only logged in users can view this page</h1>
+      </Page>
     </>
   )
 }
 
-export default Page;
+export default ConsolePage;

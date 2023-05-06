@@ -1,6 +1,29 @@
 # BodyTracker
 
 ## Todo
+- move updateStockProduct and updateProductForCurrentUser to seperate apis?
+- rename updateProduct (to stock) 
+- rename updateProductTo user to updateProductForCurrentUser
+- decide how to manage xxforCurrentUser and if that is neccesarry
+
+
+
+- state management
+    - make each page/tab render declarativly from a root useQuery
+    - use @tanstack/react (https://tanstack.com/query/v4/docs/react/adapters/react-query) to refetch and invaliate cache just like apollo 
+        - e.g daily is set and updated
+            - then i rename a meal in the other tab
+            - then i need to invalidate daily and efech
+        - e.g i update/add a item
+            - then i could invalidate and refetch
+            - OR i could use the setQuerData to update the cache directly and save network call
+            - see https://tanstack.com/query/latest/docs/react/guides/updates-from-mutation-responses
+    - only need a few cache-keys
+        - daily
+        - meals (any change invalidates daily)
+        - products (any change invalidates daily)
+        - profile
+        - .... (stats etc)
 - databse 
     - use the actual calls to database in the common lib (re-usable for exercise also)
     - firebase

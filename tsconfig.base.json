@@ -16,6 +16,7 @@
     "baseUrl": ".",
     "paths": {
       "@/auth/*": ["libs/auth/src/*"],
+      "@/common/*": ["libs/common/src/*"],
       "@/auth-client/*": ["libs/auth-client/src/*"],
       "@/diet-server/*": ["libs/diet-server/src/*"],
       "@/diet/*": ["apps/diet/*"],
