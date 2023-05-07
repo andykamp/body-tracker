@@ -22,7 +22,6 @@ export async function addUser(uid: string): Promise<t.ResponseResult> {
         uid
       }
     })
-    console.log('makeReqAndExec', r);
     return {
       success: true,
       message: "User added successfully",
@@ -74,7 +73,6 @@ export async function deleteUser({ uid }: DeleteUserInput): Promise<t.ResponseRe
         uid
       }
     })
-    console.log('makeReqAndExec', r);
     return {
       success: true,
       message: "User deleted successfully",

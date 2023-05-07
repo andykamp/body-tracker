@@ -11,7 +11,9 @@ const AVAILABLE_APIS_TO_USE = {
 // returns the correct function given the current 
 function makeRequest(proc: string): Function | null {
   const api = AVAILABLE_APIS_TO_USE[API_TO_USE]
-  return api[proc]
+  const f = api[proc]
+  if (!f) throw new Error(`API ${API_TO_USE} does not have a function ${proc}`)
+  return f
 }
 
 async function makeReqAndExec<Out extends Record<string, unknown>>(
@@ -33,7 +35,7 @@ async function makeReqAndExec<Out extends Record<string, unknown>>(
 
     const req = baseApi.makeRequest(proc)
     const res = await req?.(vars)
-    const out = res 
+    const out = res
 
     // write result to cache if cache is enabled
     // if (cache && cacheKey) {

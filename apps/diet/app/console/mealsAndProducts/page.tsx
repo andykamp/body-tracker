@@ -12,7 +12,7 @@ import productApi from "@/diet-server/product/product.api"
 
 function createProduct() {
   return {
-    name: `test_meal_${Math.random()}`,
+    name: `test_product_${Math.random()}`,
     protein: Math.floor(Math.random() * 201),
     calories: Math.floor(Math.random() * 201),
   }
@@ -24,77 +24,90 @@ function MealsAndProductsPage() {
 
 
   const productsQuery = useQuery({
-    queryKey: ['getMealsForCurrentUser'],
-    queryFn: () => productApi.getProductsToUser({ userId: user?.uid })
+    queryKey: ['getProductForCurrentUser'],
+    queryFn: () => productApi.getProducts({ userId: user?.uid })
   })
 
   const mealsQuery = useQuery({
     queryKey: ['getMealsForCurrentUser'],
-    queryFn: () => mealApi.getMealsToUser({ userId: user?.uid })
+    queryFn: () => mealApi.getMeals({ userId: user?.uid })
   })
 
   const addProductMutation = useMutation({
-    mutationFn: productApi.addProductToUser,
+    mutationFn: productApi.addProduct,
     onSuccess: () => {
+      console.log('addProductMutation success',);
       // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ['getProductForCurrentUser'] })
       queryClient.invalidateQueries({ queryKey: ['getDaily'] })
     },
   })
   const addMealMutation = useMutation({
-    mutationFn: mealApi.addMealToUser,
+    mutationFn: mealApi.addMeal,
     onSuccess: () => {
+      console.log('addMealMutation success',);
       // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ['getMealsForCurrentUser'] })
       queryClient.invalidateQueries({ queryKey: ['getDaily'] })
     },
   })
 
-  const meals = mealsQuery.data?.meals || {}
-  const products = productsQuery.data?.products || {}
+  const meals = mealsQuery.data
+  const mealsList = meals ? Object.values(meals) : []
+  const products = productsQuery.data || {}
+  const productsList = products ? Object.values(products) : []
 
   return (
     <Page>
       <h1> meals and products page!</h1>
       <div className="flex">
-        <div>
+        <div className="flex flex-col">
 
           <ul>
-            {Object.values(products).map((todo: any) => (
-              <li key={todo.id}>{todo.title}</li>
+            {productsList.map((product: any) => (
+              <li key={product.name}>{product.name}</li>
             ))}
           </ul>
 
-          <button
-            onClick={() => {
-              addProductMutation.mutate({
-                userId: user?.uid,
-                product: createProduct()
-              })
-            }}
-          >
-            Add product
-          </button>
-        </div>
-        <div>
-          <div className="flex">
-
-            <ul>
-              {Object.values(meals).map((todo: any) => (
-                <li key={todo.id}>{todo.title}</li>
-              ))}
-            </ul>
-
-            <button
+          {productsQuery.isFetching ?
+            <div>Loading...</div>
+            :
+            (<button
               onClick={() => {
-                addMealMutation.mutate({
+                addProductMutation.mutate({
                   userId: user?.uid,
-                  name: `test_meal_${Math.random()}`,
-                  products: ["SmallMealsCottageCheeseWithPB"],
+                  product: createProduct()
                 })
               }}
             >
               Add product
             </button>
-          </div>
+            )}
+        </div>
+
+        <div className="flex flex-col">
+
+          <ul>
+            {mealsList.map((meal: any) => (
+              <li key={meal.name}>{meal.name}</li>
+            ))}
+          </ul>
+
+          {mealsQuery.isFetching ?
+            <div>Loading...</div>
+            :
+            (<button
+              onClick={() => {
+                addMealMutation.mutate({
+                  userId: user?.uid,
+                  name: `test_meal_${Math.random()}`,
+                  products: ["CottageCheeseOriginal"],
+                })
+              }}
+            >
+              Add meal
+            </button>
+        )}
         </div>
       </div>
     </Page >

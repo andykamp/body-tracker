@@ -1,15 +1,39 @@
 # BodyTracker
 
 ## Todo
+- add created/updated at server-api
+- test delete
+- move auth 
+
 - move updateStockProduct and updateProductForCurrentUser to seperate apis?
 - rename updateProduct (to stock) 
 - rename updateProductTo user to updateProductForCurrentUser
 - decide how to manage xxforCurrentUser and if that is neccesarry
+- should use create, update, delete instead of add, update, remove
+- delete should just re-use update. 
+- delete subcollections  on delete
+- 
 
+
+
+### Setup
+- frontend: nextjs
+- auth: firebase google
+- database: firestore
+- cache: redis (kv vercel)
+- server:
+    - no server atm but full support for migrating there
+    - common-api handles CRUD database operations only
+        - chooses what  DB to use via environmental variable
+        - create, update, delete
+        - delete is just update with isDeleted=true so we have a archive
+        - ideealy only 4 functions (CRUD) in total, but we create for different needs (e.g createMeal) to keep totally agnostic to the server-api. If not we to pass path etc from server-api, which could be different for each DB. And thus would no be agnostic.
+    - server-api handles business logic and calls to common-api
+        - can therefore easily change by environmental variable
+    - frontend can call server-api directly, or we can add a server as a proxy
 
 ## State management
-- SWR vs react-query
-
+- SWR vs react-query ?
 - state management
     - make each page/tab render declarativly from a root useQuery
     - use @tanstack/react (https://tanstack.com/query/v4/docs/react/adapters/react-query) to refetch and invaliate cache just like apollo 
@@ -26,7 +50,7 @@
         - products (any change invalidates daily)
         - profile
         - .... (stats etc)
-- databse 
+- database
     - use the actual calls to database in the common lib (re-usable for exercise also)
     - firebase
         - user spesific stuff

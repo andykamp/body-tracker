@@ -9,11 +9,8 @@ export async function signInWithGoogle() {
     const result = await signInWithPopup(auth, provider)
     // This gives you a Google Access Token. You can use it to access the Google API.
     const userInfo = getAdditionalUserInfo(result)
-    console.log('userInfo', userInfo, userInfo.isNewUser);
     if (userInfo.isNewUser) {
-      console.log('addingUser',);
       const r = await addUser(result.user.uid)
-      console.log('r', r);
     }
 
     const credential = GoogleAuthProvider.credentialFromResult(result);
@@ -21,7 +18,6 @@ export async function signInWithGoogle() {
     // The signed-in user info.
     const user = result.user;
     // IdP data available using getAdditionalUserInfo(result)
-    console.log('userInfo', token, user, userInfo);
   } catch (error) {
     // Handle Errors here.
     // const errorCode = error.code;
@@ -47,16 +43,13 @@ export async function signOutOfGoogle() {
 
 export async function deleteAccount() {
   const user = auth.currentUser;
-  console.log('deleting account', user);
 
   try {
     const r = await deleteUserFromDatabase({ uid: user.uid })
     // database deleted
-    console.log('database deleteed', r);
 
     await deleteUser(user)
     // User deleted.
-    console.log('user deleted',);
   } catch (error) {
     // An error ocurred
     // ...

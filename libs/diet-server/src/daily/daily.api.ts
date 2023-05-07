@@ -1,6 +1,6 @@
 import * as t from "@/diet-server/diet.types";
 import * as f from "@/diet-server/user/__support__/user.fixtures";
-import { USERS_FIXTURE } from "./__support__/daily.fixtures";
+import baseApi from "@/common/api/api.base";
 
 export function getTodaysDailyKey() {
   const now = new Date();
@@ -11,69 +11,86 @@ export function getTodaysDailyKey() {
   return `${year}${month}${day}`;
 }
 
-type GetDailyInput={
-  userId: string, 
+type GetDailyInput = {
+  userId: string,
   dateKey: string
 }
-export async function getDaily({userId, dateKey}:GetDailyInput): Promise<t.DailyDiet> {
-  return f.USERS_FIXTURE[userId][dateKey];
+export async function getDaily({ userId, dateKey }: GetDailyInput): Promise<t.DailyDiet> {
+  let r = await baseApi.makeReqAndExec<t.DailyDiet>({
+    proc: "getDaily",
+    vars: {
+      userId,
+      dateKey
+    }
+  })
+  if (!r) {
+    const newDaily: t.DailyDiet = {
+      id: dateKey,
+      createdAt: new Date(),
+      meals: {},
+      date: new Date(),
+    }
+    r = await baseApi.makeReqAndExec<t.DailyDiet>({
+      proc: "addDaily",
+      vars: {
+        userId,
+        daily: newDaily
+      }
+    })
+    return newDaily
+  }
+  return r
 }
 
-type AddDailyMealInput={
-  userId: string, 
-  meal: t.Meal
+type AddDailyMealInput = {
+  userId: string,
+  daily: Partial<t.DailyDiet>
 }
 // Add a daily meal to the user's meal history
-export async function addDailyMeal({userId, meal}:AddDailyMealInput): Promise<t.Meal | t.ResponseResult> {
-  const user: t.User = f.USERS_FIXTURE[userId];
-  if (!user) {
-    return { success: false, message: "User not found" };
-  }
-
-  const dailyDiet: t.DailyDiet = USERS_FIXTURE.dailyDiets[new Date().toISOString().slice(0, 10)];
-  if (!dailyDiet) {
-    return { success: false, message: "Daily diet not found" };
-  }
-
-  dailyDiet.meals[meal.name] = meal;
-  return  dailyDiet.meals[meal.name] 
+export async function addDailyMeal({ userId, daily }: AddDailyMealInput): Promise<t.Meal | t.ResponseResult> {
+  const r = await baseApi.makeReqAndExec<t.DailyDiet>({
+    proc: "updateDaily",
+    vars: {
+      userId,
+      daily
+    }
+  })
+  return r
 }
 
+type UpdateDailyInput = {
+  userId: string,
+  dateKey: string,
+  updatedDailyDiet: Partial<t.DailyDiet>
+}
 // Update a daily diet for a given user and date
-export function updateDaily(userId: string, date: string, updatedDailyDiet: Partial<t.DailyDiet>): t.ResponseResult {
-  const user: t.User = f.USERS_FIXTURE[userId];
-  if (!user) {
-    return { success: false, message: "User not found" };
-  }
+export async function updateDaily({ userId, dateKey, updatedDailyDiet }: UpdateDailyInput): Promise<t.ResponseResult> {
 
-  const dailyDiet: t.DailyDiet = user.daily[date];
-  if (!dailyDiet) {
-    return { success: false, message: "Daily diet not found" };
-  }
-
-  // Update the daily diet properties
-  Object.assign(dailyDiet, updatedDailyDiet);
-  dailyDiet.updatedAt = new Date();
-
-  return { success: true, message: "Daily diet updated successfully" };
+  const r = await baseApi.makeReqAndExec<t.DailyDiet>({
+    proc: "updateDailyMeal",
+    vars: {
+      userId,
+      dateKey,
+      updatedDailyDiet
+    }
+  })
+  return r
 }
 
+type RemoveDailyInput = {
+  userId: string,
+  dateKey: string
+}
 // Remove a daily diet for a given user and date
-export function removeDaily(userId: string, date: string): t.ResponseResult {
-  const user: t.User = f.USERS_FIXTURE[userId];
-  if (!user) {
-    return { success: false, message: "User not found" };
-  }
-
-  const dailyDiet: t.DailyDiet = user.daily[date];
-  if (!dailyDiet) {
-    return { success: false, message: "Daily diet not found" };
-  }
-
-  // Remove the daily diet from the user's daily diets
-  delete user.daily[date];
-
-  return { success: true, message: "Daily diet removed successfully" };
+export async function removeDailyMeal({ userId, dateKey }: RemoveDailyInput): Promise<t.ResponseResult> {
+  const r = await baseApi.makeReqAndExec<t.DailyDiet>({
+    proc: "removeDailyMeal",
+    vars: {
+      userId,
+      dateKey
+    }
+  })
+  return r
 }
 
 // Calculate the user's daily calorie intake
@@ -114,7 +131,7 @@ const dailyApi = {
   getDaily,
   addDailyMeal,
   updateDaily,
-  removeDaily,
+  removeDailyMeal,
   calculateDailyCalories,
   calculateDailyProteins,
   calculateYesterdaysMissingCalories,

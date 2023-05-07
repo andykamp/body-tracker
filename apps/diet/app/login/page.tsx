@@ -11,7 +11,6 @@ function LoginPage() {
   const signIn = async () => {
     try {
       await signInWithGoogle();
-      console.log('route to google', );
       router.push(ROUTES_CONSOLE.console)
     } catch (error) {
       console.error(error);

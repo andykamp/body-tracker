@@ -27,38 +27,49 @@ function DailyPage() {
 
   const query = useQuery({
     queryKey: ['getDaily'],
-    queryFn: () => dailyApi.getDaily({ userId: user?.uid, dateKey: todaysDailyKey })
+    queryFn: () => dailyApi.getDaily({ userId: user.uid, dateKey: todaysDailyKey })
   })
 
-  const mutation = useMutation({
+  const addDailyMutation = useMutation({
     mutationFn: dailyApi.addDailyMeal,
-    onSuccess: () => {
+    onSuccess: (data) => {
       // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: ['getDaily'] })
     },
   })
 
-  const dailyMeals = query.data?.meals || {}
+  const daily = query.data
+  const dailyMealList = daily?.meals ? Object.values(daily?.meals) : []
 
   return (
     <Page>
       <h1>Daily page!</h1>
       <ul>
-        {Object.values(dailyMeals).map((todo: any) => (
-          <li key={todo.id}>{todo.title}</li>
+        {dailyMealList.map((meal: any) => (
+          <li key={meal.name}>{meal.name}</li>
         ))}
       </ul>
 
-      <button
-        onClick={() => {
-          mutation.mutate({
-            userId: user.uid, 
-            meal: createDailyMeal()
-          })
-        }}
-      >
-        Add daily meal
-      </button>
+      {query.isFetching ?
+        <div>Loading...</div>
+        : (<button
+          onClick={() => {
+            const dailyMeal = createDailyMeal();
+            addDailyMutation.mutate({
+              userId: user.uid,
+              daily: {
+                ...daily,
+                meals: {
+                  ...daily?.meals,
+                  [dailyMeal.name]: dailyMeal
+                }
+              }
+            })
+          }}
+        >
+          Add daily meal
+        </button>
+        )}
     </Page >
   )
 }

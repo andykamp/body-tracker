@@ -24,7 +24,6 @@ type NavbarProps = {
 
 export default function Navbar(props: NavbarProps) {
   const { user, pathname, navigation, signIn, signOut, deleteAccount } = props
-  console.log('Navbar', user, pathname, navigation);
 
   return (
     <Disclosure as="nav" className="bg-white shadow-sm">

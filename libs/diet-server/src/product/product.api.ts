@@ -1,10 +1,5 @@
 import type * as t from "@/diet-server/diet.types"
-import * as f from "@/diet-server/product/__support__/product.fixtures";
-import { USERS_FIXTURE } from "@/diet-server/user/__support__/user.fixtures";
-
-const USERS: t.Users = USERS_FIXTURE;
-
-const products: t.Products = f.PRODUCTS_FIXTURE;
+import baseApi from "@/common/api/api.base";
 
 export function parseToValidProduct(product: t.Product): t.Product {
   if (!product.name) {
@@ -24,168 +19,133 @@ export function parseToValidProduct(product: t.Product): t.Product {
   };
 }
 
+
+export async function getStockProducts(): Promise<t.Products> {
+  const r = await baseApi.makeReqAndExec<t.Product>({
+    proc: "getStockProducts",
+    vars: {}
+  })
+  return r
+}
+
+
 type GetProductInput = {
-  name: string
-}
-
-export async function getProduct({ name }: GetProductInput): Promise<t.Product> {
-  return products[name];
-}
-
-type GetProductToUserInput = {
   userId: string
   name: string
 }
 
-export async function getProductToUser({ userId, name }: GetProductToUserInput): Promise<t.Product> {
-  return USERS[userId].products[name];
+export async function getProduct({ userId, name }: GetProductInput): Promise<t.Product> {
+  const r = await baseApi.makeReqAndExec<t.Product>({
+    proc: "getProduct",
+    vars: {
+      userId,
+      name,
+    }
+  })
+  return r
+
 }
 
 type GetProductsInput = {
-}
-
-export async function getProducts({ }: GetProductsInput): Promise<t.Products> {
-  return products;
-}
-
-type GetProductsToUserInput = {
   userId: string
 }
-
-export async function getProductsToUser({ userId }: GetProductsToUserInput): Promise<t.Products> {
-  return USERS[userId].products;
+export async function getProducts({ userId }: GetProductsInput): Promise<t.Product[]> {
+  const r = await baseApi.makeReqAndExec<t.Product>({
+    proc: "getProducts",
+    vars: { userId }
+  })
+  return r
 }
 
 type AddProductInput = {
-  product: t.Product
-}
-export async function addProduct({ product }: AddProductInput): Promise<t.ResponseResult> {
-  const newProduct: t.Product = parseToValidProduct(product);
-
-  const key = product.name
-
-  const r = await baseApi.makeReqAndExec<t.Product>({
-    proc: "addProduct",
-    vars: product
-  })
-
-
-  if (products[key]) {
-    return {
-      success: false,
-      message: "Product already exists",
-    };
-  }
-
-  products[key] = newProduct;
-  return {
-    success: true,
-    message: "Product added successfully",
-  };
-}
-
-type AddProductToUserInput = {
   userId: string,
   product: t.Product
 }
-export async function addProductToUser({ userId, product }: AddProductToUserInput): Promise<t.ResponseResult> {
+export async function addProduct({ userId, product }: AddProductInput): Promise<t.ResponseResult> {
   const newProduct: t.Product = { ...product };
 
-  if (!USERS[userId]) {
+  try {
+    const r = await baseApi.makeReqAndExec<t.Product>({
+      proc: "addProduct",
+      vars: {
+        userId,
+        product: newProduct
+      }
+    })
     return {
-      success: false,
-      message: "User does not exists",
+      success: true,
+      message: "Product added successfully",
     };
-  }
-
-  const key = product.name
-
-  if (USERS[userId].products[key]) {
+  } catch (e) {
     return {
       success: false,
       message: "Product already exists",
     };
   }
-
-  USERS[userId].products[key] = newProduct;
-  return {
-    success: true,
-    message: "Product added successfully",
-  };
 }
 
-export function updateProduct(key: string, input: Partial<t.Product>): t.ResponseResult {
-  if (!products[key]) {
+
+type UpdateProductInput = {
+  userId: string,
+  name: string
+  updatedProduct: Partial<t.Product>
+}
+export async function updateProduct({ userId, name, updatedProduct }: UpdateProductInput): Promise<t.ResponseResult> {
+
+  try {
+    const r = await baseApi.makeReqAndExec<t.Product>({
+      proc: "updateProduct",
+      vars: {
+        userId,
+        name,
+        product: updatedProduct
+      }
+    })
+    return {
+      success: true,
+      message: "Product updated successfully",
+    };
+  } catch (e) {
     return {
       success: false,
-      message: "Product not found",
+      message: "Product update error",
     };
   }
-
-  products[key] = { ...products[key], ...input };
-  return {
-    success: true,
-    message: "Product updated successfully",
-  };
 }
 
-export function updateProductToUser(userId: string, key: string, input: Partial<t.Product>): t.ResponseResult {
-  if (!USERS[userId] || !USERS[userId].products[key]) {
-    return {
-      success: false,
-      message: "Product not found",
-    };
-  }
-
-  USERS[userId].products[key] = { ...USERS[userId].products[key], ...input };
-  return {
-    success: true,
-    message: "Product updated successfully",
-  };
+type DeleteProductInput = {
+  userId: string,
+  name: string
 }
-
-export function deleteProduct(key: string): t.ResponseResult {
-  if (!products[key]) {
+export async function deleteProduct({ userId, name }: DeleteProductInput): Promise<t.ResponseResult> {
+  try {
+    const r = await baseApi.makeReqAndExec<t.Product>({
+      proc: "deleteProduct",
+      vars: {
+        userId,
+        name,
+      }
+    })
+    return {
+      success: true,
+      message: "Product updated successfully",
+    };
+  } catch (e) {
     return {
       success: false,
-      message: "Product not found",
+      message: "Product update error",
     };
   }
-
-  delete products[key];
-  return {
-    success: true,
-    message: "Product deleted successfully",
-  };
-}
-
-export function deleteProductToUser(userId: string, key: string): t.ResponseResult {
-  if (!USERS[userId] || !USERS[userId].products[key]) {
-    return {
-      success: false,
-      message: "Product not found",
-    };
-  }
-
-  delete USERS[userId].products[key];
-  return {
-    success: true,
-    message: "Product deleted successfully",
-  };
 }
 
 const productApi = {
-  getProduct,
-  getProductToUser,
-  getProducts,
-  getProductsToUser,
   parseToValidProduct,
-  addProductToUser,
+  getStockProducts,
+  getProduct,
+  getProducts,
   addProduct,
-  deleteProduct,
-  deleteProductToUser,
   updateProduct,
-  updateProductToUser,
+  deleteProduct,
 };
 
 export type ProductApi = typeof productApi;
