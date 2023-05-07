@@ -56,7 +56,7 @@ function DailyPage() {
           onClick={() => {
             const dailyMeal = createDailyMeal();
             addDailyMutation.mutate({
-              userId: user.uid,
+              userId: user?.uid,
               daily: {
                 ...daily,
                 meals: {
