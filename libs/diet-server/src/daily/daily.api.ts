@@ -61,17 +61,17 @@ export async function addDailyMeal({ userId, daily }: AddDailyMealInput): Promis
 type UpdateDailyInput = {
   userId: string,
   dateKey: string,
-  updatedDailyDiet: Partial<t.DailyDiet>
+  daily: Partial<t.DailyDiet>
 }
 // Update a daily diet for a given user and date
-export async function updateDaily({ userId, dateKey, updatedDailyDiet }: UpdateDailyInput): Promise<t.ResponseResult> {
+export async function updateDaily({ userId, dateKey, daily }: UpdateDailyInput): Promise<t.ResponseResult> {
 
   const r = await baseApi.makeReqAndExec<t.DailyDiet>({
-    proc: "updateDailyMeal",
+    proc: "updateDaily",
     vars: {
       userId,
       dateKey,
-      updatedDailyDiet
+      daily
     }
   })
   return r
@@ -79,18 +79,18 @@ export async function updateDaily({ userId, dateKey, updatedDailyDiet }: UpdateD
 
 type RemoveDailyInput = {
   userId: string,
-  dateKey: string
+  daily: t.DailyDiet
+  mealName: string
 }
 // Remove a daily diet for a given user and date
-export async function removeDailyMeal({ userId, dateKey }: RemoveDailyInput): Promise<t.ResponseResult> {
-  const r = await baseApi.makeReqAndExec<t.DailyDiet>({
-    proc: "removeDailyMeal",
-    vars: {
-      userId,
-      dateKey
-    }
-  })
-  return r
+export async function removeDailyMeal({ userId, daily, mealName }: RemoveDailyInput): Promise<t.DailyDiet> {
+  const { [mealName]: mealToDelete, ...meals } = daily.meals
+  const newDaily: t.DailyDiet = {
+    ...daily,
+    meals
+  }
+  dailyApi.updateDaily({ userId, dateKey: daily.id, daily: newDaily })
+  return newDaily
 }
 
 // Calculate the user's daily calorie intake

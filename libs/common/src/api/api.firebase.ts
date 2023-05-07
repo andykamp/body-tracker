@@ -92,11 +92,11 @@ export async function updateMeal({ userId, meal }: updateMealInput): Promise<voi
 
 type deleteMealInput = {
   userId: string,
-  meal: t.Meal
+  name:string
 }
 
-export async function deleteMeal({ userId, meal }: deleteMealInput): Promise<void> {
-  return await deleteDoc(doc(db, `users/${userId}/meals`, meal.name))
+export async function deleteMeal({ userId, name }: deleteMealInput): Promise<void> {
+  return await deleteDoc(doc(db, `users/${userId}/meals`, name))
 }
 
 
@@ -153,7 +153,7 @@ type AddProductInput = {
 }
 
 export async function addProduct({ userId, product }: AddProductInput): Promise<void> {
-  console.log('addproduct',userId, product );
+  console.log('addproduct', userId, product);
   return await setDoc(doc(db, `users/${userId}/products`, product.name), product)
 }
 
@@ -168,11 +168,11 @@ export async function updateProduct({ userId, product }: updateProductInput): Pr
 
 type deleteProductInput = {
   userId: string,
-  product: t.Product
+  name: string
 }
 
-export async function deleteProduct({ userId, product }: deleteProductInput): Promise<void> {
-  return await deleteDoc(doc(db, `users/${userId}/products`, product.name))
+export async function deleteProduct({ userId, name }: deleteProductInput): Promise<void> {
+  return await deleteDoc(doc(db, `users/${userId}/products`, name))
 }
 
 

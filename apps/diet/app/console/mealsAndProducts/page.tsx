@@ -42,10 +42,31 @@ function MealsAndProductsPage() {
       queryClient.invalidateQueries({ queryKey: ['getDaily'] })
     },
   })
+
+  const deleteProductMutation = useMutation({
+    mutationFn: productApi.deleteProduct,
+    onSuccess: () => {
+      console.log('deleteProductMutation success',);
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ['getProductForCurrentUser'] })
+      queryClient.invalidateQueries({ queryKey: ['getDaily'] })
+    },
+  })
+
   const addMealMutation = useMutation({
     mutationFn: mealApi.addMeal,
     onSuccess: () => {
       console.log('addMealMutation success',);
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ['getMealsForCurrentUser'] })
+      queryClient.invalidateQueries({ queryKey: ['getDaily'] })
+    },
+  })
+
+  const deleteMealMutation = useMutation({
+    mutationFn: mealApi.deleteMeal,
+    onSuccess: () => {
+      console.log('deleteMealMutation success',);
       // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: ['getMealsForCurrentUser'] })
       queryClient.invalidateQueries({ queryKey: ['getDaily'] })
@@ -65,7 +86,18 @@ function MealsAndProductsPage() {
 
           <ul>
             {productsList.map((product: any) => (
-              <li key={product.name}>{product.name}</li>
+              <li key={product.name}>{product.name}
+            <button
+              onClick={() => {
+                deleteProductMutation.mutate({
+                  userId: user?.uid,
+                  name: product.name
+                })
+              }}
+            >
+             delete 
+            </button>
+              </li>
             ))}
           </ul>
 
@@ -89,7 +121,18 @@ function MealsAndProductsPage() {
 
           <ul>
             {mealsList.map((meal: any) => (
-              <li key={meal.name}>{meal.name}</li>
+              <li key={meal.name}>{meal.name}
+                <button
+                  onClick={() => {
+                    deleteMealMutation.mutate({
+                      userId: user?.uid,
+                      name: meal.name
+                    })
+                  }}
+                >
+                  delete
+                </button>
+              </li>
             ))}
           </ul>
 
@@ -107,7 +150,7 @@ function MealsAndProductsPage() {
             >
               Add meal
             </button>
-        )}
+            )}
         </div>
       </div>
     </Page >

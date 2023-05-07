@@ -37,6 +37,13 @@ function DailyPage() {
       queryClient.invalidateQueries({ queryKey: ['getDaily'] })
     },
   })
+  const removeDailyMealMutation = useMutation({
+    mutationFn: dailyApi.removeDailyMeal,
+    onSuccess: (data) => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ['getDaily'] })
+    },
+  })
 
   const daily = query.data
   const dailyMealList = daily?.meals ? Object.values(daily?.meals) : []
@@ -46,29 +53,42 @@ function DailyPage() {
       <h1>Daily page!</h1>
       <ul>
         {dailyMealList.map((meal: any) => (
-          <li key={meal.name}>{meal.name}</li>
+          <li key={meal.name}>{meal.name}
+            <button
+              onClick={() => {
+                removeDailyMealMutation.mutate({
+                  userId: user?.uid,
+                  daily: daily as any,
+                  mealName: meal.name
+                })
+              }}
+            >
+             delete 
+            </button>
+          </li>
         ))}
       </ul>
 
       {query.isFetching ?
         <div>Loading...</div>
-        : (<button
-          onClick={() => {
-            const dailyMeal = createDailyMeal();
-            addDailyMutation.mutate({
-              userId: user?.uid,
-              daily: {
-                ...daily,
-                meals: {
-                  ...daily?.meals,
-                  [dailyMeal.name]: dailyMeal
+        : (
+          <button
+            onClick={() => {
+              const dailyMeal = createDailyMeal();
+              addDailyMutation.mutate({
+                userId: user?.uid,
+                daily: {
+                  ...daily,
+                  meals: {
+                    ...daily?.meals,
+                    [dailyMeal.name]: dailyMeal
+                  }
                 }
-              }
-            })
-          }}
-        >
-          Add daily meal
-        </button>
+              })
+            }}
+          >
+            Add daily meal
+          </button>
         )}
     </Page >
   )
