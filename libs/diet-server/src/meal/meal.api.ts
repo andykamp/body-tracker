@@ -4,15 +4,6 @@ import * as fp from "@/diet-server/product/__support__/product.fixtures";
 import productApi from "@/diet-server/product/product.api";
 import baseApi from "@/common/api/api.base";
 
-export async function getStockMeals(): Promise<t.Meals> {
-  const r = await baseApi.makeReqAndExec<t.Meal>({
-    proc: "getStockMeals",
-    vars: {}
-  })
-  return r
-
-}
-
 type GetMealsInput = {
   userId: string;
 }
@@ -40,11 +31,11 @@ export type AddMealInput = {
  *
  * @returns {t.ResponseResult} The result object containing a success flag and a message indicating the success or failure of the operation.
  */
-export async function addMeal({ userId, name, products }: AddMealInput): Promise<t.ResponseResult> {
+export async function addMeal({ userId, name, products }: AddMealInput): Promise<t.Meal> {
   console.log('addMeal', { userId, name, products });
 
   const userProducts: t.Product[] = await productApi.getProducts({ userId });
-  const stockProducts: t.Products = fp.PRODUCTS_FIXTURE; 
+  const stockProducts: t.Products = fp.PRODUCTS_FIXTURE;
 
   console.log('userProducts', userProducts);
 
@@ -64,7 +55,7 @@ export async function addMeal({ userId, name, products }: AddMealInput): Promise
     if (typeof item === "string") {
       // Retrieve the product data from the user's product list using the product name.
       product = stockProducts[item] || userProducts.find(p => p.name === item);
-      console.log('product', product, item );
+      console.log('product', product, item);
 
       // If the product data does not exist, return an error result.
       // TODO maybe throw error?
@@ -76,16 +67,11 @@ export async function addMeal({ userId, name, products }: AddMealInput): Promise
       console.log('--adding product ', userId, item);
       const addProductResult = await productApi.addProduct({ userId, product: item });
 
-      // If the add product operation fails, return the error result.
-      if (!addProductResult.success) {
-        return addProductResult;
-      }
-
       product = item;
     }
 
     // Add the product to the meal product list.
-    if(product) mealProducts.push(product);
+    if (product) mealProducts.push(product);
 
     // Calculate the total protein, calories, and grams for the meal based on the product data.
     totalProtein += product.protein || 0;
@@ -93,13 +79,10 @@ export async function addMeal({ userId, name, products }: AddMealInput): Promise
     totalGrams += product.grams || 0;
   }
 
-  console.log('outloop',name, mealProducts);
+  console.log('outloop', name, mealProducts);
   // If the meal product list is empty and the meal name or total protein and calories are not provided, return an error result.
   if (!mealProducts.length && (!name || (!totalProtein && !totalCalories))) {
-    return {
-      success: false,
-      message: "Invalid meal data",
-    };
+    throw new Error(`Invalid meal data`);
   }
 
   // Create a meal object using the meal name, product names, and total protein, calories, and grams for the meal.
@@ -113,27 +96,15 @@ export async function addMeal({ userId, name, products }: AddMealInput): Promise
 
   console.log('new meal added as ', meal);
   // Add the meal to the user's meal list.
-  try {
-    const r = await baseApi.makeReqAndExec<t.Meal>({
-      proc: "addMeal",
-      vars: {
-        userId,
-        name,
-        meal
-      }
-    })
-    // Return a success result.
-    return {
-      success: true,
-      message: "Meal added successfully",
-    };
-  } catch (e) {
-    console.log(e)
-    return {
-      success: false,
-      message: "Add meal to database failed",
-    };
-  }
+  const r = await baseApi.makeReqAndExec<t.Meal>({
+    proc: "addMeal",
+    vars: {
+      userId,
+      name,
+      meal
+    }
+  })
+  return r
 
 }
 
@@ -148,28 +119,16 @@ export async function updateMeal({
   name,
   meal
 }: UpdateMealInput
-): Promise<t.ResponseResult> {
-  try {
-    const r = await baseApi.makeReqAndExec<t.Meal>({
-      proc: "updateMeal",
-      vars: {
-        userId,
-        name,
-        meal
-      }
-    })
-    // Return a success result.
-    return {
-      success: true,
-      message: "Meal updated successfully",
-    };
-  } catch (e) {
-    console.log(e)
-    return {
-      success: false,
-      message: "Update meal failed",
-    };
-  }
+): Promise<t.Meal> {
+  const r = await baseApi.makeReqAndExec<t.Meal>({
+    proc: "updateMeal",
+    vars: {
+      userId,
+      name,
+      meal
+    }
+  })
+  return r
 }
 
 type DeleteMealInput = {
@@ -188,6 +147,7 @@ export async function deleteMeal(
         name,
       }
     })
+    console.log('dleteMeal', r);
     // Return a success result.
     return {
       success: true,
@@ -203,7 +163,6 @@ export async function deleteMeal(
 }
 
 const mealApi = {
-  getStockMeals,
   getMeals,
   addMeal,
   updateMeal,

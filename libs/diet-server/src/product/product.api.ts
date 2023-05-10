@@ -20,15 +20,6 @@ export function parseToValidProduct(product: t.Product): t.Product {
 }
 
 
-export async function getStockProducts(): Promise<t.Products> {
-  const r = await baseApi.makeReqAndExec<t.Product>({
-    proc: "getStockProducts",
-    vars: {}
-  })
-  return r
-}
-
-
 type GetProductInput = {
   userId: string
   name: string
@@ -61,27 +52,16 @@ type AddProductInput = {
   userId: string,
   product: t.Product
 }
-export async function addProduct({ userId, product }: AddProductInput): Promise<t.ResponseResult> {
+export async function addProduct({ userId, product }: AddProductInput): Promise<t.Product> {
   const newProduct: t.Product = { ...product };
-
-  try {
-    const r = await baseApi.makeReqAndExec<t.Product>({
-      proc: "addProduct",
-      vars: {
-        userId,
-        product: newProduct
-      }
-    })
-    return {
-      success: true,
-      message: "Product added successfully",
-    };
-  } catch (e) {
-    return {
-      success: false,
-      message: "Product already exists",
-    };
-  }
+  const r = await baseApi.makeReqAndExec<t.Product>({
+    proc: "addProduct",
+    vars: {
+      userId,
+      product: newProduct
+    }
+  })
+  return r
 }
 
 
@@ -90,27 +70,16 @@ type UpdateProductInput = {
   name: string
   updatedProduct: Partial<t.Product>
 }
-export async function updateProduct({ userId, name, updatedProduct }: UpdateProductInput): Promise<t.ResponseResult> {
-
-  try {
-    const r = await baseApi.makeReqAndExec<t.Product>({
-      proc: "updateProduct",
-      vars: {
-        userId,
-        name,
-        product: updatedProduct
-      }
-    })
-    return {
-      success: true,
-      message: "Product updated successfully",
-    };
-  } catch (e) {
-    return {
-      success: false,
-      message: "Product update error",
-    };
-  }
+export async function updateProduct({ userId, name, updatedProduct }: UpdateProductInput): Promise<t.Product> {
+  const r = await baseApi.makeReqAndExec<t.Product>({
+    proc: "updateProduct",
+    vars: {
+      userId,
+      name,
+      product: updatedProduct
+    }
+  })
+  return r
 }
 
 type DeleteProductInput = {
@@ -126,6 +95,7 @@ export async function deleteProduct({ userId, name }: DeleteProductInput): Promi
         name,
       }
     })
+    console.log('deleted', r);
     return {
       success: true,
       message: "Product updated successfully",
@@ -140,7 +110,6 @@ export async function deleteProduct({ userId, name }: DeleteProductInput): Promi
 
 const productApi = {
   parseToValidProduct,
-  getStockProducts,
   getProduct,
   getProducts,
   addProduct,

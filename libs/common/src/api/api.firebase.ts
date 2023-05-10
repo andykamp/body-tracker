@@ -28,17 +28,6 @@ export async function deleteUser({ uid }: DeleteUserInput): Promise<void> {
 // meals
 
 
-export async function getStockMeals(): Promise<t.Meal[]> {
-  const collectionRef = collection(db, `/meals`);
-  const querySnapshot = await getDocs(collectionRef);
-  const out: t.Meal[] = []
-  querySnapshot.forEach((doc) => {
-    out.push(doc.data() as t.Meal)
-  });
-
-  return out
-}
-
 type getMealsInput = {
   userId: string,
 }
@@ -102,17 +91,6 @@ export async function deleteMeal({ userId, name }: deleteMealInput): Promise<voi
 
 // products
 
-
-export async function getStockProducts(): Promise<t.Product[]> {
-  const collectionRef = collection(db, `/products`);
-  const querySnapshot = await getDocs(collectionRef);
-  const out: t.Product[] = []
-  querySnapshot.forEach((doc) => {
-    out.push(doc.data() as t.Product)
-  });
-
-  return out
-}
 
 type getProductsInput = {
   userId: string,
