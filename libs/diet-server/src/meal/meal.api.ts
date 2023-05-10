@@ -65,7 +65,7 @@ export async function addMeal({ userId, name, products }: AddMealInput): Promise
     } else {
       // If the item is an object, assume it is a new product to be added to the user's product list.
       console.log('--adding product ', userId, item);
-      const addProductResult = await productApi.addProduct({ userId, product: item });
+      await productApi.addProduct({ userId, product: item });
 
       product = item;
     }

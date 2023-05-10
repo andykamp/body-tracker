@@ -6,7 +6,7 @@ import {
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query'
-import { useAuthContext } from "@/auth-client/firebase/AuthContext";
+import { useAuthContext } from "@/auth-client/firebase/auth.context";
 import mealApi from "@/diet-server/meal/meal.api"
 import productApi from "@/diet-server/product/product.api"
 

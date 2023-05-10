@@ -1,14 +1,14 @@
 import * as t from "@/diet-server/diet.types";
 import userApi from "@/diet-server/user/user.api";
 
-export function seedAddUser(userId: string): t.ResponseResult {
-  return userApi.addUser(userId);
+export function seedAddUser(userId: string) {
+  return userApi.addUser({ uid: userId });
 }
 
-export function seedUpdateUser(
+export async function seedUpdateUser(
   userId: string,
   data?: Partial<t.User>
-): t.ResponseResult {
+): Promise<t.ResponseResult> {
   const userData = {
     products: {},
     meals: {},
@@ -17,11 +17,11 @@ export function seedUpdateUser(
     ...data,
   };
 
-  return userApi.updateUser(userId, userData);
+  return await userApi.updateUser({ uid: userId, user: userData });
 }
 
-export function seedDeleteUser(userId: string): t.ResponseResult {
-  return userApi.deleteUser(userId);
+export function seedDeleteUser(userId: string) {
+  return userApi.deleteUser({ uid: userId });
 }
 
 const userSeeder = {

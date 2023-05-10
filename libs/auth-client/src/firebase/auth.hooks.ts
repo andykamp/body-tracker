@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { auth } from '@/auth/firebase/config';
-import type { AuthObject, User } from '@/auth-client/firebase/auth.types';
+import type { AuthObject, User } from '@/auth/firebase/auth.types';
 
 export function useAuth(): AuthObject | null {
   const [user, setUser] = useState<User | null>(null);

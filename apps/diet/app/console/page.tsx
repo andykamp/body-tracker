@@ -4,7 +4,7 @@ import { useAuthRedirect } from "../../utils/auth.utils";
 import Navbar from '@/ui/Navbar'
 import { usePathname } from "next/navigation";
 import { NAVIGATION_ROUTES_CONSOLE, ROUTES_CONSOLE } from "@/diet/app/constants"
-import { signInWithGoogle, signOutOfGoogle, deleteAccount} from "@/auth-client/firebase/auth.api"
+import { signInWithGoogle, signOutOfGoogle, deleteAccount} from "@/auth/firebase/auth.api"
 import { useRouter } from "next/navigation";
 import Page from "@/ui/Page";
 import DailyPage from "./daily/page";

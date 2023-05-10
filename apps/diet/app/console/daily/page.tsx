@@ -7,8 +7,7 @@ import {
   useQueryClient,
 } from '@tanstack/react-query'
 import dailyApi from "@/diet-server/daily/daily.api"
-import { useAuthContext } from "@/auth-client/firebase/AuthContext";
-
+import { useAuthContext } from "@/auth-client/firebase/auth.context";
 
 function createDailyMeal() {
   return {
@@ -32,14 +31,14 @@ function DailyPage() {
 
   const addDailyMutation = useMutation({
     mutationFn: dailyApi.addDailyMeal,
-    onSuccess: (data) => {
+    onSuccess: () => {
       // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: ['getDaily'] })
     },
   })
   const removeDailyMealMutation = useMutation({
     mutationFn: dailyApi.removeDailyMeal,
-    onSuccess: (data) => {
+    onSuccess: () => {
       // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: ['getDaily'] })
     },

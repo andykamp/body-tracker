@@ -1,5 +1,5 @@
 import React from "react";
-import { useAuthContext } from '@/auth-client/firebase/AuthContext'
+import { useAuthContext } from '@/auth-client/firebase/auth.context'
 import { useRouter } from "next/navigation";
 
 export function useAuthRedirect() {

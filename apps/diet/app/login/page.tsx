@@ -1,6 +1,6 @@
 'use client'
 import GoogleLoginButton from '@/ui/GoogleLoginButton'
-import { signInWithGoogle } from "@/auth-client/firebase/auth.api"
+import { signInWithGoogle } from "@/auth/firebase/auth.api"
 import { useRouter } from "next/navigation";
 import { ROUTES_CONSOLE } from "@/diet/app/constants"
 import Page from "@/ui/Page";

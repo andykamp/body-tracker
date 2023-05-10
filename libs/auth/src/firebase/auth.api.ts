@@ -10,7 +10,7 @@ export async function signInWithGoogle() {
     // This gives you a Google Access Token. You can use it to access the Google API.
     const userInfo = getAdditionalUserInfo(result)
     if (userInfo.isNewUser) {
-      const r = await addUser(result.user.uid)
+      const r = await addUser({uid:result.user.uid})
     }
 
     const credential = GoogleAuthProvider.credentialFromResult(result);

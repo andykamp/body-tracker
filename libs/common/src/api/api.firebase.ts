@@ -16,6 +16,15 @@ export async function addUser({ uid }: AddUserInput): Promise<void> {
   return await setDoc(doc(db, "users", uid), initialUserData, { merge: true })
 }
 
+type UpdateUserInput = {
+  uid: string
+  user: Partial<t.User>
+}
+
+export async function updateUser({ uid, user }: UpdateUserInput): Promise<void> {
+  return await updateDoc(doc(db, "users", uid), user)
+}
+
 type DeleteUserInput = {
   uid: string
 }
@@ -81,7 +90,7 @@ export async function updateMeal({ userId, meal }: updateMealInput): Promise<voi
 
 type deleteMealInput = {
   userId: string,
-  name:string
+  name: string
 }
 
 export async function deleteMeal({ userId, name }: deleteMealInput): Promise<void> {

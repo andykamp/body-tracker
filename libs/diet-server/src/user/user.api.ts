@@ -1,8 +1,5 @@
 import * as t from "@/diet-server/diet.types"
-import * as f from "@/diet-server/user/__support__/user.fixtures";
 import baseApi from "@/common/api/api.base";
-
-const USERS: t.Users = f.USERS_FIXTURE;
 
 type AddUserInput = {
   uid: string
@@ -14,9 +11,9 @@ type AddUserInput = {
  * @returns {ResponseResult} An object containing success status and a message.
  */
 
-export async function addUser(uid: string): Promise<t.ResponseResult> {
+export async function addUser({ uid }: AddUserInput): Promise<t.ResponseResult> {
   try {
-    const r = await baseApi.makeReqAndExec<t.Product>({
+    const r = await baseApi.makeReqAndExec<t.User>({
       proc: "addUser",
       vars: {
         uid
@@ -34,6 +31,11 @@ export async function addUser(uid: string): Promise<t.ResponseResult> {
   }
 }
 
+
+type UpdateUserInput = {
+  uid: string,
+  user: Partial<t.User>
+}
 /**
  * Updates an existing user.
  *
@@ -41,20 +43,27 @@ export async function addUser(uid: string): Promise<t.ResponseResult> {
  * @param {Partial<t.User>} input - The updated user details.
  * @returns {ResponseResult} An object containing success status and a message.
  */
-export function updateUser(id: string, input: Partial<t.User>): t.ResponseResult {
-  if (!USERS[id]) {
+export async function updateUser({ uid, user }: UpdateUserInput): Promise<t.ResponseResult> {
+  try {
+    const r = await baseApi.makeReqAndExec<t.User>({
+      proc: "updateUser",
+      vars: {
+        uid,
+        user
+      }
+    })
+    return {
+      success: true,
+      message: "User added successfully",
+    };
+  } catch (e) {
     return {
       success: false,
-      message: "User not found",
+      message: e
     };
   }
-
-  USERS[id] = { ...USERS[id], ...input };
-  return {
-    success: true,
-    message: "User updated successfully",
-  };
 }
+
 
 type DeleteUserInput = {
   uid: string
@@ -67,7 +76,7 @@ type DeleteUserInput = {
  */
 export async function deleteUser({ uid }: DeleteUserInput): Promise<t.ResponseResult> {
   try {
-    const r = await baseApi.makeReqAndExec<t.Product>({
+    const r = await baseApi.makeReqAndExec<t.User>({
       proc: "deleteUser",
       vars: {
         uid
