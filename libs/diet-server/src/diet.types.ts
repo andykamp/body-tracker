@@ -56,3 +56,12 @@ export type DailyDiets = {
   [key: string]: DailyDiet;
 
 }
+
+export type StockType = "product" | "meal" | "both"
+
+export type StockItem = Product | Meal 
+
+export type StockStateNormalized = {
+  allIds: string[],
+  byIds: Record<string, StockItem>;
+}

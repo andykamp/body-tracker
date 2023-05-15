@@ -12,7 +12,7 @@
 - should use create, update, delete instead of add, update, remove
 - delete should just re-use update. 
 - delete subcollections  on delete
-- 
+- test emulatinon https://firebase.google.com/docs/emulator-suite 
 
 
 

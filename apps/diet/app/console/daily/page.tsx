@@ -8,6 +8,7 @@ import {
 } from '@tanstack/react-query'
 import dailyApi from "@/diet-server/daily/daily.api"
 import { useAuthContext } from "@/auth-client/firebase/auth.context";
+import StockSearch from '@/diet/components/StockSearch'
 
 function createDailyMeal() {
   return {
@@ -50,6 +51,9 @@ function DailyPage() {
   return (
     <Page>
       <h1>Daily page!</h1>
+      <div>
+        <StockSearch onSelect={(e) => console.log('onSelect', e)} />
+      </div>
       <ul>
         {dailyMealList.map((meal: any) => (
           <li key={meal.name}>{meal.name}
@@ -62,7 +66,7 @@ function DailyPage() {
                 })
               }}
             >
-             delete 
+              delete
             </button>
           </li>
         ))}

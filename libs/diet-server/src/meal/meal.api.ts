@@ -2,6 +2,8 @@ import * as t from "@/diet-server/diet.types";
 import * as f from "@/diet-server/meal/__support__/meal.fixtures";
 import * as fp from "@/diet-server/product/__support__/product.fixtures";
 import productApi from "@/diet-server/product/product.api";
+import stockApi from "@/diet-server/stock/stock.api";
+import { STOCK_TYPE } from "@/diet-server/stock/stock.constants";
 import baseApi from "@/common/api/api.base";
 
 type GetMealsInput = {
@@ -35,7 +37,7 @@ export async function addMeal({ userId, name, products }: AddMealInput): Promise
   console.log('addMeal', { userId, name, products });
 
   const userProducts: t.Product[] = await productApi.getProducts({ userId });
-  const stockProducts: t.Products = fp.PRODUCTS_FIXTURE;
+  const stockProducts: t.Products = stockApi.getStockItems({ type: STOCK_TYPE.both });
 
   console.log('userProducts', userProducts);
 
