@@ -1,13 +1,12 @@
-'use client'
-import React from "react";
 import Navbar from '@/ui/Navbar'
-import { usePathname } from "next/navigation";
+import { useLocation } from 'react-router-dom';
 import { NAVIGATION_ROUTES_HOME } from "../constants"
 import { signInWithGoogle } from "@/auth/firebase/auth.api"
 import Page from "@/ui/Page";
+import ProtectedPage from "./protected"
 
 function HomePage() {
-  const pathname = usePathname()
+  const location = useLocation();
 
   const signIn = async () => {
     try {
@@ -21,9 +20,10 @@ function HomePage() {
       <Navbar
         signIn={signIn}
         navigation={NAVIGATION_ROUTES_HOME}
-        pathname={pathname}
+        pathname={location.pathname}
       />
       <h1>This is the main page</h1>
+      <ProtectedPage />
     </Page>
   )
 

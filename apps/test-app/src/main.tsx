@@ -1,16 +1,17 @@
+import './globals.css'
 import { StrictMode } from 'react';
 import * as ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
+import Provider from "./provider";
 
-import App from './app/home';
+import Router from './router';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <Provider>
+      <Router />
+    </Provider>
   </StrictMode>
 );
