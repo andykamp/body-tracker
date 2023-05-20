@@ -15,12 +15,13 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@/auth-client/*": ["libs/auth-client/src/*"],
       "@/auth/*": ["libs/auth/src/*"],
       "@/common/*": ["libs/common/src/*"],
-      "@/auth-client/*": ["libs/auth-client/src/*"],
       "@/diet-server/*": ["libs/diet-server/src/*"],
+      "@/ui/*": ["libs/ui/src/*"],
       "@/diet/*": ["apps/diet/*"],
-      "@/ui/*": ["libs/ui/src/*"]
+      "@/test-app/*": ["apps/test-app/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]

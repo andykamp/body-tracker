@@ -1,6 +1,10 @@
 # BodyTracker
 
 ## Todo
+- make sure nothing is using the auth until it is valid
+- remove auth.hooks?
+- https://firebase.google.com/docs/emulator-suite/connect_auth
+- 
 - add created/updated at server-api
 - test delete
 - move auth 
