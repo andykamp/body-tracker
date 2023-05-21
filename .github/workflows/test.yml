@@ -13,6 +13,6 @@ jobs:
         with:
           node-version: '12'
       - run: npm install -g firebase-tools
-      - run: npm ci
+      - run: yarn install --frozen-lockfile
       - run: echo "Here is where i start the emulator hihi :)"
 
