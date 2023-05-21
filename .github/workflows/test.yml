@@ -3,6 +3,7 @@ name: Test Firestore on push to master
   push:
     branches:
       - master
+      - main
 jobs:
   test_rules:
     runs_on: ubuntu-latest
