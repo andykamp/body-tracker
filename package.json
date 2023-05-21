@@ -2,15 +2,16 @@
   "name": "body-tracker",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
-  "private": true,
-  "scripts":{
-    "dev": "nx run-many --target=serve --projects=diet",
+  "scripts": {
+    "emulator:start": "firebase emulators:start",
+    "start:dev": "nx run-many --target=serve --projects=diet",
+    "dev": "concurrently --kill-others \"yarn run emulator:start\" \"wait-on http-get://localhost:4000 && yarn run start:dev\"",
     "build": "nx run-many --target=build --parallel",
     "test": "nx run-many --target=test --exclude=workspace --parallel",
     "lint": "nx run-many --target=lint --parallel --exclude=workspace",
     "type-check": "nx run-many --target=type-check --parallel --exclude=workspace"
   },
+  "private": true,
   "dependencies": {
     "@headlessui/react": "^1.7.14",
     "@heroicons/react": "^2.0.17",
@@ -60,6 +61,7 @@
     "@vitest/ui": "^0.25.8",
     "autoprefixer": "^10.4.14",
     "babel-jest": "^29.4.1",
+    "concurrently": "^8.0.1",
     "cypress": "^12.2.0",
     "encoding": "^0.1.13",
     "eslint": "~8.15.0",
@@ -85,6 +87,7 @@
     "vite-plugin-dts": "~1.7.1",
     "vite-plugin-eslint": "^1.8.1",
     "vite-tsconfig-paths": "^4.0.2",
-    "vitest": "^0.25.8"
+    "vitest": "^0.25.8",
+    "wait-on": "^7.0.1"
   }
 }
