@@ -1,7 +1,7 @@
 import Navbar from '@/ui/Navbar'
 import { useLocation } from 'react-router-dom';
 import { NAVIGATION_ROUTES_HOME } from "../constants"
-import { signInWithGoogle } from "@/auth/firebase/auth.api"
+import { signInWithGoogle } from '@/diet/utils/auth.utils'
 import Page from "@/ui/Page";
 import ProtectedPage from "./protected"
 
