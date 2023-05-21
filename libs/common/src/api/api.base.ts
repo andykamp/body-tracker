@@ -44,7 +44,11 @@ async function makeReqAndExec<Out extends Record<string, unknown>>(
 
     return out
   } catch (e) {
-    throw new Error(e)
+    if (e instanceof Error) {
+      throw new Error(e.message);
+    } else {
+      throw new Error(e as string);
+    }
   }
 
 }

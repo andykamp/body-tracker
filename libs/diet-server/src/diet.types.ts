@@ -1,6 +1,6 @@
 export type ResponseResult = {
   success: boolean;
-  message: string;
+  message: any;
 };
 
 export type User = {
@@ -59,7 +59,7 @@ export type DailyDiets = {
 
 export type StockType = "product" | "meal" | "both"
 
-export type StockItem = Product | Meal 
+export type StockItem = Product | Meal
 
 export type StockStateNormalized = {
   allIds: string[],

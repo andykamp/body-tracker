@@ -20,7 +20,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       if (user) {
         setUser(user);
       } else {
-        setUser(null);
+        setUser(undefined);
       }
       setLoading(false);
     });

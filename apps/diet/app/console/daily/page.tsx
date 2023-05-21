@@ -21,6 +21,9 @@ function createDailyMeal() {
 
 function DailyPage() {
   const { user } = useAuthContext()
+  if (!user) {
+    throw new Error("User is undefined");
+  }
   const queryClient = useQueryClient()
   const todaysDailyKey = React.useMemo(() => dailyApi.getTodaysDailyKey(), [])
 

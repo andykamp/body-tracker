@@ -30,8 +30,8 @@ async function signInWithGoogle({
     const result = await signInWithPopup(auth, provider)
     // This gives you a Google Access Token. You can use it to access the Google API.
     const userInfo = getAdditionalUserInfo(result)
-    if (userInfo.isNewUser) {
-      console.log('newuserrrrr', result );
+    if (userInfo?.isNewUser) {
+      console.log('newuserrrrr', result);
       // do something with new user here
       onNewUser?.(result)
     }
@@ -62,6 +62,7 @@ type DeleteAccountInput = {
 
 async function deleteAccount({ onError }: DeleteAccountInput) {
   const user = auth.currentUser;
+  if (!user) throw new Error('User not found')
 
   try {
     await deleteUser(user)
