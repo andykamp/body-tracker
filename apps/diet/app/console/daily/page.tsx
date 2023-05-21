@@ -49,13 +49,31 @@ function DailyPage() {
   })
 
   const daily = query.data
+  console.log('dailyyyy', query);
   const dailyMealList = daily?.meals ? Object.values(daily?.meals) : []
+  const dailyMacros = daily ? dailyApi.calculateDailyMacros(daily) : { calories: 0, proteins: 0 }
 
   return (
     <Page>
       <h1>Daily page!</h1>
       <div>
-        <StockSearch onSelect={(e) => console.log('onSelect', e)} />
+        <p>Calories: {dailyMacros.calories}</p>
+        <p>Proteins: {dailyMacros.proteins}</p>
+      </div>
+      <div>
+        <StockSearch onSelect={(meal) => {
+          addDailyMutation.mutate({
+            userId: user?.uid,
+            daily: {
+              ...daily,
+              meals: {
+                ...daily?.meals,
+                [meal.name]: meal as any
+              }
+            }
+          })
+        }}
+        />
       </div>
       <ul>
         {dailyMealList.map((meal: any) => (

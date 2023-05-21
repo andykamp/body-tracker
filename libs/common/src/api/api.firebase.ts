@@ -1,13 +1,29 @@
 import type * as t from "./diet.types";
 import { doc, collection, getDoc, getDocs, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import authApi from '@/auth/firebase/auth.api';
-console.log('authApi',authApi );
+console.log('authApi', authApi);
 
 const db = authApi.getDB()
 
+type GetUserInput = {
+  uid: string
+}
+
+export async function getUser({ uid }: GetUserInput): Promise<t.User> {
+  const docRef = doc(db, "users", uid)
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    console.log("Document data:", docSnap.data());
+    return docSnap.data() as t.User
+  } else {
+    // docSnap.data() will be undefined in this case
+    return
+  }
+}
+
 // user
 function createUser(uid: string): t.User {
- return {
+  return {
     id: uid,
     daily: {},
     products: {},
@@ -76,7 +92,7 @@ export async function getMeal({ userId, name }: getMealInput): Promise<t.Meal> {
     return docSnap.data() as t.Meal
   } else {
     // docSnap.data() will be undefined in this case
-    console.log("No such document!");
+    return
   }
 }
 
@@ -141,6 +157,7 @@ export async function getProduct({ userId, name }: getProductInput): Promise<t.P
   } else {
     // docSnap.data() will be undefined in this case
     console.log("No such document!");
+    return
   }
 }
 
@@ -182,7 +199,7 @@ type getDailyInput = {
 }
 
 export async function getDaily({ userId, dateKey }: getDailyInput): Promise<t.DailyDiet> {
-  const docRef = doc(db, `users/${userId}/daily/${dateKey}`);
+  const docRef = doc(db, `users/${userId}/dailies/${dateKey}`);
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {
@@ -191,6 +208,7 @@ export async function getDaily({ userId, dateKey }: getDailyInput): Promise<t.Da
   } else {
     // docSnap.data() will be undefined in this case
     console.log("No such document!");
+    return
   }
 }
 
@@ -199,7 +217,7 @@ type getDailiesInput = {
 }
 
 export async function getDailies({ userId }: getDailiesInput): Promise<t.DailyDiet[]> {
-  const collectionRef = collection(db, `users/${userId}/daily`);
+  const collectionRef = collection(db, `users/${userId}/dailies`);
   const querySnapshot = await getDocs(collectionRef);
   querySnapshot.forEach((doc) => {
     console.log(doc.id, " => ", doc.data());
@@ -218,17 +236,17 @@ type addDailyInput = {
 }
 
 export async function addDaily({ userId, daily }: addDailyInput): Promise<void> {
-  return await setDoc(doc(db, `users/${userId}/daily`, daily.id), daily)
+  return await setDoc(doc(db, `users/${userId}/dailies`, daily.id), daily)
 }
 
 type updateDailyInput = {
   userId: string,
-  daily: Partial<t.DailyDiet>
+  daily: Partial<t.DailyDiet> & { id: string }
 }
 
 export async function updateDaily({ userId, daily }: updateDailyInput): Promise<void> {
   console.log('updateDAily', userId, daily);
-  return await updateDoc(doc(db, `users/${userId}/daily`, daily.id), daily)
+  return await updateDoc(doc(db, `users/${userId}/dailies`, daily.id), daily)
 }
 
 type deleteDailyInput = {
@@ -237,7 +255,7 @@ type deleteDailyInput = {
 }
 
 export async function deleteDaily({ userId, daily }: deleteDailyInput): Promise<void> {
-  return await deleteDoc(doc(db, `users/${userId}/daily`, daily.id))
+  return await deleteDoc(doc(db, `users/${userId}/dailies`, daily.id))
 }
 
 const firebaseApi = {

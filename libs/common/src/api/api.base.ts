@@ -4,13 +4,17 @@ import firebaseApi from '@/common/api/api.firebase'
 
 const API_TO_USE = process.env.NEXT_PUBLIC_API_TO_USE || "firebase"
 
-const AVAILABLE_APIS_TO_USE = {
+type ApiInterface = {
+  [key: string]: Function; // or be more specific about the function signature if possible
+};
+
+const AVAILABLE_APIS_TO_USE: { [key: string]: ApiInterface } = {
   firebase: firebaseApi,
-}
+};
 
 // returns the correct function given the current
 function makeRequest(proc: string) {
-  const api = AVAILABLE_APIS_TO_USE[API_TO_USE]
+  const api: ApiInterface = AVAILABLE_APIS_TO_USE[API_TO_USE];
   const f = api[proc]
   if (!f) throw new Error(`API ${API_TO_USE} does not have a function ${proc}`)
   return f

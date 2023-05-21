@@ -20,8 +20,11 @@ function createProduct() {
 
 function MealsAndProductsPage() {
   const { user } = useAuthContext()
-  const queryClient = useQueryClient()
+  if (!user) {
+    throw new Error("User is undefined");
+  }
 
+  const queryClient = useQueryClient()
 
   const productsQuery = useQuery({
     queryKey: ['getProductForCurrentUser'],
@@ -95,7 +98,7 @@ function MealsAndProductsPage() {
                 })
               }}
             >
-             delete 
+             delete
             </button>
               </li>
             ))}

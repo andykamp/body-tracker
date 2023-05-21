@@ -50,6 +50,8 @@ export type DailyDiet = {
   updatedAt?: Date;
   meals: Meals;
   date: Date,
+  yesterdaysCaloryDiff?: number;
+  yesterdaysProteinDiff?: number;
 }
 
 export type DailyDiets = {
@@ -59,7 +61,7 @@ export type DailyDiets = {
 
 export type StockType = "product" | "meal" | "both"
 
-export type StockItem = Product | Meal 
+export type StockItem = Product | Meal
 
 export type StockStateNormalized = {
   allIds: string[],

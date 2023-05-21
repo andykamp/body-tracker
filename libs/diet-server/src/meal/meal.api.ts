@@ -37,7 +37,7 @@ export async function addMeal({ userId, name, products }: AddMealInput): Promise
   console.log('addMeal', { userId, name, products });
 
   const userProducts: t.Product[] = await productApi.getProducts({ userId });
-  const stockProducts: t.Products = stockApi.getStockItems({ type: STOCK_TYPE.both });
+  const stockProducts = stockApi.getStockItems({ type: STOCK_TYPE.both });
 
   console.log('userProducts', userProducts);
 
@@ -56,7 +56,7 @@ export async function addMeal({ userId, name, products }: AddMealInput): Promise
     // If the item is a string, assume it is the name of an existing product in the user's product list.
     if (typeof item === "string") {
       // Retrieve the product data from the user's product list using the product name.
-      product = stockProducts[item] || userProducts.find(p => p.name === item);
+      product = stockProducts.byIds[item] || userProducts.find(p => p.name === item);
       console.log('product', product, item);
 
       // If the product data does not exist, return an error result.

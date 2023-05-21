@@ -50,6 +50,8 @@ export type DailyDiet = {
   updatedAt?: Date;
   meals: Meals;
   date: Date,
+  yesterdaysCaloryDiff?: number;
+  yesterdaysProteinDiff?: number;
 }
 
 export type DailyDiets = {

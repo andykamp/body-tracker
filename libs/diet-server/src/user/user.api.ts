@@ -1,11 +1,25 @@
 import * as t from "@/diet-server/diet.types"
 import baseApi from "@/common/api/api.base";
 
+type GetUserInput = {
+  uid: string
+}
+
+async function getUser({ uid }: GetUserInput): Promise<t.User> {
+  const r = await baseApi.makeReqAndExec<t.User>({
+    proc: "getUser",
+    vars: {
+      uid
+    }
+  })
+  return r
+}
+
 type AddUserInput = {
   uid: string
 }
 
-export async function addUser({ uid }: AddUserInput): Promise<t.ResponseResult> {
+async function addUser({ uid }: AddUserInput): Promise<t.ResponseResult> {
   try {
     const r = await baseApi.makeReqAndExec<t.User>({
       proc: "addUser",
@@ -31,7 +45,7 @@ type UpdateUserInput = {
   user: Partial<t.User>
 }
 
-export async function updateUser({ uid, user }: UpdateUserInput): Promise<t.ResponseResult> {
+async function updateUser({ uid, user }: UpdateUserInput): Promise<t.ResponseResult> {
   try {
     const r = await baseApi.makeReqAndExec<t.User>({
       proc: "updateUser",
@@ -78,6 +92,7 @@ export async function deleteUser({ uid }: DeleteUserInput): Promise<t.ResponseRe
 }
 
 const userApi = {
+  getUser,
   addUser,
   updateUser,
   deleteUser,

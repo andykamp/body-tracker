@@ -1,8 +1,16 @@
 # BodyTracker
 
 ## Todo
-- !!!!IMPORTANT dont have duplicated diet.types in firebase.api and diet.api
+- search should have acceess to all stock and personal products/meals...
 - 
+- todays and yesterdays dauly should always be in daily object in additon to the daily collection??
+- !!!!IMPORTANT dont have duplicated diet.types in firebase.api and diet.api
+- remove explixit exports in the .apis
+- 
+- add "timestamp" to meals added to daily
+- 
+- delete should only set isDelete and not actually delete. you can setup custom ttl in firestore https://firebase.google.com/docs/firestore/ttl. it will still show up in queries (unless you demand the isDeleted should not be returned)
+-
 - make sure nothing is using the auth until it is valid
 - remove auth.hooks?
 - https://firebase.google.com/docs/emulator-suite/connect_auth
@@ -43,6 +51,11 @@ Should also start the emulator on yarn dev!!
     },
 ```
 
+- added a script that starts emulators and runs app 
+    - yarn add --dev concurrently (too run multiple scripts)
+    - yarn add --dev wait-on (to wait for a port, in this case emulator port, to start)
+
+    - 
 
 
 
