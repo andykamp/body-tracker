@@ -28,7 +28,7 @@ export async function signOutOfGoogle() {
   await authApi.signOutOfGoogle({});
 }
 
-export async function deleteAccount() {
+export async function deleteAccount(user) {
   await deleteUserData({ uid: user.uid })
   await authApi.deleteAccount({});
 }

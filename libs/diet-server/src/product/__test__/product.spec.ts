@@ -8,7 +8,7 @@ describe.skip("product API", () => {
   const existingProductName = 'CottageCheeseOriginal';
   const nonExistingProductName = 'nonExisitingproductName';
 
-  let testProduct: t.Product = {
+  const testProduct: t.Product = {
     name: existingProductName,
     protein: 10,
     calories: 100,

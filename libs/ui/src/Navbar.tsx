@@ -28,8 +28,7 @@ export default function Navbar(props: NavbarProps) {
   return (
     <Disclosure as="nav" className="bg-white shadow-sm">
       {({ open }) => (
-        <>
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 justify-between">
               <div className="flex">
                 <Logo />
@@ -59,7 +58,6 @@ export default function Navbar(props: NavbarProps) {
               />
             </div>
           </div>
-        </>
       )}
     </Disclosure>
   );

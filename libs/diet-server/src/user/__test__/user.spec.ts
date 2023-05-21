@@ -10,9 +10,9 @@ describe("userApi", () => {
 
   const testUserId = "testUser";
 
-  beforeAll(async () => {
+  // beforeAll(async () => {
 
-  });
+  // });
 
   describe('addUser', () => {
     it('should add a new user and return a success message', async () => {

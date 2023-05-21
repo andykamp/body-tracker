@@ -25,7 +25,7 @@ function ConsolePage() {
   };
   const deleteGoogleAccount = async () => {
     try {
-      await deleteAccount();
+      await deleteAccount(user);
     } catch (error) {
       console.error(error);
     }

@@ -7,7 +7,7 @@ type StockItemExistInput = {
   type: t.StockType
 }
 
-export function stockItemExistInput({ name, type }: StockItemExistInput): Boolean {
+export function stockItemExistInput({ name, type }: StockItemExistInput): boolean {
   return Boolean(STOCK_ITEMS_BY_TYPE[type].byIds[name])
 }
 

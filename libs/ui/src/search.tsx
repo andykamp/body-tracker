@@ -3,7 +3,7 @@ import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import { useTransition } from 'react';
 
 export default function Search({ disabled }: { disabled?: boolean }) {
-  const replace = (v:any) => { }// useRouter();
+  const replace = (v:any) => null// useRouter();
   const pathname = "page" //usePathname();
   const [isPending, startTransition] = useTransition();
 

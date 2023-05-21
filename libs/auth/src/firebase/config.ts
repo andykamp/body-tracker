@@ -18,8 +18,8 @@ function shouldConnectToEmulator(): boolean {
 }
 
 const app = initializeApp(firebaseConfig);
-let auth = getAuth(app);
-let db = getFirestore();
+const auth = getAuth(app);
+const db = getFirestore();
 
 if (shouldConnectToEmulator()) {
   console.log('Connecting to emulators');

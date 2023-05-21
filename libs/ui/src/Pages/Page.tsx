@@ -4,12 +4,7 @@ import UsersTable from '../table';
 import Page from '../Page';
 
 
-export default function IndexPage({
-  // searchParams
-}: {
-  // searchParams: { q: string };
-}) {
-  // const search = searchParams.q ?? '';
+export default function IndexPage() {
   const users = [
     {
       id: 1234,

@@ -25,13 +25,16 @@
 ## NOTES
 -added the following scrips
 
-    "dev": "nx run-many --target=dev --projects=diet",
+    "dev": "nx run-many --target=serve --projects=diet",
     "build": "nx run-many --target=build --parallel",
     "test": "nx run-many --target=test --exclude=workspace --parallel",
     "lint": "nx run-many --target=lint --parallel --exclude=workspace",
     "type-check": "nx run-many --target=type-check --parallel --exclude=workspace"
 Should also start the emulator on yarn dev!!
 
+- yarn lint --fix is a muuuust
+
+- TODO add prettyfier
 - added type-check to not be supreised by build failures in verscel. (added in project.json)
 
 ```

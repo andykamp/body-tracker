@@ -9,7 +9,7 @@ const AVAILABLE_APIS_TO_USE = {
 }
 
 // returns the correct function given the current
-function makeRequest(proc: string): Function | null {
+function makeRequest(proc: string) {
   const api = AVAILABLE_APIS_TO_USE[API_TO_USE]
   const f = api[proc]
   if (!f) throw new Error(`API ${API_TO_USE} does not have a function ${proc}`)
