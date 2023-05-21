@@ -12,14 +12,16 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-const IS_DEV = process.env.ENV === 'dev';
-console.log('IS_DEV', IS_DEV);
+function shouldConnectToEmulator(): boolean {
+  // You could do any logic here to decide whether to connect to the emulator or not
+  return process.env.NEXT_PUBLIC_ENV === 'dev';
+}
 
 const app = initializeApp(firebaseConfig);
 let auth = getAuth(app);
 let db = getFirestore();
 
-if (IS_DEV) {
+if (shouldConnectToEmulator()) {
   console.log('Connecting to emulators');
   connectAuthEmulator(auth, "http://127.0.0.1:9099");
   console.log('Connected to auth');

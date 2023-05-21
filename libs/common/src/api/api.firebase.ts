@@ -1,11 +1,21 @@
-import type * as t from "@/diet-server/diet.types";
+import type * as t from "./diet.types";
 import { doc, collection, getDoc, getDocs, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
-import { db } from '@/auth/firebase/config';
-import { createUser } from "@/diet-server/user/user.utils";
+import authApi from '@/auth/firebase/auth.api';
+console.log('authApi',authApi );
 
+const db = authApi.getDB()
 
 // user
-
+function createUser(uid: string): t.User {
+ return {
+    id: uid,
+    daily: {},
+    products: {},
+    meals: {},
+    targetCalories: 0,
+    targetProteins: 0,
+  }
+}
 
 type AddUserInput = {
   uid: string
@@ -163,7 +173,7 @@ export async function deleteProduct({ userId, name }: deleteProductInput): Promi
 }
 
 
-// daily 
+// daily
 
 
 type getDailyInput = {

@@ -1,6 +1,8 @@
 # BodyTracker
 
 ## Todo
+- !!!!IMPORTANT dont have duplicated diet.types in firebase.api and diet.api
+- 
 - make sure nothing is using the auth until it is valid
 - remove auth.hooks?
 - https://firebase.google.com/docs/emulator-suite/connect_auth

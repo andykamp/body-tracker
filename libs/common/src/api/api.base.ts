@@ -2,13 +2,13 @@ import * as t from '@/common/api/api.types'
 // import apiCache from '@/common/api/api.cache'
 import firebaseApi from '@/common/api/api.firebase'
 
-const API_TO_USE = process.env.API_TO_USE || "firebase"
+const API_TO_USE = process.env.NEXT_PUBLIC_API_TO_USE || "firebase"
 
 const AVAILABLE_APIS_TO_USE = {
   firebase: firebaseApi,
 }
 
-// returns the correct function given the current 
+// returns the correct function given the current
 function makeRequest(proc: string): Function | null {
   const api = AVAILABLE_APIS_TO_USE[API_TO_USE]
   const f = api[proc]

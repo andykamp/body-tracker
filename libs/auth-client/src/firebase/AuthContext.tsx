@@ -2,7 +2,8 @@ import React, { useState, useEffect, ReactNode } from 'react';
 import {
   onAuthStateChanged,
 } from 'firebase/auth';
-import { auth } from '@/auth/firebase/config';
+import authApi from '@/auth/firebase/auth.api';
+const auth = authApi.getAuth()
 import { User } from '@/auth/firebase/auth.types'
 import { AuthContext } from '@/auth-client/firebase/auth.context'
 

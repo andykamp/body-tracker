@@ -1,58 +1,86 @@
-import { auth } from '@/auth/firebase/config';
-import { signInWithPopup, signOut, GoogleAuthProvider, getAdditionalUserInfo, deleteUser } from "firebase/auth";
-import { addUser, deleteUser as deleteUserFromDatabase } from "@/diet-server/user/user.api";
+import app, { auth, db } from '@/auth/firebase/config';
+import { signInWithPopup, signOut, GoogleAuthProvider, getAdditionalUserInfo, deleteUser, UserCredential } from "firebase/auth";
 
 const provider = new GoogleAuthProvider();
 
-export async function signInWithGoogle() {
+function getApp() {
+  return app
+}
+
+function getAuth() {
+  console.log('getAuth',);
+  return auth
+}
+
+function getDB() {
+  console.log('getDB',);
+  return db
+}
+
+type SignInWithGoogleInput = {
+  onNewUser?: (result: UserCredential) => void,
+  onError?: (error: any) => void,
+}
+
+async function signInWithGoogle({
+  onNewUser,
+  onError,
+}: SignInWithGoogleInput) {
   try {
     const result = await signInWithPopup(auth, provider)
     // This gives you a Google Access Token. You can use it to access the Google API.
     const userInfo = getAdditionalUserInfo(result)
     if (userInfo.isNewUser) {
-      const r = await addUser({uid:result.user.uid})
+      console.log('newuserrrrr', result );
+      // do something with new user here
+      onNewUser?.(result)
     }
-
-    const credential = GoogleAuthProvider.credentialFromResult(result);
-    const token = credential?.accessToken;
-    // The signed-in user info.
-    const user = result.user;
-    // IdP data available using getAdditionalUserInfo(result)
   } catch (error) {
-    // Handle Errors here.
-    // const errorCode = error.code;
-    // const errorMessage = error.message;
-    // // The email of the user's account used.
-    // const email = error.customData.email;
-    // // The AuthCredential type that was used.
-    // const credential = GoogleAuthProvider.credentialFromError(error);
-    // ...
-    // const provider = new GoogleAuthProvider();
     console.log('Error logging in', error);
+    onError?.(error)
   }
 }
 
-export async function signOutOfGoogle() {
+type SignOutOfGoogleInput = {
+  onError?: (error: any) => void,
+}
+
+async function signOutOfGoogle({
+  onError,
+}: SignOutOfGoogleInput) {
   try {
     await signOut(auth)
   } catch (error: any) {
-    // An error happened.
     console.log('error', error);
+    onError?.(error)
   };
 }
 
-export async function deleteAccount() {
+type DeleteAccountInput = {
+  onError?: (error: any) => void,
+}
+
+async function deleteAccount({ onError }: DeleteAccountInput) {
   const user = auth.currentUser;
 
   try {
-    const r = await deleteUserFromDatabase({ uid: user.uid })
-    // database deleted
-
     await deleteUser(user)
     // User deleted.
   } catch (error) {
     // An error ocurred
     // ...
     console.log('erroer', error);
+    onError?.(error)
   }
 }
+
+const authApi = {
+  getApp,
+  getAuth,
+  getDB,
+  signInWithGoogle,
+  signOutOfGoogle,
+  deleteAccount
+}
+export type AuthApi = typeof authApi;
+export default authApi;

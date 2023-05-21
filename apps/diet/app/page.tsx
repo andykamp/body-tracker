@@ -3,8 +3,8 @@ import React from "react";
 import Navbar from '@/ui/Navbar'
 import { usePathname } from "next/navigation";
 import { NAVIGATION_ROUTES_HOME, ROUTES_CONSOLE } from "@/diet/app/constants"
-import { signInWithGoogle } from "@/auth/firebase/auth.api"
 import { useRouter } from "next/navigation";
+import { signInWithGoogle } from '@/diet/utils/auth.utils'
 import Page from "@/ui/Page";
 
 function HomePage() {

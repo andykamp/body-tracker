@@ -4,12 +4,12 @@ import { useAuthRedirect } from "../../utils/auth.utils";
 import Navbar from '@/ui/Navbar'
 import { usePathname } from "next/navigation";
 import { NAVIGATION_ROUTES_CONSOLE, ROUTES_CONSOLE } from "@/diet/app/constants"
-import { signInWithGoogle, signOutOfGoogle, deleteAccount} from "@/auth/firebase/auth.api"
 import { useRouter } from "next/navigation";
 import Page from "@/ui/Page";
 import DailyPage from "./daily/page";
 import MealsAndProductsPage from "./mealsAndProducts/page";
 import ProfilePage from "./profile/page";
+import { signInWithGoogle, signOutOfGoogle, deleteAccount } from '@/diet/utils/auth.utils'
 
 function ConsolePage() {
   const user = useAuthRedirect()
