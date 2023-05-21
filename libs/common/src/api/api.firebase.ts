@@ -9,7 +9,7 @@ type GetUserInput = {
   uid: string
 }
 
-export async function getUser({ uid }: GetUserInput): Promise<t.User> {
+export async function getUser({ uid }: GetUserInput): Promise<t.User | undefined> {
   const docRef = doc(db, "users", uid)
   const docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
@@ -83,7 +83,7 @@ type getMealInput = {
   userId: string,
   name: string
 }
-export async function getMeal({ userId, name }: getMealInput): Promise<t.Meal> {
+export async function getMeal({ userId, name }: getMealInput): Promise<t.Meal | undefined> {
   const docRef = doc(db, `users/${userId}/meals/${name}`);
   const docSnap = await getDoc(docRef);
 
@@ -147,7 +147,7 @@ type getProductInput = {
   userId: string,
   name: string
 }
-export async function getProduct({ userId, name }: getProductInput): Promise<t.Product> {
+export async function getProduct({ userId, name }: getProductInput): Promise<t.Product | undefined> {
   const docRef = doc(db, `users/${userId}/products/${name}`);
   const docSnap = await getDoc(docRef);
 
@@ -198,7 +198,7 @@ type getDailyInput = {
   dateKey: string
 }
 
-export async function getDaily({ userId, dateKey }: getDailyInput): Promise<t.DailyDiet> {
+export async function getDaily({ userId, dateKey }: getDailyInput): Promise<t.DailyDiet | undefined> {
   const docRef = doc(db, `users/${userId}/dailies/${dateKey}`);
   const docSnap = await getDoc(docRef);
 
