@@ -22,6 +22,26 @@
 - test emulatinon https://firebase.google.com/docs/emulator-suite 
 
 
+## NOTES
+-added the following scrips
+
+    "dev": "nx run-many --target=dev --projects=diet",
+    "build": "nx run-many --target=build --parallel",
+    "test": "nx run-many --target=test --exclude=workspace --parallel",
+    "lint": "nx run-many --target=lint --parallel --exclude=workspace",
+    "type-check": "nx run-many --target=type-check --parallel --exclude=workspace"
+Should also start the emulator on yarn dev!!
+
+- added type-check to not be supreised by build failures in verscel. (added in project.json)
+
+```
+    "type-check": {
+      "command": "tsc -b ./libs/ui/tsconfig.json --incremental --pretty"
+    },
+```
+
+
+
 
 ### Setup
 - frontend: nextjs

@@ -12,7 +12,7 @@ type AuthContextProviderProps = {
 }
 
 export function AuthContextProvider({ children }: AuthContextProviderProps) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User>();
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {

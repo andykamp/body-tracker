@@ -37,6 +37,9 @@
         }
       }
     },
+    "type-check": {
+      "command": "tsc -b ./apps/diet/tsconfig.json --incremental --pretty"
+    },
     "export": {
       "executor": "@nx/next:export",
       "options": {

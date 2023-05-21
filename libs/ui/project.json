@@ -28,6 +28,9 @@
         }
       }
     },
+    "type-check": {
+      "command": "tsc -b ./libs/ui/tsconfig.json --incremental --pretty"
+    },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
