@@ -4,7 +4,7 @@ import * as fp from "@/diet-server/product/__support__/product.fixtures";
 import productApi from "@/diet-server/product/product.api";
 import stockApi from "@/diet-server/stock/stock.api";
 import { STOCK_TYPE } from "@/diet-server/stock/stock.constants";
-import baseApi from "@/common/api/api.base";
+import baseApi from "@/diet-server/base.api";
 
 type GetMealsInput = {
   userId: string;

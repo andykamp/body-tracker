@@ -1,28 +1,30 @@
 import * as t from '@/common/api/api.types'
 // import apiCache from '@/common/api/api.cache'
-import firebaseApi from '@/common/api/api.firebase'
 
-const API_TO_USE = process.env.NEXT_PUBLIC_API_TO_USE || "firebase"
 
 type ApiInterface = {
   [key: string]: Function; // or be more specific about the function signature if possible
 };
 
-const AVAILABLE_APIS_TO_USE: { [key: string]: ApiInterface } = {
-  firebase: firebaseApi,
-};
+// intilize the base api with a specific api
+function initApi(api: ApiInterface) {
+  if(baseApi.api) console.log('baseapi.api already set', );
+  baseApi.api = api
+}
 
 // returns the correct function given the current
 function makeRequest(proc: string) {
-  const api: ApiInterface = AVAILABLE_APIS_TO_USE[API_TO_USE];
-  const f = api[proc]
-  if (!f) throw new Error(`API ${API_TO_USE} does not have a function ${proc}`)
-  return f
+  if (!baseApi.api) throw new Error(`baseApi.api is not initialized`)
+  if (!baseApi.api[proc]) throw new Error(`API ${baseApi.api} does not have a function ${proc}`)
+  return baseApi.api[proc]
+
 }
 
 async function makeReqAndExec<Out extends Record<string, unknown>>(
   input: t.MakeReqAndExecInput
 ) {
+  console.log('makeReqAndExec_input',input );
+  console.log('makeReqAndExec_api',baseApi.api );
   const { cache, vars, proc } = input
 
   try {
@@ -58,6 +60,8 @@ async function makeReqAndExec<Out extends Record<string, unknown>>(
 }
 
 const baseApi = {
+  api: null,
+  initApi,
   makeRequest,
   makeReqAndExec
 }

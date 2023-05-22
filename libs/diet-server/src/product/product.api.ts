@@ -1,5 +1,5 @@
 import type * as t from "@/diet-server/diet.types"
-import baseApi from "@/common/api/api.base";
+import baseApi from "@/diet-server/base.api";
 
 export function parseToValidProduct(product: t.Product): t.Product {
   if (!product.name) {

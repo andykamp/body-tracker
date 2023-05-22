@@ -1,6 +1,6 @@
 import * as t from "@/diet-server/diet.types";
 import * as f from "@/diet-server/user/__support__/user.fixtures";
-import baseApi from "@/common/api/api.base";
+import baseApi from "@/diet-server/base.api";
 import userApi from "@/diet-server/user/user.api";
 
 export function getTodaysDailyKey() {

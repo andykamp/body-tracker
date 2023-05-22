@@ -1,5 +1,5 @@
 import * as t from "@/diet-server/diet.types"
-import baseApi from "@/common/api/api.base";
+import baseApi from "@/diet-server/base.api";
 
 type GetUserInput = {
   uid: string

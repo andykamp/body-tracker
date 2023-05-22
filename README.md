@@ -1,6 +1,16 @@
 # BodyTracker
 
 ## Todo
+- create UX kit in figma
+- add e2e and component tests
+
+- api.firebase needs to be moved to diet-server (because it needs the types)
+- split it up and put it under each daily/product ... folder
+- create a api util that basically does what makeRequest does not. can maybe even export it from common???
+- then each api does not have to call baseApi makeRequest and exec but rather call the crud function makeRequest that calls makeReqAndExec?? or something. it is still based on ENV variable
+    - but getting all functions into a object might be tricky so need to do it per api (daily, product.... etc)? that is a hazzle
+- best would be a CRUD api with read, create, delete update but with path etc it becomes difficult
+
 - search should have acceess to all stock and personal products/meals...
 - 
 - todays and yesterdays dauly should always be in daily object in additon to the daily collection??
