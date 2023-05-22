@@ -3,7 +3,7 @@ import * as t from '@/common/api/api.types'
 
 
 type ApiInterface = {
-  [key: string]: Function; // or be more specific about the function signature if possible
+  [key: string]: any;
 };
 
 // intilize the base api with a specific api
