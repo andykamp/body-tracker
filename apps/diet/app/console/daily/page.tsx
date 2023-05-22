@@ -59,6 +59,8 @@ function DailyPage() {
       <div>
         <p>Calories: {dailyMacros.calories}</p>
         <p>Proteins: {dailyMacros.proteins}</p>
+        <p className="text-red-500">Yesterdays diff Calories: {daily?.yesterdaysCaloryDiff}</p>
+        <p className="text-red-500">Yersterdays diff Proteins: {daily?.yesterdaysProteinDiff}</p>
       </div>
       <div>
         <StockSearch onSelect={(meal) => {
