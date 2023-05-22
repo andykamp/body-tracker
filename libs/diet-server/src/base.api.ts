@@ -1,5 +1,5 @@
 import rootBaseApi from "@/common/api/api.base";
-import firebaseApi from "@/diet-server/crud.firebase";
+import firebaseApi from "@/diet-server/base.firebase";
 
 const CRUD_TO_USE = process.env.NEXT_PUBLIC_API_TO_USE || "firebase";
 
