@@ -2,7 +2,11 @@
 
 ## Todo
 - create UX kit in figma
+    - add app UX overview
+    - add powerpoint kepler slide with UX overview that we can use on website
+
 - add e2e and component tests
+- 
 
 - api.firebase needs to be moved to diet-server (because it needs the types)
 - split it up and put it under each daily/product ... folder

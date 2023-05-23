@@ -3,12 +3,11 @@ import * as t from '@/common/api/api.types'
 
 
 type ApiInterface = {
-  [key: string]: any;
+  [key: string]: Function;
 };
 
 // intilize the base api with a specific api
 function initApi(api: ApiInterface) {
-  if(baseApi.api) console.log('baseapi.api already set', );
   baseApi.api = api
 }
 
@@ -60,7 +59,7 @@ async function makeReqAndExec<Out extends Record<string, unknown>>(
 }
 
 const baseApi = {
-  api: null,
+  api: null as unknown as  ApiInterface,
   initApi,
   makeRequest,
   makeReqAndExec

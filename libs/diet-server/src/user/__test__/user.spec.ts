@@ -1,10 +1,10 @@
-import * as t from "@/diet-server/diet.types";
-import * as f from "@/diet-server/user/__support__/user.fixtures";
-import seeders from "@/diet-server/user/__support__/user.seeders";
-import userApi from "@/diet-server/user/user.api";
+// import * as t from "@/diet-server/diet.types";
+// import * as f from "@/diet-server/user/__support__/user.fixtures";
+// import seeders from "@/diet-server/user/__support__/user.seeders";
+// import userApi from "@/diet-server/user/user.api";
 
-const { addUser, updateUser, deleteUser } = userApi;
-const USERS_FIXTURE = f.USERS_FIXTURE;
+// const { addUser, updateUser, deleteUser } = userApi;
+// const USERS_FIXTURE = f.USERS_FIXTURE;
 
 describe("userApi", () => {
 

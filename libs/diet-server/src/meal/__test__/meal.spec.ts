@@ -1,10 +1,10 @@
 // import type { AddMealToUserInput, UpdateMealInput, DeleteMealInput } from '@/diet-server/meal/meal.api';
-import * as t from '@/diet-server/diet.types';
-import * as f from '@/diet-server/meal/__support__/meal.fixtures';
-import mealApi from '@/diet-server/meal/meal.api';
-import { USERS_FIXTURE } from '@/diet-server/user/__support__/user.fixtures';
-import seeders from '@/diet-server/meal/__support__/meal.seeders'
-import { seedAddUser } from '@/diet-server/user/__support__/user.seeders';
+// import * as t from '@/diet-server/diet.types';
+// import * as f from '@/diet-server/meal/__support__/meal.fixtures';
+// import mealApi from '@/diet-server/meal/meal.api';
+// import { USERS_FIXTURE } from '@/diet-server/user/__support__/user.fixtures';
+// import seeders from '@/diet-server/meal/__support__/meal.seeders'
+// import { seedAddUser } from '@/diet-server/user/__support__/user.seeders';
 
 describe.skip('mealApi', () => {
   // const testUserId = 'test_user';

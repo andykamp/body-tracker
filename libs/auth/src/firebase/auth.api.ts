@@ -1,5 +1,6 @@
 import app, { auth, db } from '@/auth/firebase/config';
 import { signInWithPopup, signOut, GoogleAuthProvider, getAdditionalUserInfo, deleteUser, UserCredential } from "firebase/auth";
+import { Firestore } from 'firebase/firestore';
 
 const provider = new GoogleAuthProvider();
 
@@ -12,7 +13,7 @@ function getAuth() {
   return auth
 }
 
-function getDB() {
+function getDB(): Firestore {
   console.log('getDB',);
   return db
 }

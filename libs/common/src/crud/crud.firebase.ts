@@ -26,7 +26,7 @@ async function readCollection<T>(collectionName: string): Promise<T[]> {
 
 async function createDocument<T>(collectionName: string, id: string, data: T): Promise<void> {
   const docRef = getDocumentRef(collectionName, id);
-  return setDoc(docRef, data, { merge: true });
+  return setDoc(docRef, data as any, { merge: true });
 }
 
 async function readDocument<T>(collectionName: string, id: string): Promise<T | undefined> {
@@ -52,7 +52,7 @@ async function deleteDocument(collectionName: string, id: string): Promise<void>
 }
 
 const crudApi = {
-  db: null,
+  db: null as unknown as Firestore,
   initializeDB,
   createDocument,
   readDocument,

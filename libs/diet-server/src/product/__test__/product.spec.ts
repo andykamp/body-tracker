@@ -1,7 +1,7 @@
-import productApi from "@/diet-server/product/product.api";
-import { seedProductToUser } from "@/diet-server/product/__support__/product.seeders";
-import type * as t from "@/diet-server/diet.types"
-import { seedAddUser } from "@/diet-server/user/__support__/user.seeders";
+// import productApi from "@/diet-server/product/product.api";
+// import { seedProductToUser } from "@/diet-server/product/__support__/product.seeders";
+// import type * as t from "@/diet-server/diet.types"
+// import { seedAddUser } from "@/diet-server/user/__support__/user.seeders";
 
 describe.skip("product API", () => {
   // const testUserId = "testUser";
