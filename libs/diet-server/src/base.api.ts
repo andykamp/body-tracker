@@ -1,8 +1,8 @@
 import rootBaseApi, { type ApiInterface } from "@/common/api/api.base";
-import firebaseApi from "@/diet-server/base.firebase";
+import firebaseCrudApi from "@/diet-server/crud/crud.firebase";
 
 const AVAILABLE_CRUDS_TO_USE: Record<string, ApiInterface> = {
-  firebase: firebaseApi,
+  firebase: firebaseCrudApi,
 };
 
 const CRUD_API = rootBaseApi.getApiToUse(AVAILABLE_CRUDS_TO_USE)

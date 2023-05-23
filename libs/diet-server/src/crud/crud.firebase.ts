@@ -107,7 +107,7 @@ export async function deleteDaily({ userId, id }: { userId: string; id: string }
 }
 
 
-const firebaseApi = {
+const firebaseCrudApi = {
   getUser,
   addUser,
   deleteUser,
@@ -128,5 +128,5 @@ const firebaseApi = {
   deleteDaily,
 }
 
-export type FirebaseApi = typeof firebaseApi
-export default firebaseApi
+export type FirebaseCrudApi = typeof firebaseCrudApi
+export default firebaseCrudApi
