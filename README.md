@@ -1,79 +1,5 @@
 # BodyTracker
 
-## Todo
-- create UX kit in figma
-    - add app UX overview
-    - add powerpoint kepler slide with UX overview that we can use on website
-    - 
-
-- add e2e and component tests
-- 
-
-- api.firebase needs to be moved to diet-server (because it needs the types)
-- split it up and put it under each daily/product ... folder
-- create a api util that basically does what makeRequest does not. can maybe even export it from common???
-- then each api does not have to call baseApi makeRequest and exec but rather call the crud function makeRequest that calls makeReqAndExec?? or something. it is still based on ENV variable
-    - but getting all functions into a object might be tricky so need to do it per api (daily, product.... etc)? that is a hazzle
-- best would be a CRUD api with read, create, delete update but with path etc it becomes difficult
-
-- search should have acceess to all stock and personal products/meals...
-- 
-- todays and yesterdays dauly should always be in daily object in additon to the daily collection??
-- !!!!IMPORTANT dont have duplicated diet.types in firebase.api and diet.api
-- remove explixit exports in the .apis
-- 
-- add "timestamp" to meals added to daily
-- 
-- delete should only set isDelete and not actually delete. you can setup custom ttl in firestore https://firebase.google.com/docs/firestore/ttl. it will still show up in queries (unless you demand the isDeleted should not be returned)
--
-- make sure nothing is using the auth until it is valid
-- remove auth.hooks?
-- https://firebase.google.com/docs/emulator-suite/connect_auth
-- add re-route param to signing/signout so i dont have to re-define it all the time 
-- 
-- add created/updated at server-api
-- test delete
-- move auth 
-
-- move updateStockProduct and updateProductForCurrentUser to seperate apis?
-- rename updateProduct (to stock) 
-- rename updateProductTo user to updateProductForCurrentUser
-- decide how to manage xxforCurrentUser and if that is neccesarry
-- should use create, update, delete instead of add, update, remove
-- delete should just re-use update. 
-- delete subcollections  on delete
-- test emulatinon https://firebase.google.com/docs/emulator-suite 
-
-
-## NOTES
--added the following scrips
-
-    "dev": "nx run-many --target=serve --projects=diet",
-    "build": "nx run-many --target=build --parallel",
-    "test": "nx run-many --target=test --exclude=workspace --parallel",
-    "lint": "nx run-many --target=lint --parallel --exclude=workspace",
-    "type-check": "nx run-many --target=type-check --parallel --exclude=workspace"
-Should also start the emulator on yarn dev!!
-
-- yarn lint --fix is a muuuust
-
-- TODO add prettyfier
-- added type-check to not be supreised by build failures in verscel. (added in project.json)
-
-```
-    "type-check": {
-      "command": "tsc -b ./libs/ui/tsconfig.json --incremental --pretty"
-    },
-```
-
-- added a script that starts emulators and runs app 
-    - yarn add --dev concurrently (too run multiple scripts)
-    - yarn add --dev wait-on (to wait for a port, in this case emulator port, to start)
-
-    - 
-
-
-
 ### Setup
 - frontend: nextjs
 - auth: firebase google
@@ -149,15 +75,62 @@ chmod ug+x .git/hooks/*
 
 
 Allowed commits: 
-feat: A new feature implemented in the code.
-fix: A bug fix.
-docs: Changes to the documentation.
-style: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc.).
-refactor: A code change that neither fixes a bug nor adds a feature.
-perf: A code change that improves performance.
-test: Adding missing tests or correcting existing tests.
-chore: Changes to the build process or auxiliary tools and libraries such as documentation generation.
-build: Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm).
-ci: Changes to your CI configuration files and scripts (example scopes: Circle, BrowserStack, SauceLabs).
-revert: Reverts a previous commit.
+- **feat**: A new feature implemented in the code.
+- **fix**: A bug fix.
+- **docs**: Changes to the documentation.
+- **style**: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc.).
+- **refactor**: A code change that neither fixes a bug nor adds a feature.
+- **perf**: A code change that improves performance.
+- **test**: Adding missing tests or correcting existing tests.
+- **chore**: Changes to the build process or auxiliary tools and libraries such as documentation generation.
+- **build**: Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm).
+- **ci**: Changes to your CI configuration files and scripts (example scopes: Circle, BrowserStack, SauceLabs).
+- **revert**: Reverts a previous commit.
 
+## NOTES
+-added the following scrips
+
+    "dev": "nx run-many --target=serve --projects=diet",
+    "build": "nx run-many --target=build --parallel",
+    "test": "nx run-many --target=test --exclude=workspace --parallel",
+    "lint": "nx run-many --target=lint --parallel --exclude=workspace",
+    "type-check": "nx run-many --target=type-check --parallel --exclude=workspace"
+Should also start the emulator on yarn dev!!
+
+- yarn lint --fix is a muuuust
+
+- TODO add prettyfier
+- added type-check to not be supreised by build failures in verscel. (added in project.json)
+
+```
+    "type-check": {
+      "command": "tsc -b ./libs/ui/tsconfig.json --incremental --pretty"
+    },
+```
+
+- added a script that starts emulators and runs app 
+    - yarn add --dev concurrently (too run multiple scripts)
+    - yarn add --dev wait-on (to wait for a port, in this case emulator port, to start)
+
+    - 
+
+## Todo
+- create UX kit in figma
+    - add app UX overview
+    - add powerpoint kepler slide with UX overview that we can use on website
+    - 
+- add e2e and component tests
+- search should have acceess to all stock and personal products/meals...
+- remove explixit exports in the .apis
+- add "timestamp" to meals added to daily
+- 
+- Delete 
+    - delete should only set isDelete and not actually delete. you can setup custom ttl in firestore https://firebase.google.com/docs/firestore/ttl. it will still show up in queries (unless you demand the isDeleted should not be returned)
+    - delete should just re-use update. 
+
+- add re-route param to signing/signout so i dont have to re-define it all the time 
+- 
+- rename updateProductTo user to updateProductForCurrentUser
+- decide how to manage xxforCurrentUser and if that is neccesarry
+- should use create, update, delete instead of add, update, remove
+- delete subcollections on delete
