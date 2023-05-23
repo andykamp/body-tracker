@@ -4,6 +4,7 @@
 - create UX kit in figma
     - add app UX overview
     - add powerpoint kepler slide with UX overview that we can use on website
+    - 
 
 - add e2e and component tests
 - 
@@ -140,6 +141,12 @@ Added husky with commitlint:
 
 - see husky init docs
 - OPS: neeed to add this pacage yarn -D add  @commitlint/cli @commitlint/config-conventional
+- and then make the pre-push executable by
+```
+chmod ug+x .husky/*
+chmod ug+x .git/hooks/*
+```
+
 
 Allowed commits: 
 feat: A new feature implemented in the code.

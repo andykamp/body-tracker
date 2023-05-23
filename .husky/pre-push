@@ -2,6 +2,6 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 # lint-staged
-nx affected --target=type-check --parallel --exclude=workspace --base=origin/master
-nx affected --target=lint --parallel --exclude=workspace --base=origin/master
+nx affected --target=type-check --parallel --exclude=workspace --base=origin/main
+nx affected --target=lint --parallel --exclude=workspace --base=origin/main
 
