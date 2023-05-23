@@ -1,5 +1,5 @@
 import GoogleLoginButton from '@/ui/GoogleLoginButton'
-import { signInWithGoogle } from "@/auth/firebase/auth.api"
+import { signInWithGoogle } from "./utils/auth.utils"
 import Page from "@/ui/Page";
 
 function LoginPage() {

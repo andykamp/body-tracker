@@ -1,7 +1,7 @@
 import Navbar from '@/ui/Navbar'
 import { usePathname } from "next/navigation";
 import { NAVIGATION_ROUTES_CONSOLE } from "../constants"
-import { signInWithGoogle, signOutOfGoogle, deleteAccount } from '@/diet/utils/auth.utils'
+import { signInWithGoogle, signOutOfGoogle, deleteAccount } from '../utils/auth.utils'
 import Page from "@/ui/Page";
 import { useAuthContext } from '@/auth-client/firebase/auth.context';
 
