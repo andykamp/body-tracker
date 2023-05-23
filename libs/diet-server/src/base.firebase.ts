@@ -6,7 +6,9 @@ import authApi from '@/auth/firebase/auth.api';
 const db = authApi.getDB()
 crudApi.initializeDB(db);
 
+//
 // User
+//
 
 export async function getUser({ uid }: { uid: string }): Promise<t.User | undefined> {
   return crudApi.readDocument<t.User>("users", uid);
@@ -32,7 +34,9 @@ export async function deleteUser({ uid }: { uid: string }): Promise<void> {
   return crudApi.deleteDocument("users", uid);
 }
 
+//
 // Meals
+//
 
 export async function getMeals({ userId }: { userId: string }): Promise<t.Meal[]> {
   return crudApi.readCollection<t.Meal>(`users/${userId}/meals`);
@@ -54,7 +58,9 @@ export async function deleteMeal({ userId, name }: { userId: string; name: strin
   return crudApi.deleteDocument(`users/${userId}/meals`, name);
 }
 
+//
 // Products
+//
 
 export async function getProducts({ userId }: { userId: string }): Promise<t.Product[]> {
   return crudApi.readCollection<t.Product>(`users/${userId}/products`);
@@ -76,7 +82,9 @@ export async function deleteProduct({ userId, name }: { userId: string; name: st
   return crudApi.deleteDocument(`users/${userId}/products`, name);
 }
 
+//
 // Daily
+//
 
 export async function getDailies({ userId }: { userId: string }): Promise<t.DailyDiet[]> {
   return crudApi.readCollection<t.DailyDiet>(`users/${userId}/dailies`);
@@ -97,6 +105,7 @@ export async function updateDaily({ userId, daily }: { userId: string; daily: Pa
 export async function deleteDaily({ userId, id }: { userId: string; id: string }): Promise<void> {
   return crudApi.deleteDocument(`users/${userId}/dailies`, id);
 }
+
 
 const firebaseApi = {
   getUser,

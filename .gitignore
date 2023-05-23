@@ -2,6 +2,8 @@
 .env
 
 **/firestore-debug.log
+firestore-debug.log*
+firebase-debug.log*
 **/*.tsbuildinfo
 
 tags

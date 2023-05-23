@@ -2,13 +2,19 @@ import * as t from '@/common/api/api.types'
 // import apiCache from '@/common/api/api.cache'
 
 
-type ApiInterface = {
-  [key: string]: Function;
+export type ApiInterface = {
+  [key: string]: any;
 };
 
 // intilize the base api with a specific api
 function initApi(api: ApiInterface) {
   baseApi.api = api
+}
+
+// returns the api to use based on the env variable
+function getApiToUse(availableApis: Record<string, ApiInterface>) {
+  const CRUD_TO_USE = process.env.NEXT_PUBLIC_API_TO_USE || "firebase";
+  return availableApis[CRUD_TO_USE];
 }
 
 // returns the correct function given the current
@@ -22,8 +28,8 @@ function makeRequest(proc: string) {
 async function makeReqAndExec<Out extends Record<string, unknown>>(
   input: t.MakeReqAndExecInput
 ) {
-  console.log('makeReqAndExec_input',input );
-  console.log('makeReqAndExec_api',baseApi.api );
+  console.log('makeReqAndExec_input', input);
+  console.log('makeReqAndExec_api', baseApi.api);
   const { cache, vars, proc } = input
 
   try {
@@ -59,8 +65,9 @@ async function makeReqAndExec<Out extends Record<string, unknown>>(
 }
 
 const baseApi = {
-  api: null as unknown as  ApiInterface,
+  api: null as unknown as ApiInterface,
   initApi,
+  getApiToUse,
   makeRequest,
   makeReqAndExec
 }
