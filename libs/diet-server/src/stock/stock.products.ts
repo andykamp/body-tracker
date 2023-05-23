@@ -2,6 +2,7 @@ import * as t from '@/diet-server/diet.types'
 
 export const STOCK_PRODUCTS: t.StockStateNormalized = {
   allIds: ["CottageCheeseOriginal",
+    "Egg",
     "CottageCheeseMager",
     "PeanutSmør",
     "Syltetøy",
@@ -22,6 +23,12 @@ export const STOCK_PRODUCTS: t.StockStateNormalized = {
     "ProteinshakeWhy"
   ],
   byIds: {
+    "Egg": {
+      "name": "Egg",
+      "protein": 6,
+      "calories": 70,
+      "grams": 60
+    },
     "CottageCheeseOriginal": {
       "name": "CottageCheeseOriginal",
       "protein": 54,
