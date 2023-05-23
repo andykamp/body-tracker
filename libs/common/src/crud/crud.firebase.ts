@@ -8,7 +8,6 @@ async function initializeDB(db: Firestore) {
 }
 
 function getDocumentRef(collectionName: string, id: string) {
-  console.log('collectionNmae', crudApi.db, collectionName, id,  );
   return doc(crudApi.db, collectionName, id);
 }
 
@@ -34,7 +33,6 @@ async function readDocument<T>(collectionName: string, id: string): Promise<T | 
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {
-    console.log("Document data:", docSnap.data());
     return docSnap.data() as T;
   } else {
     return undefined;

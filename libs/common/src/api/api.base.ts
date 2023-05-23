@@ -28,8 +28,6 @@ function makeRequest(proc: string) {
 async function makeReqAndExec<Out extends Record<string, unknown>>(
   input: t.MakeReqAndExecInput
 ) {
-  console.log('makeReqAndExec_input', input);
-  console.log('makeReqAndExec_api', baseApi.api);
   const { cache, vars, proc } = input
 
   try {

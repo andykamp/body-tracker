@@ -95,7 +95,6 @@ export async function deleteProduct({ userId, name }: DeleteProductInput): Promi
         name,
       }
     })
-    console.log('deleted', r);
     return {
       success: true,
       message: "Product updated successfully",

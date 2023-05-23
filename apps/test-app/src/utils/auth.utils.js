@@ -19,7 +19,6 @@ export async function signInWithGoogle() {
   await authApi.signInWithGoogle({
     onNewUser: async (result) => {
       const r = await userApi.addUser({ uid: result.user.uid })
-      console.log('new user added', r);
     }
   });
 }

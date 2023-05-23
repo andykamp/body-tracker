@@ -62,7 +62,6 @@ export async function getDaily({ userId, dateKey }: GetDailyInput): Promise<t.Da
       yesterdaysProteinDiff
 
     }
-    console.log('adding daily', newDaily);
     r = await baseApi.makeReqAndExec<t.DailyDiet>({
       proc: "addDaily",
       vars: {
@@ -81,7 +80,6 @@ type AddDailyMealInput = {
 }
 // Add a daily meal to the user's meal history
 export async function addDailyMeal({ userId, daily }: AddDailyMealInput): Promise<t.Meal | t.ResponseResult> {
-  console.log('userId', daily,);
   const r = await baseApi.makeReqAndExec<t.DailyDiet>({
     proc: "updateDaily",
     vars: {

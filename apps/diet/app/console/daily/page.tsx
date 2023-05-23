@@ -49,7 +49,6 @@ function DailyPage() {
   })
 
   const daily = query.data
-  console.log('dailyyyy', query);
   const dailyMealList = daily?.meals ? Object.values(daily?.meals) : []
   const dailyMacros = daily ? dailyApi.calculateDailyMacros(daily) : { calories: 0, proteins: 0 }
 

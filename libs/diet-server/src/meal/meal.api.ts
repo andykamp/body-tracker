@@ -34,12 +34,10 @@ export type AddMealInput = {
  * @returns {t.ResponseResult} The result object containing a success flag and a message indicating the success or failure of the operation.
  */
 export async function addMeal({ userId, name, products }: AddMealInput): Promise<t.Meal> {
-  console.log('addMeal', { userId, name, products });
 
   const userProducts: t.Product[] = await productApi.getProducts({ userId });
   const stockProducts = stockApi.getStockItems({ type: STOCK_TYPE.both });
 
-  console.log('userProducts', userProducts);
 
   let totalProtein = 0;
   let totalCalories = 0;
@@ -50,14 +48,12 @@ export async function addMeal({ userId, name, products }: AddMealInput): Promise
 
   // Loop through the list of products in the meal.
   for (const item of products) {
-    console.log('item', item);
     let product: t.Product;
 
     // If the item is a string, assume it is the name of an existing product in the user's product list.
     if (typeof item === "string") {
       // Retrieve the product data from the user's product list using the product name.
       product = stockProducts.byIds[item] || userProducts.find(p => p.name === item);
-      console.log('product', product, item);
 
       // If the product data does not exist, return an error result.
       // TODO maybe throw error?
@@ -66,7 +62,6 @@ export async function addMeal({ userId, name, products }: AddMealInput): Promise
       }
     } else {
       // If the item is an object, assume it is a new product to be added to the user's product list.
-      console.log('--adding product ', userId, item);
       await productApi.addProduct({ userId, product: item });
 
       product = item;
@@ -81,7 +76,6 @@ export async function addMeal({ userId, name, products }: AddMealInput): Promise
     totalGrams += product.grams || 0;
   }
 
-  console.log('outloop', name, mealProducts);
   // If the meal product list is empty and the meal name or total protein and calories are not provided, return an error result.
   if (!mealProducts.length && (!name || (!totalProtein && !totalCalories))) {
     throw new Error(`Invalid meal data`);
@@ -96,7 +90,6 @@ export async function addMeal({ userId, name, products }: AddMealInput): Promise
     totalGrams: totalGrams,
   };
 
-  console.log('new meal added as ', meal);
   // Add the meal to the user's meal list.
   const r = await baseApi.makeReqAndExec<t.Meal>({
     proc: "addMeal",
@@ -149,14 +142,13 @@ export async function deleteMeal(
         name,
       }
     })
-    console.log('dleteMeal', r);
     // Return a success result.
     return {
       success: true,
       message: "Meal updated successfully",
     };
   } catch (e) {
-    console.log(e)
+    console.error(e)
     return {
       success: false,
       message: "Update meal failed",

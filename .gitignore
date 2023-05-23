@@ -1,6 +1,8 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 .env
-
+*.log
+firestore-debug.log
+firesbase-debug.log
 **/*.tsbuildinfo
 
 tags
@@ -48,4 +50,3 @@ Thumbs.db
 
 # Next.js
 .next
-firestore-debug.log

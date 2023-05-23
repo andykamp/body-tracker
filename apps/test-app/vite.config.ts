@@ -5,7 +5,6 @@ import react from '@vitejs/plugin-react';
 import viteTsConfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig((config) => {
-  console.log("config", config)
   const vars = loadEnv(config.mode, process.cwd(), "")
   const out: UserConfigExport = {
     cacheDir: '../../node_modules/.vite/test-app',

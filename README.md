@@ -115,6 +115,8 @@ Should also start the emulator on yarn dev!!
     - 
 
 ## Todo
+- decide on pascal case etc
+- 
 - create UX kit in figma
     - add app UX overview
     - add powerpoint kepler slide with UX overview that we can use on website

@@ -9,12 +9,10 @@ function getApp() {
 }
 
 function getAuth() {
-  console.log('getAuth',);
   return auth
 }
 
 function getDB(): Firestore {
-  console.log('getDB',);
   return db
 }
 
@@ -32,12 +30,11 @@ async function signInWithGoogle({
     // This gives you a Google Access Token. You can use it to access the Google API.
     const userInfo = getAdditionalUserInfo(result)
     if (userInfo?.isNewUser) {
-      console.log('newuserrrrr', result);
       // do something with new user here
       onNewUser?.(result)
     }
   } catch (error) {
-    console.log('Error logging in', error);
+    console.error('Error logging in', error);
     onError?.(error)
   }
 }
@@ -52,7 +49,7 @@ async function signOutOfGoogle({
   try {
     await signOut(auth)
   } catch (error: any) {
-    console.log('error', error);
+    console.error('error', error);
     onError?.(error)
   };
 }
@@ -71,7 +68,7 @@ async function deleteAccount({ onError }: DeleteAccountInput) {
   } catch (error) {
     // An error ocurred
     // ...
-    console.log('erroer', error);
+    console.error('erroer', error);
     onError?.(error)
   }
 }

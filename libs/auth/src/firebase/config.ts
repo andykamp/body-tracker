@@ -24,9 +24,7 @@ const db = getFirestore();
 if (shouldConnectToEmulator()) {
   console.log('Connecting to emulators');
   connectAuthEmulator(auth, "http://127.0.0.1:9099");
-  console.log('Connected to auth');
   connectFirestoreEmulator(db, 'localhost', 8080);
-  console.log('Connected to firestore');
 } else {
   console.log('Not connecting to emulators');
 }
