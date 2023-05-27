@@ -1,0 +1,27 @@
+{
+  "name": "withings",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/withings/src",
+  "projectType": "library",
+  "tags": ["type:backend", "scope:shared"],
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/withings/**/*.ts"]
+      }
+    },
+    "type-check": {
+      "command": "tsc -b ./libs/withings/tsconfig.json --incremental --pretty"
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/withings/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  }
+}
