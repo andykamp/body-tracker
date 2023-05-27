@@ -9,21 +9,24 @@ import {
 import dailyApi from "@/diet-server/daily/daily.api"
 import { useAuthContext } from "@/auth-client/firebase/auth.context";
 import StockSearch from '@/diet/components/StockSearch'
+import itemApi  from '@/diet-server/item/item.api'
 
 function createDailyMeal() {
-  return {
+  const meal = {
     name: `test_meal_${Math.random()}`,
     products: ["SmallMealsCottageCheeseWithPB"],
     protein: Math.floor(Math.random() * 201),
     calories: Math.floor(Math.random() * 201),
   }
+  return itemApi.createDietItem(meal, "meal")
 }
 
 function DailyPage() {
   const { user } = useAuthContext()
   if (!user) {
-    throw new Error("User is undefined");
+    return  null
   }
+
   const queryClient = useQueryClient()
   const todaysDailyKey = React.useMemo(() => dailyApi.getTodaysDailyKey(), [])
 
@@ -34,14 +37,14 @@ function DailyPage() {
   })
 
   const addDailyMutation = useMutation({
-    mutationFn: dailyApi.addDailyMeal,
+    mutationFn: dailyApi.addDailyItem,
     onSuccess: () => {
       // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: ['getDaily'] })
     },
   })
-  const removeDailyMealMutation = useMutation({
-    mutationFn: dailyApi.removeDailyMeal,
+  const removeDailyItemMutation = useMutation({
+    mutationFn: dailyApi.removeDailyItem,
     onSuccess: () => {
       // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: ['getDaily'] })
@@ -49,7 +52,7 @@ function DailyPage() {
   })
 
   const daily = query.data
-  const dailyMealList = daily?.meals ? Object.values(daily?.meals) : []
+  const dailyItemsList = daily?.dailyItems ? daily?.dailyItems : []
   const dailyMacros = daily ? dailyApi.calculateDailyMacros(daily) : { calories: 0, proteins: 0 }
 
   return (
@@ -62,29 +65,31 @@ function DailyPage() {
         <p className="text-red-500">Yersterdays diff Proteins: {daily?.yesterdaysProteinDiff}</p>
       </div>
       <div>
-        <StockSearch onSelect={(meal) => {
+        <StockSearch onSelect={(item) => {
+          const newItem = itemApi.createDietItem(item, "product")
+          const d = daily || { dailyItems: [] }
           addDailyMutation.mutate({
             userId: user?.uid,
             daily: {
-              ...daily,
-              meals: {
-                ...daily?.meals,
-                [meal.name]: meal as any
-              }
+              ...d,
+              dailyItems: [
+                ...d.dailyItems,
+                newItem
+              ]
             }
           })
         }}
         />
       </div>
       <ul>
-        {dailyMealList.map((meal: any) => (
-          <li key={meal.name}>{meal.name}
+        {dailyItemsList.map((item: any) => (
+          <li key={item.id}>{item.item.name}
             <button
               onClick={() => {
-                removeDailyMealMutation.mutate({
+                removeDailyItemMutation.mutate({
                   userId: user?.uid,
                   daily: daily as any,
-                  mealName: meal.name
+                  idToDelete: item.id
                 })
               }}
             >
@@ -100,14 +105,15 @@ function DailyPage() {
           <button
             onClick={() => {
               const dailyMeal = createDailyMeal();
+              const d = daily || { dailyItems: [] }
               addDailyMutation.mutate({
                 userId: user?.uid,
                 daily: {
-                  ...daily,
-                  meals: {
-                    ...daily?.meals,
-                    [dailyMeal.name]: dailyMeal
-                  }
+                  ...d,
+                  dailyItems: [
+                    ...d?.dailyItems,
+                    dailyMeal
+                  ]
                 }
               })
             }}

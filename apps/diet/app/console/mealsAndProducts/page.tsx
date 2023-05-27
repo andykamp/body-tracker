@@ -21,7 +21,7 @@ function createProduct() {
 function MealsAndProductsPage() {
   const { user } = useAuthContext()
   if (!user) {
-    throw new Error("User is undefined");
+    return  null
   }
 
   const queryClient = useQueryClient()

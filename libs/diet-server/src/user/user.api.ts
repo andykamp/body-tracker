@@ -1,5 +1,6 @@
 import * as t from "@/diet-server/diet.types"
 import baseApi from "@/diet-server/base.api";
+import { GENDER, GOALS } from "@/diet-server/diet.constants";
 
 type GetUserInput = {
   uid: string
@@ -20,11 +21,26 @@ type AddUserInput = {
 }
 
 async function addUser({ uid }: AddUserInput): Promise<t.ResponseResult> {
+  const initialUserData: t.User = {
+    id: uid,
+
+    targetCalories: 0,
+    targetProteins: 0,
+
+    weight: null,
+    height: null,
+    age: null,
+    gender: null,
+    goal: GOALS.MAINTAIN,
+    deficitOrSurplus: 0,
+  };
+
   try {
     const r = await baseApi.makeReqAndExec<t.User>({
       proc: "addUser",
       vars: {
-        uid
+        uid,
+        initialUserData
       }
     })
     return {

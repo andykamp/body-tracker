@@ -17,6 +17,14 @@
     - frontend can call server-api directly, or we can add a server as a proxy
 
 ## State management
+- some tsconfig names are wrong!!!
+- how to handle adjustable products/meals
+    - meals consist of existing products
+    - grouped into breakfast, lunsh, dinner
+- should all state be normalized? for quick searches?
+    - normalize at in fetch funciton. not in backend
+    - so all database is arrays
+    - 
 - SWR vs react-query ?
 - state management
     - make each page/tab render declarativly from a root useQuery
@@ -59,7 +67,10 @@
     - mixpanel?
     - vercel analytics
 
-
+# why dailyItems is not a collection
+- DailyDiet.dailyItems does not accumulate over time
+- this it is easyer to manage updates in state and save time
+- all other collections accumulate over time. eg. products, meals etc. since daily is limitet to a daily scope. we dont have that issue
 
 # Commits
 
@@ -115,6 +126,10 @@ Should also start the emulator on yarn dev!!
     - 
 
 ## Todo
+- flush react query cache when loggin out. if not all data is cached
+- move "meals" etc into contsant and set a standard for capital/lowercase names
+- add id instead of names to meals etc. will fuck up stock atm
+- CANNOT ADD MULTIPLE EGGS :(
 - decide on pascal case etc
 - 
 - create UX kit in figma

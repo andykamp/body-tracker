@@ -5,33 +5,42 @@ export type ResponseResult = {
 
 export type User = {
   id: string;
-  daily: DailyDiets;
-  products: Products;
-  meals: Meals;
+
   targetCalories: number;
   targetProteins: number;
-}
 
-export type Users = {
-  [userId: string]: User;
+  weight?: number;
+  height?: number;
+  age?: number;
+  gender?: string;
+  goal?: string;
+  deficitOrSurplus?: number;
 }
 
 export type Product = {
   name: string;
   protein?: number;
-  calories?: number;
+  calories?: number
   grams?: number;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-export type Products = {
-  [key: string]: Product;
+export type ItemType = "product" | "meal"
+
+export type Item ={
+  id: string
+  createdAt: Date
+  updatedAt?: Date
+  prosentage: number
+  itemType: ItemType
+  itemId: string // reference id to the original item
+  item?: Product | Meal  //orignal full item, handy to add it directyl to the object sometimes
 }
 
 export type Meal = {
   name: string;
-  products: (string | Product)[];
+  products: (Item | string)[];
   protein?: number;
   calories?: number;
   totalGrams?: number;
@@ -40,29 +49,21 @@ export type Meal = {
   updatedAt?: Date;
 }
 
-export type Meals = {
-  [key: string]: Meal;
-}
-
 export type DailyDiet = {
   id: string;
   createdAt: Date;
   updatedAt?: Date;
-  meals: Meals;
+  dailyItems: Item[];
   date: Date,
   yesterdaysCaloryDiff?: number;
   yesterdaysProteinDiff?: number;
-}
-
-export type DailyDiets = {
-  [key: string]: DailyDiet;
-
 }
 
 export type StockType = "product" | "meal" | "both"
 
 export type StockItem = Product | Meal
 
+// Normalize Redux state for fast lookup on searches
 export type StockStateNormalized = {
   allIds: string[],
   byIds: Record<string, StockItem>;

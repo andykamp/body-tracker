@@ -27,13 +27,11 @@ export function UserContextProvider({
   children
 }: UserContextProviderProps) {
   const { user: authUser } = useAuthContext()
-  if (!authUser) {
-    throw new Error("User is undefined");
-  }
 
   const query = useQuery({
     queryKey: ['getUser'],
-    queryFn: () => userApi.getUser({ uid: authUser.uid })
+    queryFn: () => userApi.getUser({ uid: (authUser as any).uid }),
+    enabled: !!authUser
   })
 
   const user = query.data
@@ -43,9 +41,7 @@ export function UserContextProvider({
     <UserContext.Provider value={{ user, loading }
     }>
       {
-        loading
-          ? <div>Loading...</div>
-          : children
+        children
       }
     </UserContext.Provider>
   );

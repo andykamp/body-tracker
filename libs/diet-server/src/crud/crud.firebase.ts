@@ -14,15 +14,7 @@ export async function getUser({ uid }: { uid: string }): Promise<t.User | undefi
   return crudApi.readDocument<t.User>("users", uid);
 }
 
-export async function addUser({ uid }: { uid: string }): Promise<void> {
-  const initialUserData: t.User = {
-    id: uid,
-    daily: {},
-    products: {},
-    meals: {},
-    targetCalories: 0,
-    targetProteins: 0,
-  };
+export async function addUser({ uid, initialUserData }: { uid: string, initialUserData:t.User }): Promise<void> {
   return crudApi.createDocument("users", uid, initialUserData);
 }
 
