@@ -1,6 +1,7 @@
 import * as t from "@/diet-server/diet.types"
 import baseApi from "@/diet-server/base.api";
-import { GENDER, GOALS } from "@/diet-server/diet.constants";
+import { GENDER } from "@/diet-server/diet.constants";
+import { createUserObject } from "@/diet-server/user/user.utils";
 
 type GetUserInput = {
   uid: string
@@ -21,19 +22,19 @@ type AddUserInput = {
 }
 
 async function addUser({ uid }: AddUserInput): Promise<t.ResponseResult> {
-  const initialUserData: t.User = {
+  const initialUserData: t.User = userApi.createUserObject({
     id: uid,
-
-    targetCalories: 0,
-    targetProteins: 0,
-
-    weight: null,
-    height: null,
-    age: null,
-    gender: null,
+    targetCalories: 2500,
+    targetProteins: 200,
+    weight: 95,
+    height: 193,
+    age: 27,
+    gender: GENDER.MALE,
     goal: 14,
-    deficitOrSurplus: 0,
-  };
+    deficitOrSurplus: 500,
+    caloryExpenditure: 3000,
+  });
+
 
   try {
     const r = await baseApi.makeReqAndExec<t.User>({
@@ -108,6 +109,7 @@ export async function deleteUser({ uid }: DeleteUserInput): Promise<t.ResponseRe
 }
 
 const userApi = {
+  createUserObject,
   getUser,
   addUser,
   updateUser,

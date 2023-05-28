@@ -48,7 +48,7 @@ export async function getDaily({ userId, dateKey }: GetDailyInput): Promise<t.Da
     const products = await productApi.getProducts({ userId })
     const stockItems = stockApi.getStockItems({ type: STOCK_TYPE.both })
 
-    for (let item of r.dailyItems) {
+    for (const item of r.dailyItems) {
       item.item = await itemApi.getOriginalFromItem(item, { meals, products, stockItems })
     }
 

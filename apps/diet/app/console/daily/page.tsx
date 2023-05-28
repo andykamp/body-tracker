@@ -12,6 +12,7 @@ import StockSearch from '@/diet/components/StockSearch'
 import itemApi from '@/diet-server/item/item.api'
 import { ITEM_TYPES } from '@/diet-server/diet.constants'
 import { createMeal } from '../mealsAndProducts/page'
+import { useUserContext } from "@/diet/utils/UserProvider";
 
 function createDailyMeal() {
   const meal = createMeal()
@@ -19,8 +20,9 @@ function createDailyMeal() {
 }
 
 function DailyPage() {
-  const { user } = useAuthContext()
-  if (!user) {
+  const { user: authUser } = useAuthContext()
+  const { user } = useUserContext()
+  if (!authUser || !user) {
     return null
   }
 
@@ -30,7 +32,7 @@ function DailyPage() {
 
   const query = useQuery({
     queryKey: ['getDaily'],
-    queryFn: () => dailyApi.getDaily({ userId: user.uid, dateKey: todaysDailyKey })
+    queryFn: () => dailyApi.getDaily({ userId: authUser.uid, dateKey: todaysDailyKey })
   })
 
   const addDailyMutation = useMutation({
@@ -58,6 +60,8 @@ function DailyPage() {
       <div>
         <p>Calories: {dailyMacros.calories}</p>
         <p>Proteins: {dailyMacros.proteins}</p>
+        <p>Remaining Calories: {user.targetCalories - dailyMacros.calories}</p>
+        <p>Remaining Proteins: {user.targetProteins - dailyMacros.proteins}</p>
         <p className="text-red-500">Yesterdays diff Calories: {daily?.yesterdaysCaloryDiff}</p>
         <p className="text-red-500">Yersterdays diff Proteins: {daily?.yesterdaysProteinDiff}</p>
       </div>
@@ -66,7 +70,7 @@ function DailyPage() {
           const newItem = itemApi.createItemObject(item, "product")
           const d = daily || { dailyItems: [] }
           addDailyMutation.mutate({
-            userId: user?.uid,
+            userId: authUser?.uid,
             daily: {
               id: daily?.id || todaysDailyKey,
               dailyItems: [
@@ -84,7 +88,7 @@ function DailyPage() {
             <button
               onClick={() => {
                 removeDailyItemMutation.mutate({
-                  userId: user?.uid,
+                  userId: authUser?.uid,
                   daily: daily as any,
                   idToDelete: item.id
                 })
@@ -104,7 +108,7 @@ function DailyPage() {
               const dailyMeal = createDailyMeal();
               const d = daily || { dailyItems: [] }
               addDailyMutation.mutate({
-                userId: user?.uid,
+                userId: authUser?.uid,
                 daily: {
                   id: daily?.id || todaysDailyKey,
                   dailyItems: [
