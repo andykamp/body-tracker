@@ -1,7 +1,39 @@
+
+// api result
+
 export type ResponseResult = {
   success: boolean;
   message: any;
 };
+
+// diet calculation
+
+export type ZoningGroup =
+  "extremeWeightLoss" |
+  "weightLoss" |
+  "maintenance" |
+  "weightGain" |
+  "extremeWeightGain"
+
+
+export type Zone = 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21;
+
+
+export type FutureResult = {
+  day: number;
+  week: number;
+  month: number;
+};
+
+
+export type BMICategory = "Underweight" | "Normal weight" | "Overweight" | "Obese";
+
+export type BMIResult = {
+  bmi: number;
+  category: BMICategory;
+};
+
+// user
 
 export type User = {
   id: string;
@@ -13,9 +45,13 @@ export type User = {
   height?: number;
   age?: number;
   gender?: string;
-  goal?: string;
-  deficitOrSurplus?: number;
+  goal?: Zone;
+
+  deficitOrSurplus?: number; // manual override
+  caloryExpenditure?: number; // manual override
 }
+
+// product
 
 export type Product = {
   id: string,
@@ -30,6 +66,8 @@ export type Product = {
   createdAt?: string;
   updatedAt?: string;
 }
+
+// meal
 
 export type Meal = {
   id: string,

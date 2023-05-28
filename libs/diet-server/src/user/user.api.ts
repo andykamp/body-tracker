@@ -31,7 +31,7 @@ async function addUser({ uid }: AddUserInput): Promise<t.ResponseResult> {
     height: null,
     age: null,
     gender: null,
-    goal: GOALS.MAINTAIN,
+    goal: 14,
     deficitOrSurplus: 0,
   };
 

@@ -49,9 +49,6 @@ export async function getOriginalFromItem(item: t.Item, input: GetItemInput): Pr
   return matchedItem;
 }
 
-function getProductItems(){}
-function getMealItems(){}
-
 const itemApi ={
   createItemObject,
   getOriginalFromItem
