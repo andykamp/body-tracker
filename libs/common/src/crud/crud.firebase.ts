@@ -25,7 +25,7 @@ async function readCollection<T>(collectionName: string): Promise<T[]> {
 
 async function createDocument<T>(collectionName: string, id: string, data: T): Promise<void> {
   const docRef = getDocumentRef(collectionName, id);
-  return setDoc(docRef, data as any, { merge: true });
+  return await setDoc(docRef, data as any, { merge: true });
 }
 
 async function readDocument<T>(collectionName: string, id: string): Promise<T | undefined> {
@@ -41,12 +41,12 @@ async function readDocument<T>(collectionName: string, id: string): Promise<T | 
 
 async function updateDocument<T>(collectionName: string, id: string, data: T): Promise<void> {
   const docRef = getDocumentRef(collectionName, id);
-  return updateDoc(docRef, data as any);
+  return await updateDoc(docRef, data as any);
 }
 
 async function deleteDocument(collectionName: string, id: string): Promise<void> {
   const docRef = getDocumentRef(collectionName, id);
-  return deleteDoc(docRef);
+  return await deleteDoc(docRef);
 }
 
 const crudApi = {

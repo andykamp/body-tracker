@@ -1,60 +1,62 @@
-import * as t from '@/diet-server/diet.types'
+import * as t from '@/diet-server/diet.types';
+import {ITEM_TYPES} from "@/diet-server/diet.constants";
 
-export const STOCK_MEALS: t.StockStateNormalized = {
+const itemType = ITEM_TYPES.MEAL;
+
+export const STOCK_MEALS: t.StockStateNormalized<t.Meal> = {
   allIds: [
-    "SmallMealsCottageCheese",
     "SmallMealsCottageCheeseWithPB",
     "SmallMealsKesam",
     "SmallMealsFetaSalad",
     "TacoNachos",
-    "Beef"
   ],
   byIds: {
-    "SmallMealsCottageCheese": {
-      "name": "SmallMealsCottageCheese",
-      "products": [
-        "CottageCheeseOriginal",
-        "CottageCheeseMager"
-      ],
-      "protein": 106,
-      "calories": 700,
-      "totalGrams": 800
-    },
     "SmallMealsCottageCheeseWithPB": {
-      "name": "SmallMealsCottageCheeseWithPB",
-      "products": [
+      type: itemType,
+      id: "SmallMealsCottageCheeseWithPB",
+      name: "SmallMealsCottageCheeseWithPB",
+      products: [
         "CottageCheeseMager",
         "PeanutSmør",
         "Syltetøy"
       ],
-      "protein": 55.6,
-      "calories": 407,
-      "totalGrams": 415
+      protein: 55.6,
+      calories: 407,
+      grams: 415
     },
     "SmallMealsKesam": {
-      "name": "SmallMealsKesam",
-      "products": [
-        "Kesam"
+      type: itemType,
+      id: "SmallMealsKesam",
+      name: "SmallMealsKesam",
+      products: [
+        "Kesam_stor",
+        "Kesam_liten",
+        "Kesam_mager_stor",
+        "Kesam_mager_liten"
       ],
-      "protein": 24,
-      "calories": 468,
-      "totalGrams": 400
+      protein: 24,
+      calories: 468,
+      grams: 400
     },
     "SmallMealsFetaSalad": {
-      "name": "SmallMealsFetaSalad",
-      "products": [
+      type: itemType,
+      id: "SmallMealsFetaSalad",
+      name: "SmallMealsFetaSalad",
+      products: [
         "FetaBoksOriginal",
         "FetaBoksMager",
         "PinjeKjerner",
         "Jalapenos"
       ],
-      "protein": 35.5,
-      "calories": 843,
-      "totalGrams": 570
+      protein: 35.5,
+      calories: 843,
+      grams: 570
     },
     "TacoNachos": {
-      "name": "TacoNachos",
-      "products": [
+      type: itemType,
+      id: "TacoNachos",
+      name: "TacoNachos",
+      products: [
         "KjøttdeigSvin",
         "RevetOst",
         "RømmeQDrømmelett",
@@ -62,21 +64,10 @@ export const STOCK_MEALS: t.StockStateNormalized = {
         "GuacamoleFerdigdip",
         "TortillaChips"
       ],
-      "protein": 117,
-      "calories": 1800,
-      "totalGrams": 1690
+      protein: 117,
+      calories: 1800,
+      grams: 1690
     },
-    "Beef": {
-      "name": "Beef",
-      "products": [
-        "Kyllingfilet",
-        "Svinekoteletter",
-        "SvinIndrefilet"
-      ],
-      "protein": 798,
-      "calories": 3804,
-      "totalGrams": 2400
-    }
   }
 
 }

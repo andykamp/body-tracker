@@ -33,3 +33,28 @@ export function safeJSONParse<T = Obj>(val: unknown): T {
     return null
   }
 }
+
+export function stripUndefinedFields<T>(obj: T): T {
+  const strippedObj = {} as T;
+
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      const value = obj[key];
+
+      if (value !== undefined) {
+        if (Array.isArray(value)) {
+          strippedObj[key] = value.map((item) =>
+            typeof item === 'object' && item !== null ? stripUndefinedFields(item) : item
+          ) as any;
+        } else if (typeof value === 'object' && value !== null) {
+          strippedObj[key] = stripUndefinedFields(value) as any;
+        } else {
+          strippedObj[key] = value;
+        }
+      }
+    }
+  }
+
+  return strippedObj;
+}
+

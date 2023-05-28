@@ -1,7 +1,7 @@
 import type * as t from "@/diet-server/diet.types"
 
-export function mergeNormalizedStates(...state: t.StockStateNormalized[]): t.StockStateNormalized {
-  const mergedStockState: t.StockStateNormalized = {
+export function mergeNormalizedStates(...state: t.StockStateNormalized<t.StockItem>[]): t.StockStateNormalized<t.StockItem> {
+  const mergedStockState: t.StockStateNormalized<t.StockItem> = {
     allIds: [],
     byIds: {},
   };

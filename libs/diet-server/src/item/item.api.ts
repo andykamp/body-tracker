@@ -1,11 +1,14 @@
 import * as t from '@/diet-server/diet.types'
 import { v4 as uuid } from 'uuid';
+import { getISODate } from "@/diet-server/utils/date.utils";
 
 
-function createDietItem(item: t.Meal | t.Product, type: t.ItemType): t.Item {
+function createItemObject(item: t.Meal | t.Product, type: t.ItemType): t.Item {
   return {
     id: uuid(),
-    createdAt: new Date(),
+    name: item.name,
+    description: item.description,
+    createdAt: getISODate(),
     prosentage: 1,
     itemId: item.name,
     itemType: type,
@@ -13,8 +16,45 @@ function createDietItem(item: t.Meal | t.Product, type: t.ItemType): t.Item {
   }
 }
 
+type GetItemInput = {
+  meals: t.Meal[],
+  products: t.Product[],
+  stockItems: t.StockStateNormalized<t.StockItem>,
+}
+
+// @todo rename to someting more descriptive
+export async function getOriginalFromItem(item: t.Item, input: GetItemInput): Promise<t.Product | t.Meal> {
+  // Returns item.item if item is not null or undefined
+  if (item && item.item) {
+    return item.item;
+  }
+
+  // Check the itemType and tries to find the itemId either in the meals, products, stockMeals, stockProducts
+  // by matching the itemId to the id or name parameter
+  let matchedItem: t.Product | t.Meal | undefined;
+
+  if (item.itemType === "meal") {
+    matchedItem = input.meals.find(meal => meal.name === item.itemId) ||
+      input.stockItems.byIds[item.itemId];
+  } else if (item.itemType === "product") {
+    matchedItem = input.products.find(product => product.name === item.itemId) ||
+      input.stockItems.byIds[item.itemId];
+  }
+
+  // If no match is found, throws an error "Could not find item in meals or products"
+  if (!matchedItem) {
+    throw new Error('Could not find item in meals or products');
+  }
+
+  return matchedItem;
+}
+
+function getProductItems(){}
+function getMealItems(){}
+
 const itemApi ={
-  createDietItem
+  createItemObject,
+  getOriginalFromItem
 }
 
 export type ItemApi = typeof itemApi;

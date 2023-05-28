@@ -18,53 +18,69 @@ export type User = {
 }
 
 export type Product = {
+  id: string,
+  type: ItemType;
   name: string;
+  description?: string;
+
   protein?: number;
   calories?: number
   grams?: number;
-  createdAt?: Date;
-  updatedAt?: Date;
+
+  createdAt?: string;
+  updatedAt?: string;
 }
+
+export type Meal = {
+  id: string,
+  type: ItemType;
+  name: string;
+  description?: string;
+
+  products: (Item | string)[];
+  protein?: number;
+  calories?: number;
+  grams?: number;
+
+  fromCustomDaily?: boolean; // shows if it is not a stored Meal. But nice to use for future suggestions on autocomplete
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+// items
 
 export type ItemType = "product" | "meal"
 
-export type Item ={
+export type Item = {
   id: string
-  createdAt: Date
-  updatedAt?: Date
+  name: string
+  description?: string;
+  createdAt: string
+  updatedAt?: string
   prosentage: number
   itemType: ItemType
   itemId: string // reference id to the original item
   item?: Product | Meal  //orignal full item, handy to add it directyl to the object sometimes
 }
 
-export type Meal = {
-  name: string;
-  products: (Item | string)[];
-  protein?: number;
-  calories?: number;
-  totalGrams?: number;
-  fromCustomDaily?: boolean; // shows if it is not a stored Meal. But nice to use for future suggestions on autocomplete
-  createdAt?: Date;
-  updatedAt?: Date;
-}
+// daily
 
 export type DailyDiet = {
   id: string;
-  createdAt: Date;
-  updatedAt?: Date;
+  createdAt: string;
+  updatedAt?: string;
   dailyItems: Item[];
-  date: Date,
   yesterdaysCaloryDiff?: number;
   yesterdaysProteinDiff?: number;
 }
 
-export type StockType = "product" | "meal" | "both"
+// stock
 
+export type StockType = ItemType | "both"
 export type StockItem = Product | Meal
 
-// Normalize Redux state for fast lookup on searches
-export type StockStateNormalized = {
+export type StockStateNormalized<T extends StockItem> = {
   allIds: string[],
-  byIds: Record<string, StockItem>;
+  byIds: Record<string, T>;
 }
+

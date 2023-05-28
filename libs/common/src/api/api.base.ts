@@ -1,6 +1,6 @@
 import * as t from '@/common/api/api.types'
 // import apiCache from '@/common/api/api.cache'
-
+import {stripUndefinedFields} from '@/common/utils/utils.misc'
 
 export type ApiInterface = {
   [key: string]: any;
@@ -28,7 +28,11 @@ function makeRequest(proc: string) {
 async function makeReqAndExec<Out extends Record<string, unknown>>(
   input: t.MakeReqAndExecInput
 ) {
-  const { cache, vars, proc } = input
+  const { cache, proc } = input
+
+  // strip the inputs of undefined fields
+  // some databases (firestore) dont like undefined fields
+  const vars = stripUndefinedFields(input.vars)
 
   try {
     let cacheKey: string

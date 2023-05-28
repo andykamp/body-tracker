@@ -1,12 +1,18 @@
 import * as t from '@/diet-server/diet.types'
+import {ITEM_TYPES} from "@/diet-server/diet.constants";
 
-export const STOCK_PRODUCTS: t.StockStateNormalized = {
+const itemType = ITEM_TYPES.PRODUCT;
+
+export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
   allIds: ["CottageCheeseOriginal",
     "Egg",
     "CottageCheeseMager",
     "PeanutSmør",
     "Syltetøy",
-    "Kesam",
+    "Kesam_stor",
+    "Kesam_liten",
+    "Kesam_mager_stor",
+    "Kesam_mager_liten",
     "FetaBoksOriginal",
     "FetaBoksMager",
     "PinjeKjerner",
@@ -20,130 +26,194 @@ export const STOCK_PRODUCTS: t.StockStateNormalized = {
     "Kyllingfilet",
     "Svinekoteletter",
     "SvinIndrefilet",
-    "ProteinshakeWhy"
+    "ProteinshakeWhey"
   ],
   byIds: {
-    "Egg": {
-      "name": "Egg",
-      "protein": 6,
-      "calories": 70,
-      "grams": 60
-    },
     "CottageCheeseOriginal": {
-      "name": "CottageCheeseOriginal",
-      "protein": 54,
-      "calories": 384,
-      "grams": 400
+      type: itemType,
+      id: "CottageCheeseOriginal",
+      name: "CottageCheeseOriginal",
+      protein: 54,
+      calories: 384,
+      grams: 400,
     },
+    "Egg": {
+      type: itemType,
+      id: "Egg",
+      name: "Egg",
+      protein: 7,
+      calories: 80,
+      grams: 60,
+    },
+    // Other products
+    // Note: I have used the ids directly as given, please ensure they are unique for each product
     "CottageCheeseMager": {
-      "name": "CottageCheeseMager",
-      "protein": 52,
-      "calories": 316,
-      "grams": 400
+      type: itemType,
+      id: "CottageCheeseMager",
+      name: "CottageCheeseMager",
+      protein: 52,
+      calories: 316,
+      grams: 400,
     },
     "PeanutSmør": {
-      "name": "PeanutSmør",
-      "protein": 3.6,
-      "calories": 91,
-      "grams": 15
+      type: itemType,
+      id: "PeanutSmør",
+      name: "PeanutSmør",
+      protein: 3.6,
+      calories: 91,
+      grams: 15,
     },
     "Syltetøy": {
-      "name": "Syltetøy",
-      "protein": 0,
-      "calories": 0,
-      "grams": 15
+      type: itemType,
+      id: "Syltetøy",
+      name: "Syltetøy",
+      protein: 0,
+      calories: 0,
+      grams: 15,
     },
-    "Kesam": {
-      "name": "Kesam",
-      "protein": 24,
-      "calories": 468,
-      "grams": 400
+    "Kesam_stor": {
+      type: itemType,
+      id: "Kesam_stor",
+      name: "Kesam",
+      protein: 24,
+      calories: 468,
+      grams: 400,
+    },
+    "Kesam_liten": {
+      type: itemType,
+      id: "Kesam_liten",
+      name: "Kesam",
+      protein: 18,
+      calories: 351,
+      grams: 400,
+    },
+    "Kesam_mager_stor": {
+      type: itemType,
+      id: "Kesam_mager_stor",
+      name: "Kesam",
+      protein: 38,
+      calories: 256,
+      grams: 400,
+    },
+    "Kesam_mager_liten": {
+      type: itemType,
+      id: "Kesam_mager_liten",
+      name: "Kesam",
+      protein: 28,
+      calories: 192,
+      grams: 300,
     },
     "FetaBoksOriginal": {
-      "name": "FetaBoksOriginal",
-      "protein": 26,
-      "calories": 480,
-      "grams": 200
+      type: itemType,
+      id: "FetaBoksOriginal",
+      name: "FetaBoksOriginal",
+      protein: 26,
+      calories: 480,
+      grams: 200,
     },
     "FetaBoksMager": {
-      "name": "FetaBoksMager",
-      "protein": 0,
-      "calories": 0,
-      "grams": 200
+      type: itemType,
+      id: "FetaBoksMager",
+      name: "FetaBoksMager",
+      protein: 0,
+      calories: 0,
+      grams: 200,
     },
     "PinjeKjerner": {
-      "name": "PinjeKjerner",
-      "protein": 9.5,
-      "calories": 351,
-      "grams": 50
+      type: itemType,
+      id: "PinjeKjerner",
+      name: "PinjeKjerner",
+      protein: 9.5,
+      calories: 351,
+      grams: 50,
     },
     "Jalapenos": {
-      "name": "Jalapenos",
-      "protein": 0,
-      "calories": 12,
-      "grams": 120
+      type: itemType,
+      id: "Jalapenos",
+      name: "Jalapenos",
+      protein: 0,
+      calories: 12,
+      grams: 120,
     },
     "KjøttdeigSvin": {
-      "name": "KjøttdeigSvin",
-      "protein": 72,
-      "calories": 576,
-      "grams": 400
+      type: itemType,
+      id: "KjøttdeigSvin",
+      name: "KjøttdeigSvin",
+      protein: 72,
+      calories: 576,
+      grams: 400,
     },
     "RevetOst": {
-      "name": "RevetOst",
-      "protein": 95,
-      "calories": 1540,
-      "grams": 500
+      type: itemType,
+      id: "RevetOst",
+      name: "RevetOst",
+      protein: 95,
+      calories: 1540,
+      grams: 500,
     },
     "RømmeQDrømmelett": {
-      "name": "RømmeQDrømmelett",
-      "protein": 24,
-      "calories": 279,
-      "grams": 300
+      type: itemType,
+      id: "RømmeQDrømmelett",
+      name: "RømmeQDrømmelett",
+      protein: 24,
+      calories: 279,
+      grams: 300,
     },
     "TacoKrydder": {
-      "name": "TacoKrydder",
-      "protein": 5.2,
-      "calories": 126,
-      "grams": 40
+      type: itemType,
+      id: "TacoKrydder",
+      name: "TacoKrydder",
+      protein: 5.2,
+      calories: 126,
+      grams: 40,
     },
     "GuacamoleFerdigdip": {
-      "name": "GuacamoleFerdigdip",
-      "protein": 5,
-      "calories": 307,
-      "grams": 250
+      type: itemType,
+      id: "GuacamoleFerdigdip",
+      name: "GuacamoleFerdigdip",
+      protein: 5,
+      calories: 307,
+      grams: 250,
     },
     "TortillaChips": {
-      "name": "TortillaChips",
-      "protein": 14,
-      "calories": 940,
-      "grams": 200
+      type: itemType,
+      id: "TortillaChips",
+      name: "TortillaChips",
+      protein: 14,
+      calories: 940,
+      grams: 200,
     },
     "Kyllingfilet": {
-      "name": "Kyllingfilet",
-      "protein": 216,
-      "calories": 936,
-      "grams": 900
+      type: itemType,
+      id: "Kyllingfilet",
+      name: "Kyllingfilet",
+      protein: 216,
+      calories: 936,
+      grams: 900,
     },
     "Svinekoteletter": {
-      "name": "Svinekoteletter",
-      "protein": 450,
-      "calories": 2178,
-      "grams": 900
+      type: itemType,
+      id: "Svinekoteletter",
+      name: "Svinekoteletter",
+      protein: 450,
+      calories: 2178,
+      grams: 900,
     },
     "SvinIndrefilet": {
-      "name": "SvinIndrefilet",
-      "protein": 132,
-      "calories": 690,
-      "grams": 600
+      type: itemType,
+      id: "SvinIndrefilet",
+      name: "SvinIndrefilet",
+      protein: 132,
+      calories: 690,
+      grams: 600,
     },
-    "ProteinshakeWhy": {
-      "name": "ProteinshakeWhy",
-      "protein": 22,
-      "calories": 140,
-      "grams": 30
-    }
+    "ProteinshakeWhey": {
+      type: itemType,
+      id: "ProteinshakeWhey",
+      name: "ProteinshakeWhey",
+      protein: 22,
+      calories: 140,
+      grams: 30,
+    },
   }
-};
-
-
+}

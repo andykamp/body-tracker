@@ -9,19 +9,34 @@ import {
 import { useAuthContext } from "@/auth-client/firebase/auth.context";
 import mealApi from "@/diet-server/meal/meal.api"
 import productApi from "@/diet-server/product/product.api"
+import itemApi from '@/diet-server/item/item.api'
+import { ITEM_TYPES } from '@/diet-server/diet.constants'
 
-function createProduct() {
-  return {
+export function createProduct() {
+  const product = productApi.createProductObject({
     name: `test_product_${Math.random()}`,
     protein: Math.floor(Math.random() * 201),
     calories: Math.floor(Math.random() * 201),
-  }
+    grams: Math.floor(Math.random() * 201),
+  })
+  return product
+}
+
+export function createMeal() {
+  const meal = mealApi.createMealObject({
+    name: `test_product_${Math.random()}`,
+    products: ["SmallMealsCottageCheeseWithPB"],
+    protein: Math.floor(Math.random() * 201),
+    calories: Math.floor(Math.random() * 201),
+    grams: Math.floor(Math.random() * 201),
+  })
+  return meal
 }
 
 function MealsAndProductsPage() {
   const { user } = useAuthContext()
   if (!user) {
-    return  null
+    return null
   }
 
   const queryClient = useQueryClient()
@@ -90,16 +105,16 @@ function MealsAndProductsPage() {
           <ul>
             {productsList.map((product: any) => (
               <li key={product.name}>{product.name}
-            <button
-              onClick={() => {
-                deleteProductMutation.mutate({
-                  userId: user?.uid,
-                  name: product.name
-                })
-              }}
-            >
-             delete
-            </button>
+                <button
+                  onClick={() => {
+                    deleteProductMutation.mutate({
+                      userId: user?.uid,
+                      name: product.name
+                    })
+                  }}
+                >
+                  delete
+                </button>
               </li>
             ))}
           </ul>

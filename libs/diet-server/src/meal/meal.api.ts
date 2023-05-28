@@ -1,16 +1,15 @@
 import * as t from "@/diet-server/diet.types";
-import * as f from "@/diet-server/meal/__support__/meal.fixtures";
-import * as fp from "@/diet-server/product/__support__/product.fixtures";
 import productApi from "@/diet-server/product/product.api";
 import stockApi from "@/diet-server/stock/stock.api";
 import { STOCK_TYPE } from "@/diet-server/stock/stock.constants";
 import baseApi from "@/diet-server/base.api";
+import { createMealObject } from "@/diet-server/meal/meal.utils";
 
 type GetMealsInput = {
   userId: string;
 }
 
-export async function getMeals({ userId }: GetMealsInput): Promise<t.Meals> {
+export async function getMeals({ userId }: GetMealsInput): Promise<t.Meal[]> {
   const r = await baseApi.makeReqAndExec<t.Meal>({
     proc: "getMeals",
     vars: { userId }
@@ -41,7 +40,7 @@ export async function addMeal({ userId, name, products }: AddMealInput): Promise
 
   let totalProtein = 0;
   let totalCalories = 0;
-  let totalGrams = 0;
+  let grams = 0;
 
   // Create an empty list of products for the meal.
   const mealProducts: t.Product[] = [];
@@ -73,7 +72,7 @@ export async function addMeal({ userId, name, products }: AddMealInput): Promise
     // Calculate the total protein, calories, and grams for the meal based on the product data.
     totalProtein += product.protein || 0;
     totalCalories += product.calories || 0;
-    totalGrams += product.grams || 0;
+    grams += product.grams || 0;
   }
 
   // If the meal product list is empty and the meal name or total protein and calories are not provided, return an error result.
@@ -82,13 +81,14 @@ export async function addMeal({ userId, name, products }: AddMealInput): Promise
   }
 
   // Create a meal object using the meal name, product names, and total protein, calories, and grams for the meal.
-  const meal: t.Meal = {
+  const meal: t.Meal = mealApi.createMealObject({
     name,
     products: mealProducts.map((p) => p.name),
     protein: totalProtein,
     calories: totalCalories,
-    totalGrams: totalGrams,
-  };
+    grams
+  }
+  );
 
   // Add the meal to the user's meal list.
   const r = await baseApi.makeReqAndExec<t.Meal>({
@@ -157,6 +157,7 @@ export async function deleteMeal(
 }
 
 const mealApi = {
+  createMealObject,
   getMeals,
   addMeal,
   updateMeal,

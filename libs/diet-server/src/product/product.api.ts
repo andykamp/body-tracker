@@ -1,7 +1,8 @@
 import type * as t from "@/diet-server/diet.types"
 import baseApi from "@/diet-server/base.api";
+import { createProductObject } from "@/diet-server/product/product.utils";
 
-export function parseToValidProduct(product: t.Product): t.Product {
+function parseToValidProduct(product: t.Product): t.Product {
   if (!product.name) {
     throw new Error("Product name is required");
   }
@@ -10,13 +11,13 @@ export function parseToValidProduct(product: t.Product): t.Product {
     throw new Error("At least one of protein or calories is required");
   }
 
-  return {
+  return productApi.createProductObject({
     name: product.name,
+    description: product.description || "",
     protein: product.protein || 0,
     calories: product.calories || 0,
-    grams: product.grams,
-    createdAt: product.createdAt || new Date(),
-  };
+    grams: product.grams || 0,
+  });
 }
 
 
@@ -108,6 +109,7 @@ export async function deleteProduct({ userId, name }: DeleteProductInput): Promi
 }
 
 const productApi = {
+  createProductObject,
   parseToValidProduct,
   getProduct,
   getProducts,

@@ -9,22 +9,19 @@ import {
 import dailyApi from "@/diet-server/daily/daily.api"
 import { useAuthContext } from "@/auth-client/firebase/auth.context";
 import StockSearch from '@/diet/components/StockSearch'
-import itemApi  from '@/diet-server/item/item.api'
+import itemApi from '@/diet-server/item/item.api'
+import { ITEM_TYPES } from '@/diet-server/diet.constants'
+import { createMeal } from '../mealsAndProducts/page'
 
 function createDailyMeal() {
-  const meal = {
-    name: `test_meal_${Math.random()}`,
-    products: ["SmallMealsCottageCheeseWithPB"],
-    protein: Math.floor(Math.random() * 201),
-    calories: Math.floor(Math.random() * 201),
-  }
-  return itemApi.createDietItem(meal, "meal")
+  const meal = createMeal()
+  return itemApi.createItemObject(meal, ITEM_TYPES.MEAL)
 }
 
 function DailyPage() {
   const { user } = useAuthContext()
   if (!user) {
-    return  null
+    return null
   }
 
   const queryClient = useQueryClient()
@@ -66,12 +63,12 @@ function DailyPage() {
       </div>
       <div>
         <StockSearch onSelect={(item) => {
-          const newItem = itemApi.createDietItem(item, "product")
+          const newItem = itemApi.createItemObject(item, "product")
           const d = daily || { dailyItems: [] }
           addDailyMutation.mutate({
             userId: user?.uid,
             daily: {
-              ...d,
+              id: daily?.id || todaysDailyKey,
               dailyItems: [
                 ...d.dailyItems,
                 newItem
@@ -109,7 +106,7 @@ function DailyPage() {
               addDailyMutation.mutate({
                 userId: user?.uid,
                 daily: {
-                  ...d,
+                  id: daily?.id || todaysDailyKey,
                   dailyItems: [
                     ...d?.dailyItems,
                     dailyMeal

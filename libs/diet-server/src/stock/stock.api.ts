@@ -24,7 +24,7 @@ type GetStockItemsInput = {
   type: t.StockType
 }
 
-export function getStockItems({ type }: GetStockItemsInput): t.StockStateNormalized {
+export function getStockItems({ type }: GetStockItemsInput): t.StockStateNormalized<t.StockItem> {
   return STOCK_ITEMS_BY_TYPE[type]
 }
 

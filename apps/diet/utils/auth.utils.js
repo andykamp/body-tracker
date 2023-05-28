@@ -3,6 +3,8 @@ import { useAuthContext } from '@/auth-client/firebase/auth.context'
 import { useRouter } from "next/navigation";
 import authApi from "@/auth/firebase/auth.api"
 import userApi from "@/diet-server/user/user.api";
+import {
+} from '@tanstack/react-query'
 
 export function useAuthRedirect() {
   const { user } = useAuthContext()

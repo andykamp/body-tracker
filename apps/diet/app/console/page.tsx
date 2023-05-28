@@ -1,5 +1,5 @@
 'use client'
-import React from "react";
+import React, { useEffect } from "react";
 import { useAuthRedirect } from "../../utils/auth.utils";
 import Navbar from '@/ui/Navbar'
 import { usePathname } from "next/navigation";
@@ -10,11 +10,25 @@ import DailyPage from "./daily/page";
 import MealsAndProductsPage from "./mealsAndProducts/page";
 import ProfilePage from "./profile/page";
 import { signInWithGoogle, signOutOfGoogle, deleteAccount } from '@/diet/utils/auth.utils'
+import {
+  useQueryClient,
+} from '@tanstack/react-query'
 
 function ConsolePage() {
   const user = useAuthRedirect()
   const pathname = usePathname()
   const router = useRouter()
+
+  // make sure we reset the cache when logged out
+  // if not the next user will se prev users data
+  const queryClient = useQueryClient()
+  useEffect(() => {
+    return () => {
+      console.log('Unmounting console',);
+      queryClient.removeQueries()
+    }
+
+  }, []);
 
   const signIn = async () => {
     try {
@@ -54,9 +68,9 @@ function ConsolePage() {
       <Page>
         <h1>Only logged in users can view this page</h1>
         <div className="flex gap-2 bg-red">
-        <DailyPage />
-        <MealsAndProductsPage />
-        <ProfilePage/>
+          <DailyPage />
+          <MealsAndProductsPage />
+          <ProfilePage />
         </div>
       </Page>
     </>
