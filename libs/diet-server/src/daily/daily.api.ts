@@ -41,7 +41,6 @@ export async function getDaily({ userId, dateKey }: GetDailyInput): Promise<t.Da
       dateKey
     }
   })
-  console.log('r',r );
   if (r) {
     // add the product and meal objects to the dailyItems for ease of use
     const meals = await mealApi.getMeals({ userId })
@@ -97,7 +96,6 @@ type AddDailyMealInput = {
 }
 // Add a daily meal to the user's meal history
 export async function addDailyItem({ userId, daily }: AddDailyMealInput): Promise<t.Meal | t.ResponseResult> {
-  console.log('addDailyItemk', daily,);
   const r = await dailyApi.updateDaily({ userId, daily })
   return r
 }
@@ -108,8 +106,6 @@ type UpdateDailyInput = {
 }
 // Update a daily diet for a given user and date
 export async function updateDaily({ userId, daily }: UpdateDailyInput): Promise<t.ResponseResult> {
-  console.log('updateDailyu', daily);
-
   const r = await baseApi.makeReqAndExec<t.DailyDiet>({
     proc: "updateDaily",
     vars: {
@@ -164,7 +160,6 @@ function calculateDailyProteins(daily: t.DailyDiet): number {
 
 
 function calculateDailyMacros(daily: t.DailyDiet): { calories: number, proteins: number } {
-  console.log('daily', daily);
 
   let totalProteins = 0;
   let totalCalories = 0;

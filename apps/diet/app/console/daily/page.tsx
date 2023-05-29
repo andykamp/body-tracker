@@ -13,6 +13,7 @@ import itemApi from '@/diet-server/item/item.api'
 import { ITEM_TYPES } from '@/diet-server/diet.constants'
 import { createMeal } from '../mealsAndProducts/page'
 import { useUserContext } from "@/diet/utils/UserProvider";
+import ItemWrapper from "@/diet/components/ItemWrapper";
 
 function createDailyMeal() {
   const meal = createMeal()
@@ -37,6 +38,13 @@ function DailyPage() {
 
   const addDailyMutation = useMutation({
     mutationFn: dailyApi.addDailyItem,
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ['getDaily'] })
+    },
+  })
+  const updateDailyMutation = useMutation({
+    mutationFn: dailyApi.updateDaily,
     onSuccess: () => {
       // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: ['getDaily'] })
@@ -84,7 +92,26 @@ function DailyPage() {
       </div>
       <ul>
         {dailyItemsList.map((item: any) => (
-          <li key={item.id}>{item.item.name}
+          <li key={item.id}>
+
+            <ItemWrapper
+              item={item}
+              onItemChange={(i) => {
+                console.log('itemchange', i)
+                const d = daily || { dailyItems: [] }
+                const di = d.dailyItems.map(obj => obj.id === i.id ? i : obj);
+
+                updateDailyMutation.mutate({
+                  userId: authUser?.uid,
+                  daily: {
+                    id: daily?.id || todaysDailyKey,
+                    dailyItems: [
+                      ...di
+                    ]
+                  }
+                })
+              }}
+            />
             <button
               onClick={() => {
                 removeDailyItemMutation.mutate({

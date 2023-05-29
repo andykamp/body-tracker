@@ -43,7 +43,7 @@ type CalulateDailyCalorieInput = {
 }
 
 export function calulateDailyCalories({ weight, zone }: CalulateDailyCalorieInput): number {
-  return weight * zone
+  return weight * poundToKgMulitplyer * zone
 }
 
 

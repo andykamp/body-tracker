@@ -2,6 +2,7 @@ import * as t from "@/diet-server/diet.types"
 import baseApi from "@/diet-server/base.api";
 import { GENDER } from "@/diet-server/diet.constants";
 import { createUserObject } from "@/diet-server/user/user.utils";
+import { calulateDailyCalories, calulateDailyProtein } from "@/diet-server/utils/diet.utils";
 
 type GetUserInput = {
   uid: string
@@ -24,13 +25,13 @@ type AddUserInput = {
 async function addUser({ uid }: AddUserInput): Promise<t.ResponseResult> {
   const initialUserData: t.User = userApi.createUserObject({
     id: uid,
-    targetCalories: 2500,
-    targetProteins: 200,
+    targetCalories: calulateDailyCalories({ weight: 95, zone: 11 }),
+    targetProteins: calulateDailyProtein({ weight: 95 }),
     weight: 95,
     height: 193,
     age: 27,
     gender: GENDER.MALE,
-    goal: 14,
+    goal: 11,
     deficitOrSurplus: 500,
     caloryExpenditure: 3000,
   });
