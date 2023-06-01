@@ -4,7 +4,11 @@ import {ITEM_TYPES} from "@/diet-server/diet.constants";
 const itemType = ITEM_TYPES.PRODUCT;
 
 export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
-  allIds: ["CottageCheeseOriginal",
+  allIds: [
+    "Manchego",
+    "CottageCheeseOriginal",
+    "Whey",
+    "Whey_Double",
     "Egg",
     "CottageCheeseMager",
     "PeanutSmør",
@@ -26,9 +30,16 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
     "Kyllingfilet",
     "Svinekoteletter",
     "SvinIndrefilet",
-    "ProteinshakeWhey"
   ],
   byIds: {
+    "Manchego": {
+      type: itemType,
+      id: "Manchego",
+      name: "Manchego",
+      protein: 40,
+      calories: 688,
+      grams: 150,
+    },
     "CottageCheeseOriginal": {
       type: itemType,
       id: "CottageCheeseOriginal",
@@ -36,6 +47,22 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
       protein: 54,
       calories: 384,
       grams: 400,
+    },
+    "Whey": {
+      type: itemType,
+      id: "Whey",
+      name: "Whey",
+      protein: 20,
+      calories: 100,
+      grams: 30,
+    },
+    "Whey_Double": {
+      type: itemType,
+      id: "Whey_Double",
+      name: "Whey Double",
+      protein: 41,
+      calories: 200,
+      grams: 60,
     },
     "Egg": {
       type: itemType,
@@ -206,14 +233,6 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
       protein: 132,
       calories: 690,
       grams: 600,
-    },
-    "ProteinshakeWhey": {
-      type: itemType,
-      id: "ProteinshakeWhey",
-      name: "ProteinshakeWhey",
-      protein: 22,
-      calories: 140,
-      grams: 30,
     },
   }
 }

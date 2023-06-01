@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import { Input, useInput } from "@geist-ui/core";
+import { Github } from '@geist-ui/icons'
+import ClickAndDragWrapper from "@/diet/components/ClickAndDragWrapper";
 
 type GramToggleProps = {
   originalGrams?: number
@@ -14,7 +17,7 @@ function GramToggle({
   const [modificationMode, setModificationMode] = useState<'grams' | 'percentage' | 'items'>('grams');
 
   useEffect(() => {
-    console.log('', );
+    console.log('',);
     onGramChange(grams)
   }, [grams])
 
@@ -29,8 +32,8 @@ function GramToggle({
   };
 
   const handleItemsChange = (num: number) => {
-    const newGrams = originalGrams*num
-    console.log('handleItemsChange', num,grams, newGrams);
+    const newGrams = originalGrams * num
+    console.log('handleItemsChange', num, grams, newGrams);
     setGrams(newGrams)
   };
 
@@ -57,18 +60,53 @@ function GramToggle({
     }
   };
 
+  const { state, setState, reset, bindings } = useInput('Geist UI')
+
+  useEffect(() => {
+    console.log('state', state)
+  }, [state])
+
   const prosentage = grams / originalGrams
+  const currentValue = modificationMode === 'percentage'
+    ? prosentage * 100
+    : (modificationMode === 'items'
+      ? prosentage
+      : grams)
+  const max = modificationMode === 'items' ? 100 : 10000
+  const increment = 1
+
   return (
     <div className="flex">
 
-      <span>Grams: </span>
+      <Input
+        width="100px"
+        value={currentValue.toFixed(0).toString()}
+        placeholder="grams"
+        iconClickable
+
+        iconRight={
+          <ClickAndDragWrapper
+            value={currentValue}
+            min={0}
+            max={max}
+            increment={increment}
+            onClick={() => {
+              console.log('onClick')
+              handleClick()
+            }}
+            onDrag={(v) => {
+              console.log('ondrag', v);
+              handleValueChange(v)
+            }}
+          >
+            <Github />
+          </ClickAndDragWrapper >
+
+        } />
+      <span>g: </span>
       <input
         type="number"
-        value={modificationMode === 'percentage'
-          ? prosentage * 100
-          : (modificationMode === 'items'
-            ? prosentage
-            : grams)}
+        value={currentValue}
         onChange={(e) => handleValueChange(Number(e.target.value))}
       />
 

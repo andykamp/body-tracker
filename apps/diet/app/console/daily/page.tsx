@@ -90,12 +90,18 @@ function DailyPage() {
         }}
         />
       </div>
-      <ul>
+      <div>
         {dailyItemsList.map((item: any) => (
-          <li key={item.id}>
-
             <ItemWrapper
               item={item}
+              onItemDelete={(item) => {
+                removeDailyItemMutation.mutate({
+                  userId: authUser?.uid,
+                  daily: daily as any,
+                  idToDelete: item.id
+                })
+              }}
+
               onItemChange={(i) => {
                 console.log('itemchange', i)
                 const d = daily || { dailyItems: [] }
@@ -112,43 +118,33 @@ function DailyPage() {
                 })
               }}
             />
+        ))}
+      </div>
+
+      {
+        query.isFetching ?
+          <div>Loading...</div>
+          : (
             <button
               onClick={() => {
-                removeDailyItemMutation.mutate({
+                const dailyMeal = createDailyMeal();
+                const d = daily || { dailyItems: [] }
+                addDailyMutation.mutate({
                   userId: authUser?.uid,
-                  daily: daily as any,
-                  idToDelete: item.id
+                  daily: {
+                    id: daily?.id || todaysDailyKey,
+                    dailyItems: [
+                      ...d?.dailyItems,
+                      dailyMeal
+                    ]
+                  }
                 })
               }}
             >
-              delete
+              Add daily meal
             </button>
-          </li>
-        ))}
-      </ul>
-
-      {query.isFetching ?
-        <div>Loading...</div>
-        : (
-          <button
-            onClick={() => {
-              const dailyMeal = createDailyMeal();
-              const d = daily || { dailyItems: [] }
-              addDailyMutation.mutate({
-                userId: authUser?.uid,
-                daily: {
-                  id: daily?.id || todaysDailyKey,
-                  dailyItems: [
-                    ...d?.dailyItems,
-                    dailyMeal
-                  ]
-                }
-              })
-            }}
-          >
-            Add daily meal
-          </button>
-        )}
+          )
+      }
     </Page >
   )
 }

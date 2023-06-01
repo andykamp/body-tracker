@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import * as t from "@/diet-server/diet.types";
 import { getStockItems, getStockSearchResults } from "@/diet-server/stock/stock.api";
+import { AutoComplete, Select } from "@geist-ui/core";
 
 type SearchInputProps = {
   onSelect: (item: t.StockItem) => void;
@@ -10,12 +11,13 @@ const SearchInput: React.FC<SearchInputProps> = ({ onSelect }) => {
   const [search, setSearch] = useState("");
   const [type, setType] = useState<"product" | "meal" | "both">("both");
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
+  const handleSearchChange = (string: string) => {
+    setSearch(string);
   };
 
-  const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setType(e.target.value as typeof type);
+  const handleTypeChange = (val: string | string[]) => {
+    console.log('val', );
+    setType(val as typeof type);
   };
 
   const handleSelect = (itemId: string) => {
@@ -23,26 +25,40 @@ const SearchInput: React.FC<SearchInputProps> = ({ onSelect }) => {
     onSelect(item);
   };
 
+
   const searchResults = getStockSearchResults({ type, search });
 
+  const stockItems = getStockItems({ type })
+
+  const options = searchResults.map((itemId) => {
+    const item = stockItems.byIds[itemId]
+    return { label: item.name, value: item.id }
+  })
+
   return (
-    <div>
-      <input type="text" value={search} onChange={handleSearchChange} />
-      <select value={type} onChange={handleTypeChange}>
-        <option value="both">Both</option>
-        <option value="product">Product</option>
-        <option value="meal">Meal</option>
-      </select>
-      <ul>
-        {searchResults.map((itemId) => (
-          <li key={itemId} onClick={() => handleSelect(itemId)}>
-            {getStockItems({ type }).byIds[itemId].name}
-          </li>
-        ))}
-      </ul>
+    <div className="flex">
+
+      <AutoComplete
+        clearable
+        value={search}
+        placeholder="Search meal/product"
+        options={options}
+        onChange={handleSearchChange}
+        onSelect={handleSelect}
+      />
+
+      <Select
+        width="100px"
+        value={type}
+        onChange={handleTypeChange}>
+        <Select.Option value="both">Both</Select.Option>
+        <Select.Option value="product">Product</Select.Option>
+        <Select.Option value="meal">Meal</Select.Option>
+      </Select>
+
     </div>
   );
 };
 
 export default SearchInput;
- 
+
