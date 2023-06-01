@@ -66,8 +66,8 @@ function DailyPage() {
     <Page>
       <h1>Daily page!</h1>
       <div>
-        <p>Calories: {dailyMacros.calories}</p>
-        <p>Proteins: {dailyMacros.proteins}</p>
+        <p>Target Calories: {user.targetCalories}</p>
+        <p>Target Proteins: {user.targetProteins}</p>
         <p>Remaining Calories: {user.targetCalories - dailyMacros.calories}</p>
         <p>Remaining Proteins: {user.targetProteins - dailyMacros.proteins}</p>
         <p className="text-red-500">Yesterdays diff Calories: {daily?.yesterdaysCaloryDiff}</p>

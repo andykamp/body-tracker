@@ -5,6 +5,7 @@ const itemType = ITEM_TYPES.PRODUCT;
 
 export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
   allIds: [
+    "Big100",
     "Manchego",
     "CottageCheeseOriginal",
     "Whey",
@@ -32,6 +33,14 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
     "SvinIndrefilet",
   ],
   byIds: {
+    "Big100": {
+      type: itemType,
+      id: "Big100",
+      name: "Big100",
+      protein: 30,
+      calories: 393,
+      grams: 100,
+    },
     "Manchego": {
       type: itemType,
       id: "Manchego",

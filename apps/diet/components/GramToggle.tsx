@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Input, useInput } from "@geist-ui/core";
 import { Github } from '@geist-ui/icons'
-import ClickAndDragWrapper from "@/diet/components/ClickAndDragWrapper";
+import ClickAndDragWrapper from "@/diet/components/DraggableLabel";
 
 type GramToggleProps = {
   originalGrams?: number
@@ -32,7 +32,7 @@ function GramToggle({
   };
 
   const handleItemsChange = (num: number) => {
-    const newGrams = originalGrams * num
+    const newGrams = Math.round(originalGrams * num)
     console.log('handleItemsChange', num, grams, newGrams);
     setGrams(newGrams)
   };
@@ -111,7 +111,7 @@ function GramToggle({
       />
 
       <button onClick={handleClick}>
-        {modificationMode}
+            <Github />
       </button>
     </div>
   );
