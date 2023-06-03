@@ -10,6 +10,8 @@ function Weight() {
     queryFn: () => withingsApi.getAuthCode()
   })
 
+   withingsApi.getAuthCode()
+
   const query = useQuery({
     queryKey: ['getMeasurements'],
     queryFn: () => withingsApi.getMeasurements({
