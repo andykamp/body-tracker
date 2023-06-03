@@ -5,7 +5,7 @@ type InputData = {
   measures: { value: number; unit: number; }[];
 };
 
-type OutputData = { time: string; value: number; };
+type OutputData = { time: number; value: number; };
 
 function adjustValueByUnit(value: number, unit: number): number {
   const decimalFactor = Math.pow(10, Math.abs(unit));
@@ -14,7 +14,7 @@ function adjustValueByUnit(value: number, unit: number): number {
 
 function parseData(data: InputData[]): OutputData[] {
   return data.map(({ date, measures }) => {
-    const time = new Date(date * 1000).toISOString(); // Assuming 'date' is UNIX timestamp in seconds
+    const time = date * 1000
 
     let totalValue = 0;
     measures.forEach(measure => {
