@@ -7,7 +7,7 @@ import useQueryParams from '@/diet/utils/queryParams';
 import { useUserContext } from "@/diet/utils/UserProvider";
 import withingsApi from '@/withings/withings.api';
 import userApi from '@/diet-server/user/user.api';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import {
   useMutation,
   useQueryClient,
@@ -16,6 +16,7 @@ import {
 function Withings() {
   const router = useRouter()
   const queryClient = useQueryClient()
+  const hasBeenSet = useRef(false);
 
   const { user } = useUserContext()
   const { code } = useQueryParams()
@@ -29,16 +30,19 @@ function Withings() {
   })
 
   useEffect(() => {
-    if (!code || !user || !user.id) return;
+    if (!code || !user || !user.id || hasBeenSet.current) return;
 
-    console.log('fetching access token', code );
+    hasBeenSet.current = true;
+    console.log('fetching access token', code);
+
     const fetchAccessToken = async () => {
       const accessResponse = await withingsApi.getAccessToken({ code });
       console.log('accessResponse', accessResponse);
+      if (!accessResponse || !accessResponse.body.access_token) return;
 
       const updatedUser = {
         ...user,
-        withings: accessResponse
+        withings: accessResponse.body
       };
       console.log('updatedUser', updatedUser);
       addAccessTokenMutation.mutate({ uid: user.id, user: updatedUser });

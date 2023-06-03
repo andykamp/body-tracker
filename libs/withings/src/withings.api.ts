@@ -221,6 +221,7 @@ async function getMeasurements({
   // Handle the response as needed
   const responseData = await response.json();
   console.log('Measurements response:', responseData);
+  return responseData
 }
 
 const withingsApi = {
