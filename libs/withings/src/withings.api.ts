@@ -69,20 +69,28 @@ async function getAuthCode(): Promise<string> {
 
   const url = `https://account.withings.com/oauth2_user/authorize2?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${encodeURIComponent(state)}&scope=${encodeURIComponent(scope)}`;
 
-  const response = await fetch(url, {
-    method: 'GET',
-    redirect: 'follow'
-  });
+  try {
+    console.log('getting auth code', url);
+    const response = await fetch(url, {
+      method: 'GET',
+      redirect: 'follow'
+    });
 
-  if (!response.ok) {
-    throw new Error(`Failed to get authorization code: ${response.status} ${response.statusText}`);
+    if (!response.ok) {
+      throw new Error(`Failed to get authorization code: ${response.status} ${response.statusText}`);
+    }
+
+    // Handle the response as needed
+    console.log('token1', response.redirected, response.url)
+    // const responseData = await response.json();
+    // console.log('Authorization response:', responseData);
+    return response.url
+  }
+  catch (e) {
+    console.error(e);
+    return ''
   }
 
-  // Handle the response as needed
-  console.log('token1', response.redirected, response.url)
-  // const responseData = await response.json();
-  // console.log('Authorization response:', responseData);
-  return response.url
 }
 
 // Define your other functions for Withings API here
@@ -108,7 +116,7 @@ async function getAccessToken({ code }: GetAccessTokenInput): Promise<any> {
     redirect_uri: redirectUri
   };
 
-  console.log('getAccessToken',url, body );
+  console.log('getAccessToken', url, body);
   const response = await fetch(url, {
     method: 'POST',
     headers: {
