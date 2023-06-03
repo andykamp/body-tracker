@@ -12,6 +12,7 @@ function generateSignature(): string {
   const clientSecret = process.env.NEXT_PUBLIC_WITHINGS_CLIENT_SECRET;
 
   if (!clientId || !clientSecret) {
+    console.error('Required environment variable is not defined' );
     throw new Error('Required environment variable is not defined');
   }
 
