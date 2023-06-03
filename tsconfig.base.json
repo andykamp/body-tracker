@@ -19,6 +19,7 @@
       "@/auth/*": ["libs/auth/src/*"],
       "@/common/*": ["libs/common/src/*"],
       "@/diet-server/*": ["libs/diet-server/src/*"],
+      "@/withings/*": ["libs/withings/src/*"],
       "@/ui/*": ["libs/ui/src/*"],
       "@/diet/*": ["apps/diet/*"],
       "@/test-app/*": ["apps/test-app/*"]

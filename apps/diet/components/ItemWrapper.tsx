@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import * as t from '@/diet-server/diet.types'
 import GramToggle from "@/diet/components/GramToggle";
-import { Input, useInput } from "@geist-ui/core";
+import { Input } from "@geist-ui/core";
 import { Github } from '@geist-ui/icons'
 
 type RequiredItem = Omit<t.Item, 'item'> & Required<Pick<t.Item, 'item'>>;

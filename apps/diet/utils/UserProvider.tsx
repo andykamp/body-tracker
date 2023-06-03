@@ -30,7 +30,7 @@ export function UserContextProvider({
 
   const query = useQuery({
     queryKey: ['getUser'],
-    queryFn: () => userApi.getUser({ uid: (authUser as any).uid }),
+    queryFn: () => authUser ? userApi.getUser({ uid: authUser.uid }) : Promise.resolve(undefined),
     enabled: !!authUser
   })
 

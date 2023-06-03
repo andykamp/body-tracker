@@ -112,6 +112,15 @@ export type DailyDiet = {
   yesterdaysProteinDiff?: number;
 }
 
+// filled out daily
+export type DailyDietItem = DailyDiet & {
+  item: Item;
+};
+
+export type DailyDietWithItem = DailyDiet & {
+  dailyItems: DailyDietItem[];
+};
+
 // stock
 
 export type StockType = ItemType | "both"

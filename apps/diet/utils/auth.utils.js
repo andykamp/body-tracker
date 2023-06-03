@@ -12,7 +12,7 @@ export function useAuthRedirect() {
 
   React.useEffect(() => {
     if (user == null) router.push("/login")
-  }, [user])
+  }, [user, router])
 
   return user
 }

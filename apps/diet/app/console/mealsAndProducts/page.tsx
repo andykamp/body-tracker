@@ -35,20 +35,20 @@ export function createMeal() {
 
 function MealsAndProductsPage() {
   const { user } = useAuthContext()
-  if (!user) {
-    return null
-  }
 
   const queryClient = useQueryClient()
 
   const productsQuery = useQuery({
     queryKey: ['getProductForCurrentUser'],
-    queryFn: () => productApi.getProducts({ userId: user?.uid })
+    queryFn: () => user ? productApi.getProducts({ userId: user.uid }) : Promise.resolve(null),
+    enabled: !!user
+
   })
 
   const mealsQuery = useQuery({
     queryKey: ['getMealsForCurrentUser'],
-    queryFn: () => mealApi.getMeals({ userId: user?.uid })
+    queryFn: () => user ? mealApi.getMeals({ userId: user.uid }) : Promise.resolve(null),
+    enabled: !!user
   })
 
   const addProductMutation = useMutation({
@@ -90,6 +90,10 @@ function MealsAndProductsPage() {
       queryClient.invalidateQueries({ queryKey: ['getDaily'] })
     },
   })
+
+  if (!user) {
+    return null
+  }
 
   const meals = mealsQuery.data
   const mealsList = meals ? Object.values(meals) : []

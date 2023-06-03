@@ -35,7 +35,7 @@ export function createMealObject({
 
     fromCustomDaily,
     createdAt: getISODate(),
-    updatedAt: null,
+    updatedAt: undefined,
   };
 
   return meal;

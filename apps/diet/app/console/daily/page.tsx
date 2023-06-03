@@ -23,9 +23,6 @@ function createDailyMeal() {
 function DailyPage() {
   const { user: authUser } = useAuthContext()
   const { user } = useUserContext()
-  if (!authUser || !user) {
-    return null
-  }
 
   const queryClient = useQueryClient()
   const todaysDailyKey = React.useMemo(() => dailyApi.getTodaysDailyKey(), [])
@@ -33,7 +30,8 @@ function DailyPage() {
 
   const query = useQuery({
     queryKey: ['getDaily'],
-    queryFn: () => dailyApi.getDaily({ userId: authUser.uid, dateKey: todaysDailyKey })
+    queryFn: () => authUser ? dailyApi.getDaily({ userId: authUser.uid, dateKey: todaysDailyKey }) : Promise.resolve(null),
+    enabled: !!authUser
   })
 
   const addDailyMutation = useMutation({
@@ -57,6 +55,10 @@ function DailyPage() {
       queryClient.invalidateQueries({ queryKey: ['getDaily'] })
     },
   })
+
+  if (!authUser || !user) {
+    return null
+  }
 
   const daily = query.data
   const dailyItemsList = daily?.dailyItems ? daily?.dailyItems : []
@@ -92,32 +94,33 @@ function DailyPage() {
       </div>
       <div>
         {dailyItemsList.map((item: any) => (
-            <ItemWrapper
-              item={item}
-              onItemDelete={(item) => {
-                removeDailyItemMutation.mutate({
-                  userId: authUser?.uid,
-                  daily: daily as any,
-                  idToDelete: item.id
-                })
-              }}
+          <ItemWrapper
+            key={item.id}
+            item={item}
+            onItemDelete={(item) => {
+              removeDailyItemMutation.mutate({
+                userId: authUser?.uid,
+                daily: daily as any,
+                idToDelete: item.id
+              })
+            }}
 
-              onItemChange={(i) => {
-                console.log('itemchange', i)
-                const d = daily || { dailyItems: [] }
-                const di = d.dailyItems.map(obj => obj.id === i.id ? i : obj);
+            onItemChange={(i) => {
+              console.log('itemchange', i)
+              const d = daily || { dailyItems: [] }
+              const di = d.dailyItems.map(obj => obj.id === i.id ? i : obj);
 
-                updateDailyMutation.mutate({
-                  userId: authUser?.uid,
-                  daily: {
-                    id: daily?.id || todaysDailyKey,
-                    dailyItems: [
-                      ...di
-                    ]
-                  }
-                })
-              }}
-            />
+              updateDailyMutation.mutate({
+                userId: authUser?.uid,
+                daily: {
+                  id: daily?.id || todaysDailyKey,
+                  dailyItems: [
+                    ...di
+                  ]
+                }
+              })
+            }}
+          />
         ))}
       </div>
 
@@ -129,12 +132,13 @@ function DailyPage() {
               onClick={() => {
                 const dailyMeal = createDailyMeal();
                 const d = daily || { dailyItems: [] }
+                const dItems = d.dailyItems || []
                 addDailyMutation.mutate({
                   userId: authUser?.uid,
                   daily: {
                     id: daily?.id || todaysDailyKey,
                     dailyItems: [
-                      ...d?.dailyItems,
+                      ...dItems,
                       dailyMeal
                     ]
                   }

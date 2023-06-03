@@ -33,7 +33,7 @@ type GetDailyInput = {
   userId: string,
   dateKey: string
 }
-export async function getDaily({ userId, dateKey }: GetDailyInput): Promise<t.DailyDiet> {
+export async function getDaily({ userId, dateKey }: GetDailyInput): Promise<t.DailyDietWithItem> {
   let r: t.DailyDiet = await baseApi.makeReqAndExec<t.DailyDiet>({
     proc: "getDaily",
     vars: {
@@ -51,7 +51,7 @@ export async function getDaily({ userId, dateKey }: GetDailyInput): Promise<t.Da
       item.item = await itemApi.getOriginalFromItem(item, { meals, products, stockItems })
     }
 
-    return r
+    return r as t.DailyDietWithItem
   }
   else {
 
@@ -86,7 +86,7 @@ export async function getDaily({ userId, dateKey }: GetDailyInput): Promise<t.Da
         daily: newDaily
       }
     })
-    return newDaily
+    return newDaily as t.DailyDietWithItem
   }
 }
 
@@ -139,39 +139,39 @@ export async function removeDailyItem({ userId, daily, idToDelete }: RemoveDaily
 }
 
 // Calculate the user's daily calorie intake
-function calculateDailyCalories(daily: t.DailyDiet): number {
-
+function calculateDailyCalories(daily: t.DailyDietWithItem): number {
   let totalCalories = 0;
   for (const item of daily.dailyItems) {
-    totalCalories += (item.item.calories * item.prosentage) || 0;
+    const calories = item.item.calories || 0;
+    totalCalories += (calories * item.prosentage);
   }
   return totalCalories;
 }
 
 // Calculate the user's daily protein intake
-function calculateDailyProteins(daily: t.DailyDiet): number {
+function calculateDailyProteins(daily: t.DailyDietWithItem): number {
   let totalProteins = 0;
   for (const item of daily.dailyItems) {
-
-    totalProteins += (item.item.protein * item.prosentage) || 0;
+    const protein = item.item.protein || 0;
+    totalProteins += (protein * item.prosentage);
   }
   return totalProteins;
 }
 
-
-function calculateDailyMacros(daily: t.DailyDiet): { calories: number, proteins: number } {
-
+function calculateDailyMacros(daily: t.DailyDietWithItem): { calories: number, proteins: number } {
   let totalProteins = 0;
   let totalCalories = 0;
   for (const item of daily.dailyItems) {
-    totalProteins += (item.item.protein * item.prosentage) || 0;
-    totalCalories += (item.item.calories * item.prosentage) || 0;
+    const protein = item.item.protein || 0;
+    const calories = item.item.calories || 0;
+    totalProteins += (protein * item.prosentage);
+    totalCalories += (calories * item.prosentage);
   }
 
   return {
     calories: totalCalories,
-    proteins: totalProteins
-  }
+    proteins: totalProteins,
+  };
 }
 
 const dailyApi = {

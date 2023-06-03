@@ -27,7 +27,7 @@ export function createProductObject({
     calories,
     grams,
     createdAt: getISODate(),
-    updatedAt: null,
+    updatedAt: undefined,
   };
 
   return product;

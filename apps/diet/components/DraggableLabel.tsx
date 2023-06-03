@@ -48,7 +48,7 @@ type WrapperProps = {
     // Only change the value if the drag was actually started.
     const onUpdate = (event:any) => {
       if (startVal) {
-        let deltaX = event.clientX - startVal;
+        const deltaX = event.clientX - startVal;
         let newValue = snapshot + (deltaX * increment);
         newValue = Math.max(Math.min(newValue, max), min); // Clamp to min and max
         setValue(newValue);
