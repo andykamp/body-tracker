@@ -65,6 +65,7 @@ type UpdateUserInput = {
 
 async function updateUser({ uid, user }: UpdateUserInput): Promise<t.ResponseResult> {
   try {
+    console.log('updateUser', uid, user);
     const r = await baseApi.makeReqAndExec<t.User>({
       proc: "updateUser",
       vars: {
@@ -72,11 +73,13 @@ async function updateUser({ uid, user }: UpdateUserInput): Promise<t.ResponseRes
         user
       }
     })
+    console.log('r', r);
     return {
       success: true,
       message: "User added successfully",
     };
   } catch (e) {
+    console.log('errror', e);
     return {
       success: false,
       message: e
