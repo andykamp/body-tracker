@@ -8,6 +8,7 @@ module.exports = {
       __dirname,
       '{src,app,pages,components}/**/*!(*.stories|*.spec).{ts,tsx,html}'
     ),
+    "./node_modules/@tremor/**/*.{js,ts,jsx,tsx}",
     ...createGlobPatternsForDependencies(__dirname),
   ],
   theme: {

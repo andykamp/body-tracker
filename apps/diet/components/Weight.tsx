@@ -4,6 +4,7 @@ import {
 } from '@tanstack/react-query'
 import { useUserContext } from "@/diet/utils/UserProvider";
 import { useEffect, useState } from 'react';
+import WeightChart from './WeightChart';
 
 function Weight() {
 
@@ -41,7 +42,7 @@ function Weight() {
         body: JSON.stringify({
           accessToken: accessToken,
           measureType: 1,
-          lastUpdate: 0,
+          // lastUpdate: 0,
         })
       })
       .then(response => {
@@ -52,7 +53,7 @@ function Weight() {
       .then(data => {
         // Do something with the data
         console.log('getWeightData', data);
-        setM(data);
+        setM(data.body);
       })
       .catch(err => console.log(err));
 
@@ -63,11 +64,13 @@ function Weight() {
   // const measurements = query.data
   // console.log('measurements', measurements);
 
+  console.log('mmmmm,',m );
   return (
     <div>
       <a href={redirectUrl}>click here to get access</a>
 
       <div> Measurements</div>
+      {m && <WeightChart data={(m as any)?.measuregrps} />}
       <pre>
         {JSON.stringify(m, null, 2)}
       </pre>

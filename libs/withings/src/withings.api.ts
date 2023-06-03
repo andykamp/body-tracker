@@ -205,7 +205,7 @@ async function getMeasurements({
   const body: Record<string, any> = {
     action: 'getmeas',
     meastypes: measureType,
-    lastupdate: lastUpdate,
+    // lastupdate: lastUpdate,
   }
 
   const response = await fetch(url, {
