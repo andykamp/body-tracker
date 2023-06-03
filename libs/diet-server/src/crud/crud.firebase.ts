@@ -102,6 +102,7 @@ export async function deleteDaily({ userId, id }: { userId: string; id: string }
 const firebaseCrudApi = {
   getUser,
   addUser,
+  updateUser,
   deleteUser,
   getMeals,
   getMeal,
