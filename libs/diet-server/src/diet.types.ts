@@ -49,6 +49,8 @@ export type User = {
 
   deficitOrSurplus?: number; // manual override
   caloryExpenditure?: number; // manual override
+
+  withings?: any;
 }
 
 // product

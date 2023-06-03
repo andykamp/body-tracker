@@ -57,7 +57,7 @@ async function getNonce(): Promise<string> {
   return nonce;
 }
 
-async function getAuthCode(): Promise<void> {
+async function getAuthCode(): Promise<string> {
   const clientId = process.env.NEXT_PUBLIC_WITHINGS_CLIENT_ID;
   const redirectUri = process.env.NEXT_PUBLIC_WITHINGS_OAUTH2_REDIRECT_URI;
   const state = uuid()
@@ -82,14 +82,49 @@ async function getAuthCode(): Promise<void> {
   console.log('token1', response.redirected, response.url)
   // const responseData = await response.json();
   // console.log('Authorization response:', responseData);
+  return response.url
 }
 
 // Define your other functions for Withings API here
 // ...
 
-async function getAccessToken(): Promise<void> {
-  // ...
+type GetAccessTokenInput = {
+  code: string
 }
+
+async function getAccessToken({ code }: GetAccessTokenInput): Promise<any> {
+  const clientId = process.env.NEXT_PUBLIC_WITHINGS_CLIENT_ID;
+  const clientSecret = process.env.NEXT_PUBLIC_WITHINGS_CLIENT_SECRET;
+  const redirectUri = process.env.NEXT_PUBLIC_WITHINGS_OAUTH2_REDIRECT_URI;
+  const baseUrl = process.env.NEXT_PUBLIC_WITHINGS_BASE_URL;
+
+  const url = `${baseUrl}/v2/oauth2`;
+  const body = {
+    action: "requesttoken",
+    client_id: clientId,
+    client_secret: clientSecret,
+    grant_type: "authorization_code",
+    code,
+    redirect_uri: redirectUri
+  };
+
+  console.log('getAccessToken',url, body );
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: createFormBody(body),
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data;
+}
+
 
 async function refreshAccesstoken(): Promise<void> {
   // ...
@@ -105,7 +140,9 @@ async function getMeasurements({
   lastUpdate = 0
 }: GetMeasurementsInput): Promise<void> {
   const nonce = await withingsApi.getNonce()
-  const a = await withingsApi.getAuthCode()
+  const code = await withingsApi.getAuthCode()
+  // console.log('nounce', nonce );
+  // console.log('code', code );
 
   const oneDayInSeconds = 24 * 60 * 60;
   lastUpdate = timestamp - oneDayInSeconds;
