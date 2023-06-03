@@ -11,7 +11,7 @@ import { useAuthContext } from "@/auth-client/firebase/auth.context";
 import StockSearch from '@/diet/components/StockSearch'
 import itemApi from '@/diet-server/item/item.api'
 import { ITEM_TYPES } from '@/diet-server/diet.constants'
-import { createMeal } from '../mealsAndProducts/page'
+import { createMeal } from '@/diet/utils/misc'
 import { useUserContext } from "@/diet/utils/UserProvider";
 import ItemWrapper from "@/diet/components/ItemWrapper";
 
