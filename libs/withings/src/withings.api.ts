@@ -12,7 +12,7 @@ function generateSignature(): string {
   const clientSecret = process.env.NEXT_PUBLIC_WITHINGS_CLIENT_SECRET;
 
   if (!clientId || !clientSecret) {
-    console.error('Required environment variable is not defined' );
+    console.error('Required environment variable is not defined');
     throw new Error('Required environment variable is not defined');
   }
 
@@ -65,7 +65,7 @@ async function getAuthCode(): Promise<string> {
   const scope = process.env.NEXT_PUBLIC_WITHINGS_SCOPE;
 
   if (!clientId || !redirectUri || !scope) {
-    console.error('Required environment variable is not defined' );
+    console.error('Required environment variable is not defined');
     throw new Error('Required environment variable is not defined');
   }
 
@@ -122,7 +122,7 @@ async function getAccessToken({ code }: GetAccessTokenInput): Promise<any> {
   const response = await fetch(url, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: createFormBody(body),
   });
@@ -135,21 +135,57 @@ async function getAccessToken({ code }: GetAccessTokenInput): Promise<any> {
   return data;
 }
 
+type RefreshAccessTokenInput = {
+  refreshToken: string
+}
+
+async function refreshAccessToken({ refreshToken }: RefreshAccessTokenInput): Promise<any> {
+  const clientId = process.env.NEXT_PUBLIC_WITHINGS_CLIENT_ID;
+  const clientSecret = process.env.NEXT_PUBLIC_WITHINGS_CLIENT_SECRET;
+  const baseUrl = process.env.NEXT_PUBLIC_WITHINGS_BASE_URL;
+
+  const url = `${baseUrl}/v2/oauth2`;
+  const body = {
+    action: "requesttoken",
+    client_id: clientId,
+    client_secret: clientSecret,
+    grant_type: "refresh_token",
+    refresh_token: refreshToken,
+  };
+
+  console.log('refreshAccessToken', url, body);
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: createFormBody(body),
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data;
+}
 
 async function refreshAccesstoken(): Promise<void> {
   // ...
 }
 
 type GetMeasurementsInput = {
+  accessToken: string,
   measureType: number,
   lastUpdate: number
 }
 
 async function getMeasurements({
+  accessToken,
   measureType = 1, // 1 is weight
   lastUpdate = 0
 }: GetMeasurementsInput): Promise<void> {
-  console.log('getMeaurements', );
+  console.log('getMeaurements',accessToken);
   // const nonce = await withingsApi.getNonce()
   // const code = await withingsApi.getAuthCode()
   // console.log('nounce', nonce );
@@ -158,7 +194,7 @@ async function getMeasurements({
   const oneDayInSeconds = 24 * 60 * 60;
   lastUpdate = timestamp - oneDayInSeconds;
 
-  const accessToken = process.env.NEXT_PUBLIC_WITHINGS_ACCESS_TOKEN;
+  // const accessToken = process.env.NEXT_PUBLIC_WITHINGS_ACCESS_TOKEN;
 
   const url = 'https://scalews.withings.com/measure';
 
