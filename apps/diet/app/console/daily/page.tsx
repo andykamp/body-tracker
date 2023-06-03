@@ -27,7 +27,6 @@ function DailyPage() {
   const queryClient = useQueryClient()
   const todaysDailyKey = React.useMemo(() => dailyApi.getTodaysDailyKey(), [])
 
-
   const query = useQuery({
     queryKey: ['getDaily'],
     queryFn: () => authUser ? dailyApi.getDaily({ userId: authUser.uid, dateKey: todaysDailyKey }) : Promise.resolve(null),
