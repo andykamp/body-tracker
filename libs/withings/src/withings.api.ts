@@ -64,6 +64,7 @@ async function getAuthCode(): Promise<string> {
   const scope = process.env.NEXT_PUBLIC_WITHINGS_SCOPE;
 
   if (!clientId || !redirectUri || !scope) {
+    console.error('Required environment variable is not defined' );
     throw new Error('Required environment variable is not defined');
   }
 
@@ -147,8 +148,9 @@ async function getMeasurements({
   measureType = 1, // 1 is weight
   lastUpdate = 0
 }: GetMeasurementsInput): Promise<void> {
-  const nonce = await withingsApi.getNonce()
-  const code = await withingsApi.getAuthCode()
+  console.log('getMeaurements', );
+  // const nonce = await withingsApi.getNonce()
+  // const code = await withingsApi.getAuthCode()
   // console.log('nounce', nonce );
   // console.log('code', code );
 
