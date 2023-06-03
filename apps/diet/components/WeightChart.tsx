@@ -23,7 +23,7 @@ function parseData(data: InputData[]): OutputData[] {
 
     const averageValue = totalValue / measures.length;
 
-    return { time, value: averageValue };
+    return { time, value: Math.floor(averageValue) };
   });
 }
 
@@ -35,7 +35,7 @@ export default function Chart({
   data
 }: ChartInput) {
   const parsedData = parseData(data);
-  console.log('parsedDat',parsedData);
+  console.log('parsedDat', parsedData);
   return (
     <Card className="mt-8">
       <Title>Performance</Title>
@@ -45,6 +45,7 @@ export default function Chart({
         data={parsedData}
         index="time"
         categories={['weight']}
+        colors={["cyan"]}
       />
     </Card>
   );
