@@ -5,7 +5,7 @@ type InputData = {
   measures: { value: number; unit: number; }[];
 };
 
-type OutputData = { time: number; value: number; };
+type OutputData = { time: number; weight: number; };
 
 function adjustValueByUnit(value: number, unit: number): number {
   const decimalFactor = Math.pow(10, Math.abs(unit));
@@ -23,7 +23,7 @@ function parseData(data: InputData[]): OutputData[] {
 
     const averageValue = totalValue / measures.length;
 
-    return { time, value: Math.floor(averageValue) };
+    return { time, weight: averageValue };
   });
 }
 
