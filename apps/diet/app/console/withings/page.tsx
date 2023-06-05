@@ -42,10 +42,13 @@ function Withings() {
       try {
         const accessResponse = await withingsApi.getAccessToken({ code });
         console.log('accessResponse', accessResponse);
+
         if (accessResponse.error || !accessResponse?.body?.access_token) {
           setError(accessResponse.error);
           setIsLoading(false);
+          return
         }
+
         setAccessResponse(accessResponse.body);
 
         const updatedUser = {

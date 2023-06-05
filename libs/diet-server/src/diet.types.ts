@@ -33,6 +33,13 @@ export type BMIResult = {
   category: BMICategory;
 };
 
+// whitings
+export type Withings = {
+  access_token: string;
+  refresh_token: string;
+}
+
+
 // user
 
 export type User = {
@@ -50,7 +57,7 @@ export type User = {
   deficitOrSurplus?: number; // manual override
   caloryExpenditure?: number; // manual override
 
-  withings?: any;
+  withings?: Withings;
 }
 
 // product

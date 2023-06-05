@@ -2,8 +2,8 @@
 import React from "react";
 import { useAuthContext } from "@/auth-client/firebase/auth.context";
 import { useUserContext } from "@/diet/utils/UserProvider";
-import WithingsWeight from "@/diet/components/WithingsWeight";
-import WithingsAccess from "@/diet/components/WithingsAccess";
+import WithingsWeight from "@/diet/components/withings/WithingsWeight";
+import WithingsAccess from "@/diet/components/withings/WithingsAccess";
 
 function ProfilePage() {
   const { user: authUser } = useAuthContext()

@@ -8,6 +8,7 @@ import {
 } from '@tanstack/react-query'
 import { UserContextProvider } from '@/diet/utils/UserProvider'
 import ThemeProvider from '@/diet/components/ThemeProvider'
+import { WithingsContextProvider } from '../utils/WithingsProvider'
 
 // Create a client
 const queryClient = new QueryClient()
@@ -26,13 +27,15 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <head />
       <body>
         <ThemeProvider>
-        <AuthContextProvider>
-          <QueryClientProvider client={queryClient}>
-            <UserContextProvider>
-            {children}
-            </UserContextProvider>
-          </QueryClientProvider>
-        </AuthContextProvider>
+          <AuthContextProvider>
+            <QueryClientProvider client={queryClient}>
+              <UserContextProvider>
+                <WithingsContextProvider>
+                  {children}
+                </WithingsContextProvider>
+              </UserContextProvider>
+            </QueryClientProvider>
+          </AuthContextProvider>
         </ThemeProvider>
         <Analytics />
       </body>
