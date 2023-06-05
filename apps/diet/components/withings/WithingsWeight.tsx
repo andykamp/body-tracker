@@ -2,10 +2,10 @@ import { useWithingsContext } from "../../utils/WithingsProvider";
 import WeightChart from '../WeightChart';
 
 function WithingsWeight() {
-  const {measurementState} = useWithingsContext();
-  if(!measurementState) return null;
+  const { weightState } = useWithingsContext();
+  if (!weightState) return null;
 
-  const {measurements, error, isLoading} = measurementState;
+  const { measurements, error, isLoading } = weightState;
 
   if (error) return <div>{error}</div>
   if (isLoading) return <div>Loading...</div>

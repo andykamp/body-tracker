@@ -16,12 +16,19 @@ interface WithingsContextValue {
   accessResponse?: AccessResponse;
   setAccessResponse?: (accessResponse: AccessResponse) => void;
   redirectUrlState?: RedirectState;
-  measurementState?: MeasurementState;
+  weightState?: MeasurementState;
 }
 
 export const WithingsContext = createContext<WithingsContextValue>({});
 
 export const useWithingsContext = () => useContext(WithingsContext);
+
+
+const MEASURE_TYPE = {
+  weight: 1,
+  fatMass: 8,
+  muscleMass: 76
+}
 
 type WithingsContextProviderProps = {
   children: ReactNode;
@@ -34,7 +41,10 @@ export function WithingsContextProvider({
 
   const [accessResponse, setAccessResponse] = useState<AccessResponse | undefined>(user?.withings);
 
-  const [measurementState, setMeasurementState] = useState<MeasurementState>();
+  const [weightState, setWeightState] = useState<MeasurementState>();
+  const [fatMassState, setFatMassState] = useState<MeasurementState>();
+  const [muscleMassState, setMuscleMassState] = useState<MeasurementState>();
+
 
   // get redirect url
   // @todo: rename to getAuthCodeUrl
@@ -50,20 +60,59 @@ export function WithingsContextProvider({
     setAccessResponse(user?.withings)
   }, [user?.withings])
 
+  //
   // get withings measurements
-  const mState = useWithingsMeasurements({
-    accessResponse
+  //
+
+  const wState = useWithingsMeasurements({
+    inputs: {
+      accessToken: accessResponse?.access_token,
+      refreshToken: accessResponse?.refresh_token,
+      measureType: MEASURE_TYPE.weight,
+    }
   })
 
   // only called once
   useEffect(() => {
-    if (!mState || measurementState) return;
-    console.log('settings measurementState', mState);
-    setMeasurementState(mState)
-  }, [mState])
+    if (!wState || weightState) return;
+    console.log('settings weightState', wState);
+    setWeightState(wState)
+  }, [wState])
+
+  const mmState = useWithingsMeasurements({
+    inputs: {
+      accessToken: accessResponse?.access_token,
+      refreshToken: accessResponse?.refresh_token,
+      measureType: MEASURE_TYPE.muscleMass,
+    }
+  })
+
+  // only called once
+  useEffect(() => {
+    if (!mmState || muscleMassState) return;
+    console.log('settings muclemass', mmState);
+    setMuscleMassState(mmState)
+  }, [mmState])
+
+  const fmState = useWithingsMeasurements({
+    inputs: {
+      accessToken: accessResponse?.access_token,
+      refreshToken: accessResponse?.refresh_token,
+      measureType: MEASURE_TYPE.fatMass,
+    }
+  })
+
+  // only called once
+  useEffect(() => {
+    if (!fmState || fatMassState) return;
+    console.log('settings fatmass', fmState);
+    setFatMassState(fmState)
+  }, [fmState])
+
+  //
 
   return (
-    <WithingsContext.Provider value={{ redirectUrlState, accessResponse, setAccessResponse, measurementState }
+    <WithingsContext.Provider value={{ redirectUrlState, accessResponse, setAccessResponse, weightState }
     }>
       {
         children
