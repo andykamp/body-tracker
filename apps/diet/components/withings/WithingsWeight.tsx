@@ -2,10 +2,10 @@ import { useWithingsContext } from "../../utils/WithingsProvider";
 import WeightChart from '../WeightChart';
 
 function WithingsWeight() {
-  const { weightState } = useWithingsContext();
-  if (!weightState) return null;
+  const { measurementState } = useWithingsContext();
+  if (!measurementState) return null;
 
-  const { measurements, error, isLoading } = weightState;
+  const { measurements, error, isLoading } = measurementState;
 
   if (error) return <div>{error}</div>
   if (isLoading) return <div>Loading...</div>
@@ -13,14 +13,14 @@ function WithingsWeight() {
   return (
     <div>
       <div> Measurements</div>
-      {measurements ?
+      {measurements?.weight ?
         <>
-          <WeightChart data={(measurements as any)?.measuregrps} />
+          <WeightChart data={(measurements?.weight as any)?.measuregrps} />
           <pre>
             {JSON.stringify(measurements, null, 2)}
           </pre>
         </>
-        : <div>No measurements found</div>
+        : <div>No weight found</div>
       }
     </div>
   )

@@ -49,42 +49,39 @@ export type MeasurementState = {
   isLoading: boolean
 }
 
-export type WithingsMeasurementsInputs = {
-  accessToken?: string;
-  refreshToken?: string;
-  measureType?: number;
-
-}
-
 type useWithingsMeasurementsProps = {
-  inputs: WithingsMeasurementsInputs
+  accessResponse?: AccessResponse
 }
 
 function useWithingsMeasurements({
-  inputs,
+  accessResponse
 }: useWithingsMeasurementsProps): MeasurementState {
 
   const [measurements, setM] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>();
 
+  const accessToken = accessResponse?.access_token
+  const refreshToken = accessResponse?.refresh_token
 
   useEffect(() => {
-    if (!inputs) return;
-    if (!inputs.accessToken || !inputs.refreshToken || !inputs.measureType) return;
+    if (!accessToken) return;
 
     const fetchWeightData = async () => {
       try {
         setIsLoading(true);
         setError(undefined);
-        console.log('calling apiiii');
+        console.log('calling apiiii', accessToken);
         const response = await fetch('/api/getWeightData', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(inputs)
-        })
+          body: JSON.stringify({
+            accessToken,
+            refreshToken,
+          })
+        });
         console.log('response', response)
         console.log('TODO should update user with accessToken mutation',);
         const data = await response.json();
@@ -101,7 +98,7 @@ function useWithingsMeasurements({
     };
 
     fetchWeightData();
-  }, [inputs]);
+  }, [accessToken]);
 
   console.log('measurementsmmmm,', measurements);
   return { measurements, error, isLoading }
