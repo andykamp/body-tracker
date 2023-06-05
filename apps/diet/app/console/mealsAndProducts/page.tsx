@@ -1,6 +1,5 @@
 'use client'
 import React from "react";
-import Page from "@/ui/Page";
 import {
   useQuery,
   useMutation,
@@ -81,8 +80,7 @@ function MealsAndProductsPage() {
   const productsList = products ? Object.values(products) : []
 
   return (
-    <Page>
-      <h1> meals and products page!</h1>
+    <div>
       <div className="flex">
         <div className="flex flex-col">
 
@@ -155,7 +153,7 @@ function MealsAndProductsPage() {
             )}
         </div>
       </div>
-    </Page >
+    </div >
   )
 }
 

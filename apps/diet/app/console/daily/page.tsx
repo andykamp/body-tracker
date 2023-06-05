@@ -1,6 +1,5 @@
 'use client'
 import React from "react";
-import Page from "@/ui/Page";
 import {
   useQuery,
   useMutation,
@@ -64,8 +63,7 @@ function DailyPage() {
   const dailyMacros = daily ? dailyApi.calculateDailyMacros(daily) : { calories: 0, proteins: 0 }
 
   return (
-    <Page>
-      <h1>Daily page!</h1>
+    <div>
       <div>
         <p>Target Calories: {user.targetCalories}</p>
         <p>Target Proteins: {user.targetProteins}</p>
@@ -148,7 +146,7 @@ function DailyPage() {
             </button>
           )
       }
-    </Page >
+    </div >
   )
 }
 

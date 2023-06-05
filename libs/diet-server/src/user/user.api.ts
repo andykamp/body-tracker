@@ -25,13 +25,13 @@ type AddUserInput = {
 async function addUser({ uid }: AddUserInput): Promise<t.ResponseResult> {
   const initialUserData: t.User = userApi.createUserObject({
     id: uid,
-    targetCalories: calulateDailyCalories({ weight: 95, zone: 11 }),
+    targetCalories: calulateDailyCalories({ weight: 95, zone: 13 }),
     targetProteins: calulateDailyProtein({ weight: 95 }),
     weight: 95,
     height: 193,
     age: 27,
     gender: GENDER.MALE,
-    goal: 11,
+    goal: 13,
     deficitOrSurplus: 500,
     caloryExpenditure: 3000,
   });

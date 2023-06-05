@@ -3,6 +3,7 @@ import { v4 as uuid } from 'uuid';
 import { createFormBody } from '@/withings/utils';
 // const timestamp = Date.now();
 const timestamp = Math.floor(Date.now() / 1000); // Get the current timestamp in seconds
+import config from '@/withings/config';
 
 // see https://web.postman.co/workspace/2bdccbac-c484-4dfb-b164-7631036384aa/request/23220387-932d145f-4a68-4bd1-89e3-a3aa42fcd12b
 
@@ -60,7 +61,7 @@ async function getNonce(): Promise<string> {
 
 async function getAuthCode(): Promise<string> {
   const clientId = process.env.NEXT_PUBLIC_WITHINGS_CLIENT_ID;
-  const redirectUri = process.env.NEXT_PUBLIC_WITHINGS_OAUTH2_REDIRECT_URI;
+  const redirectUri = config.redirectUrl
   const state = uuid()
   const scope = process.env.NEXT_PUBLIC_WITHINGS_SCOPE;
 
@@ -105,7 +106,7 @@ type GetAccessTokenInput = {
 async function getAccessToken({ code }: GetAccessTokenInput): Promise<any> {
   const clientId = process.env.NEXT_PUBLIC_WITHINGS_CLIENT_ID;
   const clientSecret = process.env.NEXT_PUBLIC_WITHINGS_CLIENT_SECRET;
-  const redirectUri = process.env.NEXT_PUBLIC_WITHINGS_OAUTH2_REDIRECT_URI;
+  const redirectUri = config.redirectUrl
   const baseUrl = process.env.NEXT_PUBLIC_WITHINGS_BASE_URL;
 
   const url = `${baseUrl}/v2/oauth2`;
@@ -170,14 +171,10 @@ async function refreshAccessToken({ refreshToken }: RefreshAccessTokenInput): Pr
   return data;
 }
 
-async function refreshAccesstoken(): Promise<void> {
-  // ...
-}
-
 type GetMeasurementsInput = {
   accessToken: string,
   measureType: number,
-  lastUpdate: number
+  lastUpdate?: number
 }
 
 async function getMeasurements({
@@ -230,7 +227,7 @@ const withingsApi = {
   getNonce,
   getAuthCode,
   getAccessToken,
-  refreshAccesstoken,
+  refreshAccessToken,
 
   getMeasurements,
 

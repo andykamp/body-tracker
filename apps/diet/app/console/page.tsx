@@ -6,13 +6,14 @@ import { usePathname } from "next/navigation";
 import { NAVIGATION_ROUTES_CONSOLE, ROUTES_CONSOLE } from "@/diet/app/constants"
 import { useRouter } from "next/navigation";
 import Page from "@/ui/Page";
-import DailyPage from "./daily/page";
-import MealsAndProductsPage from "./mealsAndProducts/page";
-import ProfilePage from "./profile/page";
+import Daily from "./daily/page";
+import MealsAndProducts from "./mealsAndProducts/page";
+import Profile from "./profile/page";
 import { signInWithGoogle, signOutOfGoogle, deleteAccount } from '@/diet/utils/auth.utils'
 import {
   useQueryClient,
 } from '@tanstack/react-query'
+import { Button, Fieldset } from "@geist-ui/core";
 
 function ConsolePage() {
   const user = useAuthRedirect()
@@ -54,6 +55,9 @@ function ConsolePage() {
       console.error(error);
     }
   };
+  const handler = (e: any) => {
+    console.log('handler', e);
+  }
 
   return (
     <>
@@ -67,11 +71,23 @@ function ConsolePage() {
       />
       <Page>
         <h1>Only logged in users can view this page</h1>
-        <div className="flex gap-2 bg-red">
-          <DailyPage />
-          <MealsAndProductsPage />
-          <ProfilePage />
-        </div>
+        <Fieldset.Group value="Daily" onChange={handler}>
+          <Fieldset label="Daily">
+            <Fieldset.Title>Daily</Fieldset.Title>
+            <Fieldset.Subtitle>Showing you all daily goodies</Fieldset.Subtitle>
+            <Daily />
+          </Fieldset>
+          <Fieldset label="Meals and products">
+            <Fieldset.Title>Meals and products</Fieldset.Title>
+            <Fieldset.Subtitle>Meals and product goodies</Fieldset.Subtitle>
+            <MealsAndProducts />
+          </Fieldset>
+          <Fieldset label="Profile">
+            <Fieldset.Title>Profile</Fieldset.Title>
+            <Fieldset.Subtitle>Profile goodies</Fieldset.Subtitle>
+            <Profile />
+          </Fieldset>
+        </Fieldset.Group>
       </Page>
     </>
   )
