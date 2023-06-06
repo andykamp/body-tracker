@@ -1,4 +1,4 @@
-import { useWithingsContext } from "../../utils/WithingsProvider";
+import { useWithingsContext } from "@/withings-client/Provider";
 import WeightChart from '../WeightChart';
 
 function WithingsWeight() {

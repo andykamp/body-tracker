@@ -3,7 +3,7 @@ import React from "react";
 import { useAuthContext } from "@/auth-client/firebase/auth.context";
 import { useUserContext } from "@/diet/utils/UserProvider";
 import WithingsWeight from "@/diet/components/withings/WithingsWeight";
-import WithingsAccess from "@/diet/components/withings/WithingsAccess";
+import WithingsAccessCodeLink from "@/withings-client/AccessCodeLink";
 
 function ProfilePage() {
   const { user: authUser } = useAuthContext()
@@ -18,7 +18,7 @@ function ProfilePage() {
       <pre className="w-full h-40 overflow-auto">{JSON.stringify(user, null, 2)}</pre>
 
       <h3>Withings API</h3>
-      <WithingsAccess/>
+      <WithingsAccessCodeLink/>
       <WithingsWeight/>
     </div>
   )

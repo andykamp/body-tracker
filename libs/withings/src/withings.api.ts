@@ -4,6 +4,8 @@ import { createFormBody } from '@/withings/utils';
 // const timestamp = Date.now();
 const timestamp = Math.floor(Date.now() / 1000); // Get the current timestamp in seconds
 import config from '@/withings/config';
+import { MEASURE_TYPE } from '@/withings/constants';
+import type * as t from '@/withings/types';
 
 // see https://web.postman.co/workspace/2bdccbac-c484-4dfb-b164-7631036384aa/request/23220387-932d145f-4a68-4bd1-89e3-a3aa42fcd12b
 
@@ -83,10 +85,6 @@ async function getAuthCode(): Promise<string> {
       throw new Error(`Failed to get authorization code: ${response.status} ${response.statusText}`);
     }
 
-    // Handle the response as needed
-    console.log('token1', response.redirected, response.url)
-    // const responseData = await response.json();
-    // console.log('Authorization response:', responseData);
     return response.url
   }
   catch (e) {
@@ -103,7 +101,7 @@ type GetAccessTokenInput = {
   code: string
 }
 
-async function getAccessToken({ code }: GetAccessTokenInput): Promise<any> {
+async function getAccessToken({ code }: GetAccessTokenInput): Promise<t.AccessResponse> {
   const clientId = process.env.NEXT_PUBLIC_WITHINGS_CLIENT_ID;
   const clientSecret = process.env.NEXT_PUBLIC_WITHINGS_CLIENT_SECRET;
   const redirectUri = config.redirectUrl
@@ -133,14 +131,18 @@ async function getAccessToken({ code }: GetAccessTokenInput): Promise<any> {
   }
 
   const data = await response.json();
-  return data;
+  if (data.error) throw new Error(data.error);
+  return {
+    ...data.body,
+    access_token_created: Date.now()
+  }
 }
 
 type RefreshAccessTokenInput = {
   refreshToken: string
 }
 
-async function refreshAccessToken({ refreshToken }: RefreshAccessTokenInput): Promise<any> {
+async function refreshAccessToken({ refreshToken }: RefreshAccessTokenInput): Promise<t.AccessResponse> {
   const clientId = process.env.NEXT_PUBLIC_WITHINGS_CLIENT_ID;
   const clientSecret = process.env.NEXT_PUBLIC_WITHINGS_CLIENT_SECRET;
   const baseUrl = process.env.NEXT_PUBLIC_WITHINGS_BASE_URL;
@@ -168,7 +170,13 @@ async function refreshAccessToken({ refreshToken }: RefreshAccessTokenInput): Pr
   }
 
   const data = await response.json();
-  return data;
+  if (data.error) throw new Error(data.error);
+
+  return {
+    ...data.body,
+    access_token_created: Date.now()
+  }
+
 }
 
 type GetMeasurementsInput = {
@@ -177,12 +185,12 @@ type GetMeasurementsInput = {
   lastUpdate?: number
 }
 
-async function getMeasurements({
+async function fetchMeasurement({
   accessToken,
-  measureType = 1, // 1 is weight
+  measureType = 1,
   lastUpdate = 0
 }: GetMeasurementsInput): Promise<void> {
-  console.log('getMeaurements',accessToken);
+  console.log('getMeaurements', accessToken);
   // const nonce = await withingsApi.getNonce()
   // const code = await withingsApi.getAuthCode()
   // console.log('nounce', nonce );
@@ -216,9 +224,46 @@ async function getMeasurements({
   }
 
   // Handle the response as needed
-  const responseData = await response.json();
-  console.log('Measurements response:', responseData);
-  return responseData
+  const data = await response.json();
+  if (data.error) throw new Error(data.error);
+  console.log('Measurements response:', data);
+  return data
+}
+
+async function getMeasurements(accessToken: string) {
+  const weight = await withingsApi.fetchMeasurement({
+    accessToken,
+    measureType: MEASURE_TYPE.weight,
+  })
+
+  const muscleMass = await withingsApi.fetchMeasurement({
+    accessToken,
+    measureType: MEASURE_TYPE.muscleMass,
+  })
+
+  const fatMass = await withingsApi.fetchMeasurement({
+    accessToken,
+    measureType: MEASURE_TYPE.fatMass,
+  })
+
+  const measurements: t.Measurements = {
+    weight,
+    muscleMass,
+    fatMass,
+  }
+
+  return measurements;
+
+}
+
+function checkIfAccessTokenExpired(
+  accessTokenCreated: number,
+  expiresIn: number
+) {
+  const now = Date.now();
+  const expiresAt = accessTokenCreated + (expiresIn * 1000);
+  const isExpired = now > expiresAt;
+  return isExpired;
 }
 
 const withingsApi = {
@@ -229,6 +274,8 @@ const withingsApi = {
   getAccessToken,
   refreshAccessToken,
 
+  checkIfAccessTokenExpired,
+  fetchMeasurement,
   getMeasurements,
 
 };

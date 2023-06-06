@@ -1,22 +1,17 @@
+import React from 'react'
 import { ReactNode, useEffect, useState } from 'react';
 import { createContext, useContext } from 'react';
-import { useUserContext } from './UserProvider';
-import useWithingsMeasurements, { MeasurementState, useWithingsRedirectUrl } from './withings.utils';
-import { RedirectState } from '@/diet/utils/withings.utils';
+import { useUserContext } from '@/diet/utils/UserProvider';
+import useWithingsMeasurements, { useAccessCodeLink } from '@/withings-client/utils';
+import { RedirectState } from '@/withings-client/utils';
+import type * as t from '@/withings-client/types';
 
-export type AccessResponse = {
-  access_token: string;
-  refresh_token: string;
-}
-export type AccessResponseError = {
-  error: string;
-}
 
 interface WithingsContextValue {
-  accessResponse?: AccessResponse;
-  setAccessResponse?: (accessResponse: AccessResponse) => void;
-  redirectUrlState?: RedirectState;
-  measurementState?: MeasurementState;
+  accessResponse?: t.AccessResponse;
+  setAccessResponse?: (accessResponse: t.AccessResponse) => void;
+  accessCodeLinkState?: RedirectState;
+  measurementState?: t.MeasurementState;
 }
 
 export const WithingsContext = createContext<WithingsContextValue>({});
@@ -32,16 +27,15 @@ export function WithingsContextProvider({
 }: WithingsContextProviderProps) {
   const { user } = useUserContext()
 
-  const [accessResponse, setAccessResponse] = useState<AccessResponse | undefined>(user?.withings);
+  const [accessResponse, setAccessResponse] = useState<t.AccessResponse | undefined>(user?.withings);
 
-  const [measurementState, setMeasurementState] = useState<MeasurementState>();
+  const [measurementState, setMeasurementState] = useState<t.MeasurementState>();
 
   // get redirect url
   // @todo: rename to getAuthCodeUrl
-  const redirectUrlState = useWithingsRedirectUrl({
+  const accessCodeLinkState = useAccessCodeLink({
     enabled: !accessResponse
   })
-  console.log('redirectUrlState', redirectUrlState);
 
   // update the access response when user is updated
   useEffect(() => {
@@ -52,6 +46,7 @@ export function WithingsContextProvider({
 
   // get withings measurements
   const mState = useWithingsMeasurements({
+    userId: user?.id,
     accessResponse
   })
 
@@ -63,7 +58,7 @@ export function WithingsContextProvider({
   }, [mState])
 
   return (
-    <WithingsContext.Provider value={{ redirectUrlState, accessResponse, setAccessResponse, measurementState }
+    <WithingsContext.Provider value={{ accessCodeLinkState, accessResponse, setAccessResponse, measurementState }
     }>
       {
         children

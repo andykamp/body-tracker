@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "outDir": "../../dist/out-tsc",
+    "declaration": true,
+    "esModuleInterop": true,
+    "jsx": "react"
+  },
+  "files": [],
+  "include": [],
+  "references": [
+    { "path": "./tsconfig.lib.json" },
+    { "path": "./tsconfig.spec.json" }
+  ]
+}

@@ -11,6 +11,7 @@ export type CreateUserObjectInput = {
   goal?: t.Zone;
   deficitOrSurplus?: number; // manual override
   caloryExpenditure?: number; // manual override
+  withings?: t.Withings;
 };
 
 export function createUserObject({
@@ -24,6 +25,7 @@ export function createUserObject({
   goal,
   deficitOrSurplus,
   caloryExpenditure,
+  withings,
 }: CreateUserObjectInput): t.User {
   const user: t.User = {
     id,
@@ -36,6 +38,7 @@ export function createUserObject({
     goal,
     deficitOrSurplus,
     caloryExpenditure,
+    withings,
   };
 
   return user;

@@ -1,7 +1,8 @@
 import withingsApi from '@/withings/withings.api';
 import { useQuery } from '@tanstack/react-query'
-import { AccessResponse } from "@/diet/utils/WithingsProvider";
 import { useEffect, useState } from 'react';
+import type * as t from '@/withings-client/types';
+import userApi from '@/diet-server/user/user.api';
 
 // redirect timeouts after 30 seconds
 const REDIRECT_TIMEOUT = 30 * 60 * 1000
@@ -10,14 +11,14 @@ export type RedirectState = {
   error?: any;
   isFetching?: boolean;
   isLoading?: boolean;
-  redirectUrl?: string;
+  accessCodeLink?: string;
 }
 
 type UseWithingsRedirectUrlProps = {
   enabled: boolean;
 }
 
-export function useWithingsRedirectUrl({
+export function useAccessCodeLink({
   enabled
 }: UseWithingsRedirectUrlProps): RedirectState {
   const { data, error, isLoading, isFetching, refetch } = useQuery({
@@ -26,8 +27,7 @@ export function useWithingsRedirectUrl({
     enabled
   })
 
-  const redirectUrl = data
-  console.log('data', data);
+  const accessCodeLink = data
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -40,38 +40,47 @@ export function useWithingsRedirectUrl({
     };
   }, [refetch]);
 
-  return { redirectUrl, isLoading, isFetching, error }
-}
-
-export type MeasurementState = {
-  measurements: any,
-  error?: string,
-  isLoading: boolean
+  return { accessCodeLink, isLoading, isFetching, error }
 }
 
 type useWithingsMeasurementsProps = {
-  accessResponse?: AccessResponse
+  userId?: string;
+  accessResponse?: t.AccessResponse
 }
 
 function useWithingsMeasurements({
+  userId,
   accessResponse
-}: useWithingsMeasurementsProps): MeasurementState {
+}: useWithingsMeasurementsProps): t.MeasurementState {
 
   const [measurements, setM] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>();
 
-  const accessToken = accessResponse?.access_token
-  const refreshToken = accessResponse?.refresh_token
+  console.log('useWithingsMeasurements', accessResponse);
 
   useEffect(() => {
-    if (!accessToken) return;
+    if (!accessResponse || !userId) return;
 
     const fetchWeightData = async () => {
+      let accessToken = accessResponse?.access_token
       try {
         setIsLoading(true);
         setError(undefined);
-        console.log('calling apiiii', accessToken);
+        console.log('FETCHING_MEASUREMENTS', accessToken);
+
+        const hasExpired = withingsApi.checkIfAccessTokenExpired(accessResponse.access_token_created, accessResponse.expires_in)
+        console.log('hasEXPIRED', hasExpired);
+
+        if (hasExpired) {
+          const refreshReponse = await withingsApi.refreshAccessToken({ refreshToken: accessResponse.refresh_token });
+          console.log('REFRESH', refreshReponse);
+          // update user with new access token
+          userApi.updateUser({ uid: userId, user: { withings: refreshReponse } });
+          // use new access token
+          accessToken = refreshReponse.access_token
+        }
+
         const response = await fetch('/api/getWeightData', {
           method: 'POST',
           headers: {
@@ -79,7 +88,6 @@ function useWithingsMeasurements({
           },
           body: JSON.stringify({
             accessToken,
-            refreshToken,
           })
         });
         console.log('response', response)
@@ -98,7 +106,7 @@ function useWithingsMeasurements({
     };
 
     fetchWeightData();
-  }, [accessToken]);
+  }, [accessResponse, userId]);
 
   console.log('measurementsmmmm,', measurements);
   return { measurements, error, isLoading }

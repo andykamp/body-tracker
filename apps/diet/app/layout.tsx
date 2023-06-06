@@ -8,7 +8,7 @@ import {
 } from '@tanstack/react-query'
 import { UserContextProvider } from '@/diet/utils/UserProvider'
 import ThemeProvider from '@/diet/components/ThemeProvider'
-import { WithingsContextProvider } from '../utils/WithingsProvider'
+import { WithingsContextProvider } from '@/withings-client/Provider'
 
 // Create a client
 const queryClient = new QueryClient()

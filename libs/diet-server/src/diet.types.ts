@@ -37,8 +37,9 @@ export type BMIResult = {
 export type Withings = {
   access_token: string;
   refresh_token: string;
+  expires_in: number
+  access_token_created: number
 }
-
 
 // user
 

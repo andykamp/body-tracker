@@ -3,6 +3,7 @@ import baseApi from "@/diet-server/base.api";
 import { GENDER } from "@/diet-server/diet.constants";
 import { createUserObject } from "@/diet-server/user/user.utils";
 import { calulateDailyCalories, calulateDailyProtein } from "@/diet-server/utils/diet.utils";
+import { withings as withingsFixture } from "@/withings/__support__/fixtures"
 
 type GetUserInput = {
   uid: string
@@ -34,6 +35,7 @@ async function addUser({ uid }: AddUserInput): Promise<t.ResponseResult> {
     goal: 13,
     deficitOrSurplus: 500,
     caloryExpenditure: 3000,
+    withings: withingsFixture
   });
 
 
