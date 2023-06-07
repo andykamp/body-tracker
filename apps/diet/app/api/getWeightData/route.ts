@@ -1,6 +1,6 @@
 // pages/api/getWeightData.js
 
-import withingsApi from '@/withings/withings.api';
+import withingsApi from '@/withings/api';
 import { NextResponse } from 'next/server';
 
 

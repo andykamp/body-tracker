@@ -1,7 +1,7 @@
 import Page from "@/ui/Page";
 import useQueryParams from '@/common/utils/utils.queryParams';
 import { useUserContext } from "@/user-client/Provider";
-import withingsApi from '@/withings/withings.api';
+import withingsApi from '@/withings/api';
 import userApi from '@/diet-server/user/user.api';
 import { useEffect, useRef, useState } from 'react';
 import {

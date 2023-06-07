@@ -1,4 +1,4 @@
-import withingsApi from '@/withings/withings.api';
+import withingsApi from '@/withings/api';
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react';
 import type * as t from '@/withings-client/types';
