@@ -18,7 +18,7 @@ type UseWithingsRedirectUrlProps = {
   enabled: boolean;
 }
 
-export function useAccessCodeLink({
+export function useGetAccess({
   enabled
 }: UseWithingsRedirectUrlProps): RedirectState {
   const { data, error, isLoading, isFetching, refetch } = useQuery({

@@ -1,10 +1,10 @@
 import { useWithingsContext } from '@/withings-client/Provider'
-import { useAccessCodeLink } from '@/withings-client/utils';
+import { useGetAccess } from '@/withings-client/utils';
 
-function AccessCodeLink() {
+function GetAccess() {
   const { accessResponse } = useWithingsContext()
 
-  const accessCodeLinkState = useAccessCodeLink({
+  const accessCodeLinkState = useGetAccess({
     enabled: !accessResponse
   })
 
@@ -28,4 +28,4 @@ function AccessCodeLink() {
   )
 }
 
-export default AccessCodeLink;
+export default GetAccess;

@@ -1,0 +1,27 @@
+{
+  "name": "oura",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/oura/src",
+  "projectType": "library",
+  "tags": ["type:backend", "scope:shared"],
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/oura/**/*.ts"]
+      }
+    },
+    "type-check": {
+      "command": "tsc -b ./libs/oura/tsconfig.json --incremental --pretty"
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/oura/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  }
+}
