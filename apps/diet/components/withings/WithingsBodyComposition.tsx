@@ -6,14 +6,17 @@ type InputData = {
   measures: { value: number; unit: number; }[];
 };
 
-type OutputData = { time: number; weight: number; };
+type OutputData = {
+  time: number;
+  [key: string]: number
+};
 
 function adjustValueByUnit(value: number, unit: number): number {
   const decimalFactor = Math.pow(10, Math.abs(unit));
   return unit < 0 ? value / decimalFactor : value * decimalFactor;
 }
 
-function parseData(data: InputData[]): OutputData[] {
+function parseData(data: InputData[], outputName: string): OutputData[] {
   return data.map(({ date, measures }) => {
     const time = date * 1000
 
@@ -24,39 +27,40 @@ function parseData(data: InputData[]): OutputData[] {
 
     const averageValue = totalValue / measures.length;
 
-    return { time, weight: averageValue };
+    return { time, [outputName]: averageValue };
   });
 }
 
 
-function WithingsWeight() {
+function WithingsBodyComposition() {
   const { measurementState } = useWithingsContext();
   if (!measurementState) return null;
 
   const { measurements, error, isLoading } = measurementState;
   console.log('measurements', measurements);
-  const { weight } = measurements || {};
-  const { measuregrps } = weight || {};
+  const { fatMass, muscleMass } = measurements || {};
 
   if (error) return <div>{error}</div>
   if (isLoading) return <div>Loading...</div>
-  if (!measuregrps) return null;
+  if (!fatMass || !muscleMass) return null;
 
-  const parsedData = parseData(measuregrps);
+  const parsedFatMass = parseData(fatMass.measuregrps, 'fatMass')
+  const parsedMuscleMass = parseData(muscleMass.measuregrps, 'muscleMass');
+  const parsedData = parsedFatMass.map(( _, index) => ({time: _.time, fatMass: _.fatMass, muscleMass: parsedMuscleMass[index].muscleMass}))
 
   return (
     <Card className="mt-8">
-      <Title>Weight</Title>
-      <Text>Your body weight over time</Text>
+      <Title>Body Composition</Title>
+      <Text>Your Fat vs Muscle</Text>
       <AreaChart
         className="mt-4 h-80"
         data={parsedData}
         index="time"
-        categories={['weight']}
-        colors={["cyan"]}
+        categories={['fatMass', 'muscleMass']}
+        colors={["cyan", "red"]}
       />
     </Card>
   )
 }
 
-export default WithingsWeight;
+export default WithingsBodyComposition;

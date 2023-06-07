@@ -1,9 +1,15 @@
-import React from 'react'
 import { useWithingsContext } from '@/withings-client/Provider'
+import { useAccessCodeLink } from '@/withings-client/utils';
 
 function AccessCodeLink() {
-  const { accessCodeLinkState } = useWithingsContext()
+  const { accessResponse } = useWithingsContext()
+
+  const accessCodeLinkState = useAccessCodeLink({
+    enabled: !accessResponse
+  })
+
   if (!accessCodeLinkState) return null;
+
   const { error, accessCodeLink, isLoading, isFetching } = accessCodeLinkState
 
   if (error) {

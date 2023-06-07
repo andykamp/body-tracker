@@ -10,7 +10,6 @@ export type AccessResponseError = {
   error: string;
 }
 
-
 export type MeasurementState = {
   measurements: any,
   error?: string,

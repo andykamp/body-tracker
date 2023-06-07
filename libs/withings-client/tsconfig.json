@@ -5,7 +5,7 @@
     "outDir": "../../dist/out-tsc",
     "declaration": true,
     "esModuleInterop": true,
-    "jsx": "react"
+    "jsx": "react-jsx"
   },
   "files": [],
   "include": [],

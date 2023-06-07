@@ -6,7 +6,7 @@ import { NextResponse } from 'next/server';
 
 export async function POST(req: Request,) {
   const { accessToken } = await req.json() // res now contains body
-  let measurements = await withingsApi.getMeasurements(accessToken)
+  const measurements = await withingsApi.getMeasurements(accessToken)
   return NextResponse.json(measurements);
 
 }

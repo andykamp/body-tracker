@@ -53,7 +53,7 @@ function useWithingsMeasurements({
   accessResponse
 }: useWithingsMeasurementsProps): t.MeasurementState {
 
-  const [measurements, setM] = useState();
+  const [measurements, setMeasurements] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>();
 
@@ -96,7 +96,7 @@ function useWithingsMeasurements({
         // update accesstoken if needed
         // Do something with the data
         console.log('getWeightData', data);
-        setM(data.body);
+        setMeasurements(data);
       } catch (error: any) {
         console.log(error);
         setError(error.message || 'Error occured');

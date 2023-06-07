@@ -1,4 +1,3 @@
-import React from 'react'
 import { useRouter } from "next/navigation";
 import { ROUTES_CONSOLE } from "@/diet/app/constants"
 import Page from "@/ui/Page";
@@ -11,6 +10,7 @@ import {
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query'
+import type * as t from '@/withings-client/types';
 
 function Withings() {
   const router = useRouter()
@@ -20,8 +20,8 @@ function Withings() {
   const { user } = useUserContext()
   const { code } = useQueryParams()
 
-  const [accessResponse, setAccessResponse] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [accessResponse, setAccessResponse] = useState<t.AccessResponse>();
+  const [error, setError] = useState<string>();
   const [isLoading, setIsLoading] = useState(false);
 
   const addAccessTokenMutation = useMutation({

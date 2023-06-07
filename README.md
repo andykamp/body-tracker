@@ -126,6 +126,17 @@ Should also start the emulator on yarn dev!!
     - 
 
 ## Todo
+- use chatGPT to generate input/output forn whitings and oura
+- create fixtures and tests
+- add weeksly average
+- add sleep diff on weekends and weekdays
+- add gradient pointers to graph
+- add "custom daily" entry
+- add "custom product" entry
+- scrape oda and add to firestore
+- add redis cache to stock 
+- create PWA
+- 
 - flush react query cache when loggin out. if not all data is cached
 - move "meals" etc into contsant and set a standard for capital/lowercase names
 - add id instead of names to meals etc. will fuck up stock atm

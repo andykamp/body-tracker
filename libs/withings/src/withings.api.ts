@@ -227,7 +227,7 @@ async function fetchMeasurement({
   const data = await response.json();
   if (data.error) throw new Error(data.error);
   console.log('Measurements response:', data);
-  return data
+  return data.body
 }
 
 async function getMeasurements(accessToken: string) {
