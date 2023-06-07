@@ -6,7 +6,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query'
-import { UserContextProvider } from '@/diet/utils/UserProvider'
+import { UserContextProvider } from "@/user-client/Provider";
 import ThemeProvider from '@/diet/components/ThemeProvider'
 import { WithingsContextProvider } from '@/withings-client/Provider'
 

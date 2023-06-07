@@ -18,6 +18,7 @@
       "@/auth-client/*": ["libs/auth-client/src/*"],
       "@/auth/*": ["libs/auth/src/*"],
       "@/common/*": ["libs/common/src/*"],
+      "@/user-client/*": ["libs/user-client/src/*"],
       "@/diet-server/*": ["libs/diet-server/src/*"],
       "@/withings/*": ["libs/withings/src/*"],
       "@/withings-client/*": ["libs/withings-client/src/*"],

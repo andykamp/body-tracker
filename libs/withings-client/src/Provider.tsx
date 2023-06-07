@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { createContext, useContext } from 'react';
-import { useUserContext } from '@/diet/utils/UserProvider';
+import { useUserContext } from "@/user-client/Provider";
 import useWithingsMeasurements from '@/withings-client/utils';
 import type * as t from '@/withings-client/types';
 

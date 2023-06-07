@@ -1,8 +1,6 @@
-import { useRouter } from "next/navigation";
-import { ROUTES_CONSOLE } from "@/diet/app/constants"
 import Page from "@/ui/Page";
 import useQueryParams from '@/common/utils/utils.queryParams';
-import { useUserContext } from "@/diet/utils/UserProvider";
+import { useUserContext } from "@/user-client/Provider";
 import withingsApi from '@/withings/withings.api';
 import userApi from '@/diet-server/user/user.api';
 import { useEffect, useRef, useState } from 'react';
@@ -12,8 +10,13 @@ import {
 } from '@tanstack/react-query'
 import type * as t from '@/withings-client/types';
 
-function Withings() {
-  const router = useRouter()
+type RedirectProps = {
+  onRedirectBack?: () => void;
+}
+
+function Redirect({
+  onRedirectBack
+}: RedirectProps) {
   const queryClient = useQueryClient()
   const hasBeenSet = useRef(false);
 
@@ -80,7 +83,7 @@ function Withings() {
         Here is your access token: {accessResponse?.access_token}
       </p>
       <button
-        onClick={() => router.push(ROUTES_CONSOLE.console)}
+        onClick={onRedirectBack}
       >
         Go back to application
       </button>
@@ -89,6 +92,6 @@ function Withings() {
 
 }
 
-export default Withings;
+export default Redirect;
 
 

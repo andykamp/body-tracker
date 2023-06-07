@@ -1,7 +1,7 @@
 'use client'
 import React from "react";
 import { useAuthContext } from "@/auth-client/firebase/auth.context";
-import { useUserContext } from "@/diet/utils/UserProvider";
+import { useUserContext } from "@/user-client/Provider";
 import WithingsAccessCodeLink from "@/withings-client/AccessCodeLink";
 import WithingsWeight from "@/diet/components/withings/WithingsWeight";
 import WithingsBodyComposition from "@/diet/components/withings/WithingsBodyComposition";

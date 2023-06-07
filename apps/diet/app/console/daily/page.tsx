@@ -11,7 +11,7 @@ import StockSearch from '@/diet/components/StockSearch'
 import itemApi from '@/diet-server/item/item.api'
 import { ITEM_TYPES } from '@/diet-server/diet.constants'
 import { createMeal } from '@/diet/utils/misc'
-import { useUserContext } from "@/diet/utils/UserProvider";
+import { useUserContext } from "@/user-client/Provider";
 import ItemWrapper from "@/diet/components/ItemWrapper";
 
 function createDailyMeal() {
