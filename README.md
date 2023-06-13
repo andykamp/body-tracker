@@ -126,6 +126,21 @@ Should also start the emulator on yarn dev!!
     - 
 
 ## Todo
+- FIX invalidateing userProvider so it updates children!!!!
+- update cache rather than refetch
+- use react-query on useMeasurements....
+- use a rest api for error handling
+- look at tailwind templates or markus library
+- protein/calory targets should adjust to the average weight!
+    - maybe put in provider??
+- add light/dark theme
+- fix auth loading state
+- fix loading state while user is loggin in
+- so that the user is never null. add types for this
+- user-server should be a sepearea lib
+    - should import types from diet, oura and withing
+    - their types etc should be in a common lib
+- determine data or measurements
 - use chatGPT to generate input/output forn whitings and oura
 - create fixtures and tests
 - add weeksly average
@@ -133,7 +148,7 @@ Should also start the emulator on yarn dev!!
 - add gradient pointers to graph
 - add "custom daily" entry
 - add "custom product" entry
-- scrape oda and add to firestore
+- scrape ODA and add to firestore
 - add redis cache to stock 
 - create PWA
 - 

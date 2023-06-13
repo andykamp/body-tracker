@@ -22,6 +22,8 @@
       "@/diet-server/*": ["libs/diet-server/src/*"],
       "@/withings/*": ["libs/withings/src/*"],
       "@/withings-client/*": ["libs/withings-client/src/*"],
+      "@/oura/*": ["libs/oura/src/*"],
+      "@/oura-client/*": ["libs/oura-client/src/*"],
       "@/ui/*": ["libs/ui/src/*"],
       "@/diet/*": ["apps/diet/*"],
       "@/test-app/*": ["apps/test-app/*"]
