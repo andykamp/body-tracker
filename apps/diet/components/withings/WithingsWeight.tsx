@@ -30,16 +30,21 @@ function parseData(data: InputData[]): OutputData[] {
 
 
 function WithingsWeight() {
-  const { measurementState } = useWithingsContext();
-  if (!measurementState) return null;
+  const { dataState } = useWithingsContext();
+  if (!dataState) return null;
 
-  const { measurements, error, isLoading } = measurementState;
-  console.log('measurements', measurements);
-  const { weight } = measurements || {};
+  const { data, error, isLoading } = dataState;
+    // error handling
+  if (isLoading) return <div>Loading...</div>
+  if (error) return <div>{error}</div>
+  if (!data) return null;
+
+  // extract data
+  const { weight } = data
   const { measuregrps } = weight || {};
 
-  if (error) return <div>{error}</div>
-  if (isLoading) return <div>Loading...</div>
+  // parse data
+
   if (!measuregrps) return null;
 
   const parsedData = parseData(measuregrps);

@@ -1,14 +1,14 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { createContext, useContext } from 'react';
 import { useUserContext } from "@/user-client/Provider";
-import useWithingsMeasurements from '@/withings-client/utils';
+import { useData } from '@/withings-client/utils';
 import type * as t from '@/withings-client/types';
 
 
 interface WithingsContextValue {
   accessResponse?: t.AccessResponse;
   setAccessResponse?: (accessResponse: t.AccessResponse) => void;
-  measurementState?: t.MeasurementState;
+  dataState?: t.DataState;
 }
 
 export const WithingsContext = createContext<WithingsContextValue>({});
@@ -29,18 +29,19 @@ export function WithingsContextProvider({
   // update the access response when user is updated
   useEffect(() => {
     if (!user?.withings) return;
-    console.log('userwhitingsupdated', user.withings);
+    console.log('WITHINGS_PROVIDER_USER_UPDATE', user.withings);
     setAccessResponse(user?.withings)
   }, [user?.withings])
 
   // get withings measurements
-  const measurementState = useWithingsMeasurements({
-    userId: user?.id,
-    accessResponse
-  })
+  const dataState = null
+  // const dataState = useData({
+  //   userId: user?.id,
+  //   accessResponse
+  // })
 
   return (
-    <WithingsContext.Provider value={{ accessResponse, setAccessResponse, measurementState }
+    <WithingsContext.Provider value={{ accessResponse, setAccessResponse, dataState }
     }>
       {
         children

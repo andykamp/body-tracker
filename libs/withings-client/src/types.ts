@@ -10,9 +10,9 @@ export type AccessResponseError = {
   error: string;
 }
 
-export type MeasurementState = {
-  measurements: any,
-  error?: string,
+export type DataState = {
+  data?: any,
+  error?: any,
   isLoading: boolean
 }
 

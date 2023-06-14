@@ -17,7 +17,6 @@ function GramToggle({
   const [modificationMode, setModificationMode] = useState<'grams' | 'percentage' | 'items'>('grams');
 
   useEffect(() => {
-    console.log('',);
     onGramChange(grams)
   }, [grams])
 
@@ -33,20 +32,17 @@ function GramToggle({
 
   const handleItemsChange = (num: number) => {
     const newGrams = Math.round(originalGrams * num)
-    console.log('handleItemsChange', num, grams, newGrams);
     setGrams(newGrams)
   };
 
 
   const handleGramChange = (value: number) => {
-    console.log('handleGramChange', value);
     setGrams(value)
   };
 
   const handlePercentageChange = (percentage: number) => {
     // item.prosentage = percentage / 100;
     const newGrams = (originalGrams * percentage) / 100;
-    console.log('percentage', percentage, newGrams);
     setGrams(newGrams)
   };
 
@@ -61,10 +57,6 @@ function GramToggle({
   };
 
   const { state, setState, reset, bindings } = useInput('Geist UI')
-
-  useEffect(() => {
-    console.log('state', state)
-  }, [state])
 
   const prosentage = grams / originalGrams
   const currentValue = modificationMode === 'percentage'

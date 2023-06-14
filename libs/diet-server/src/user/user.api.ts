@@ -10,6 +10,7 @@ type GetUserInput = {
 }
 
 async function getUser({ uid }: GetUserInput): Promise<t.User> {
+  console.log('GETTT_USER',uid );
   const r = await baseApi.makeReqAndExec<t.User>({
     proc: "getUser",
     vars: {
@@ -65,28 +66,15 @@ type UpdateUserInput = {
   user: Partial<t.User>
 }
 
-async function updateUser({ uid, user }: UpdateUserInput): Promise<t.ResponseResult> {
-  try {
-    console.log('updateUser', uid, user);
-    const r = await baseApi.makeReqAndExec<t.User>({
-      proc: "updateUser",
-      vars: {
-        uid,
-        user
-      }
-    })
-    console.log('r', r);
-    return {
-      success: true,
-      message: "User added successfully",
-    };
-  } catch (e) {
-    console.log('errror', e);
-    return {
-      success: false,
-      message: e
-    };
-  }
+async function updateUser({ uid, user }: UpdateUserInput): Promise<any> {
+  console.log('updateUser', uid, user);
+  return await baseApi.makeReqAndExec<t.User>({
+    proc: "updateUser",
+    vars: {
+      uid,
+      user
+    }
+  })
 }
 
 
@@ -94,24 +82,13 @@ type DeleteUserInput = {
   uid: string
 }
 
-export async function deleteUser({ uid }: DeleteUserInput): Promise<t.ResponseResult> {
-  try {
-    const r = await baseApi.makeReqAndExec<t.User>({
-      proc: "deleteUser",
-      vars: {
-        uid
-      }
-    })
-    return {
-      success: true,
-      message: "User deleted successfully",
-    };
-  } catch (e) {
-    return {
-      success: false,
-      message: e
-    };
-  }
+export async function deleteUser({ uid }: DeleteUserInput): Promise<any> {
+  return await baseApi.makeReqAndExec<t.User>({
+    proc: "deleteUser",
+    vars: {
+      uid
+    }
+  })
 }
 
 const userApi = {

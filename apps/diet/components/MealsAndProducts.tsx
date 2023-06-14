@@ -1,5 +1,3 @@
-'use client'
-import React from "react";
 import {
   useQuery,
   useMutation,
@@ -19,21 +17,17 @@ function MealsAndProductsPage() {
 
   const productsQuery = useQuery({
     queryKey: ['getProductForCurrentUser'],
-    queryFn: () => user ? productApi.getProducts({ userId: user.uid }) : Promise.resolve(null),
-    enabled: !!user
-
+    queryFn: () => productApi.getProducts({ userId: user.uid })
   })
 
   const mealsQuery = useQuery({
     queryKey: ['getMealsForCurrentUser'],
-    queryFn: () => user ? mealApi.getMeals({ userId: user.uid }) : Promise.resolve(null),
-    enabled: !!user
+    queryFn: () =>  mealApi.getMeals({ userId: user.uid })
   })
 
   const addProductMutation = useMutation({
     mutationFn: productApi.addProduct,
     onSuccess: () => {
-      console.log('addProductMutation success',);
       // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: ['getProductForCurrentUser'] })
       queryClient.invalidateQueries({ queryKey: ['getDaily'] })
@@ -43,7 +37,6 @@ function MealsAndProductsPage() {
   const deleteProductMutation = useMutation({
     mutationFn: productApi.deleteProduct,
     onSuccess: () => {
-      console.log('deleteProductMutation success',);
       // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: ['getProductForCurrentUser'] })
       queryClient.invalidateQueries({ queryKey: ['getDaily'] })
@@ -53,7 +46,6 @@ function MealsAndProductsPage() {
   const addMealMutation = useMutation({
     mutationFn: mealApi.addMeal,
     onSuccess: () => {
-      console.log('addMealMutation success',);
       // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: ['getMealsForCurrentUser'] })
       queryClient.invalidateQueries({ queryKey: ['getDaily'] })
@@ -63,7 +55,6 @@ function MealsAndProductsPage() {
   const deleteMealMutation = useMutation({
     mutationFn: mealApi.deleteMeal,
     onSuccess: () => {
-      console.log('deleteMealMutation success',);
       // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: ['getMealsForCurrentUser'] })
       queryClient.invalidateQueries({ queryKey: ['getDaily'] })

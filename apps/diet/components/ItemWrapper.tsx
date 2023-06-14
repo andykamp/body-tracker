@@ -29,7 +29,6 @@ function ItemWrapper({
   useEffect(() => {
     const i = item.item as any
     const multiplier = grams / i.grams
-    console.log('mulitplyer', multiplier);
 
     setNutrition({
       protein: i.protein * multiplier,
@@ -40,12 +39,10 @@ function ItemWrapper({
   }, [grams]);
 
   useEffect(() => {
-    console.log('nutrition', nutrition);
     handleSubmit()
   }, [nutrition]);
 
   useEffect(() => {
-    console.log('itemmmm', item);
     setNutrition({
       protein: (item.item?.protein ?? 0) * item.prosentage,
       calories: (item.item?.calories ?? 0) * item.prosentage,
@@ -60,7 +57,6 @@ function ItemWrapper({
       ...item,
       ...nutrition,
     } as any;
-    console.log('updatedItem', nutrition, updatedItem);
     onItemChange(updatedItem);
   };
 

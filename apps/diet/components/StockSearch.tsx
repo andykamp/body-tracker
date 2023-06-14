@@ -16,7 +16,6 @@ const SearchInput: React.FC<SearchInputProps> = ({ onSelect }) => {
   };
 
   const handleTypeChange = (val: string | string[]) => {
-    console.log('val', );
     setType(val as typeof type);
   };
 

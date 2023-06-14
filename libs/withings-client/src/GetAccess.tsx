@@ -18,12 +18,11 @@ function GetAccess() {
 
   const showAccessButton = accessCodeLink && !isLoading && !isFetching
 
+  if (!showAccessButton) return <div>whitings data already added</div>;
+
   return (
     <div>
-      {showAccessButton ?
-        < a href={accessCodeLink}>Click here to get access</a>
-        : <div>loading...</div>
-      }
+      < a href={accessCodeLink}>Click here to get access</a>
     </div >
   )
 }

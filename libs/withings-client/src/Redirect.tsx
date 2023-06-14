@@ -39,12 +39,12 @@ function Redirect({
     setIsLoading(true);
 
     hasBeenSet.current = true;
-    console.log('fetching access token', code);
+    console.log('WITHINGS_GETACCESS_FETCHING_ACCESTOKEN_WITH_CODE', code);
 
     const fetchAccessToken = async () => {
       try {
         const accessResponse = await withingsApi.getAccessToken({ code });
-        console.log('accessResponse', accessResponse);
+        console.log('WITHINGS_GETACCESS_ACCESSTOKEN', accessResponse);
 
         if (accessResponse.error || !accessResponse?.access_token) {
           setError(accessResponse.error);
@@ -58,7 +58,7 @@ function Redirect({
           ...user,
           withings: accessResponse
         };
-        console.log('updating_user', updatedUser);
+        console.log('WITHINGS_GETACCESS_UPDATEDUSER', updatedUser);
         addAccessTokenMutation.mutate({ uid: user.id, user: updatedUser });
         setIsLoading(false);
       } catch (error: any) {

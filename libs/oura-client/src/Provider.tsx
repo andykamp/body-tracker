@@ -1,50 +1,50 @@
-import { ReactNode, useEffect, useState } from 'react';
+import type * as t from '@/oura-client/types';
+import { ReactNode, useEffect } from 'react';
 import { createContext, useContext } from 'react';
 import { useUserContext } from "@/user-client/Provider";
-import useWithingsMeasurements from '@/withings-client/utils';
-import type * as t from '@/withings-client/types';
+import { useData } from '@/oura-client/utils';
+import {
+  useQueryClient,
+} from '@tanstack/react-query'
 
-
-interface WithingsContextValue {
-  accessResponse?: t.AccessResponse;
-  setAccessResponse?: (accessResponse: t.AccessResponse) => void;
-  measurementState?: t.MeasurementState;
+interface OuraContextValue {
+  dataState?: t.DataState
 }
 
-export const WithingsContext = createContext<WithingsContextValue>({});
+export const OuraContext = createContext<OuraContextValue>({});
 
-export const useWithingsContext = () => useContext(WithingsContext);
+export const useOuraContext = () => useContext(OuraContext);
 
-type WithingsContextProviderProps = {
+type OuraContextProviderProps = {
   children: ReactNode;
 }
 
-export function WithingsContextProvider({
+export function OuraContextProvider({
   children
-}: WithingsContextProviderProps) {
+}: OuraContextProviderProps) {
   const { user } = useUserContext()
+  console.log('OURAPROVIDER_USER', user);
 
-  const [accessResponse, setAccessResponse] = useState<t.AccessResponse | undefined>(user?.withings);
-
-  // update the access response when user is updated
   useEffect(() => {
-    if (!user?.withings) return;
-    console.log('userwhitingsupdated', user.withings);
-    setAccessResponse(user?.withings)
-  }, [user?.withings])
+    console.log('OURAPROVIDER_USER_UPDATE', user);
+  }, [user?.oura]);
 
-  // get withings measurements
-  const measurementState = useWithingsMeasurements({
-    userId: user?.id,
-    accessResponse
-  })
+
+  const queryClient = useQueryClient()
+  // queryClient.invalidateQueries({ queryKey: ['getUser'] })
+
+  // get Oura data
+  const dataState = null
+  // const dataState = useData({
+  //   accessToken: user?.oura?.access_token
+  // })
 
   return (
-    <WithingsContext.Provider value={{ accessResponse, setAccessResponse, measurementState }
+    <OuraContext.Provider value={{ dataState }
     }>
       {
         children
       }
-    </WithingsContext.Provider>
+    </OuraContext.Provider>
   );
 }

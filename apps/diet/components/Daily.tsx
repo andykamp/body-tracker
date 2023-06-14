@@ -1,4 +1,3 @@
-'use client'
 import React from "react";
 import {
   useQuery,
@@ -28,8 +27,7 @@ function DailyPage() {
 
   const query = useQuery({
     queryKey: ['getDaily'],
-    queryFn: () => authUser ? dailyApi.getDaily({ userId: authUser.uid, dateKey: todaysDailyKey }) : Promise.resolve(null),
-    enabled: !!authUser
+    queryFn: () =>  dailyApi.getDaily({ userId: authUser.uid, dateKey: todaysDailyKey })
   })
 
   const addDailyMutation = useMutation({
@@ -53,10 +51,6 @@ function DailyPage() {
       queryClient.invalidateQueries({ queryKey: ['getDaily'] })
     },
   })
-
-  if (!authUser || !user) {
-    return null
-  }
 
   const daily = query.data
   const dailyItemsList = daily?.dailyItems ? daily?.dailyItems : []
@@ -103,7 +97,6 @@ function DailyPage() {
             }}
 
             onItemChange={(i) => {
-              console.log('itemchange', i)
               const d = daily || { dailyItems: [] }
               const di = d.dailyItems.map(obj => obj.id === i.id ? i : obj);
 

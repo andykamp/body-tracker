@@ -28,9 +28,17 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     return () => unsubscribe();
   }, []);
 
+  if(loading) {
+    return <div>loading...</div>
+  }
+
+  if(!user) {
+    return <div>no user</div>
+  }
+
   return (
     <AuthContext.Provider value={{ user, loading }}>
-      {loading ? <div>Loading...</div> : children}
+      { children}
     </AuthContext.Provider>
   );
 };

@@ -6,7 +6,7 @@ export type AccessResponse = {
   error?: string
 }
 
-export type Measurements = {
+export type Data = {
   weight?: any;
   fatMass?: any;
   muscleMass?: any;

@@ -1,9 +1,9 @@
-'use client'
 import React from "react";
 import { useAuthContext } from "@/auth-client/firebase/auth.context";
 import { useUserContext } from "@/user-client/Provider";
 import WithingsGetAccess from "@/withings-client/GetAccess";
 import WithingsWeight from "@/diet/components/withings/WithingsWeight";
+import OuraGetAccess from "@/oura-client/GetAccess";
 import WithingsBodyComposition from "@/diet/components/withings/WithingsBodyComposition";
 
 function ProfilePage() {
@@ -22,6 +22,8 @@ function ProfilePage() {
       <WithingsGetAccess/>
       <WithingsWeight/>
       <WithingsBodyComposition/>
+      <h3>Oura API</h3>
+      <OuraGetAccess/>
     </div>
   )
 }

@@ -126,6 +126,9 @@ Should also start the emulator on yarn dev!!
     - 
 
 ## Todo
+- remove stupid try catches
+- always return updated object and full object exept on delete
+    - will enable uptimistic udpates??
 - FIX invalidateing userProvider so it updates children!!!!
 - update cache rather than refetch
 - use react-query on useMeasurements....

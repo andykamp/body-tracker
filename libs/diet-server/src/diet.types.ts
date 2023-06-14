@@ -41,6 +41,11 @@ export type Withings = {
   access_token_created: number
 }
 
+// oura
+export type Oura = {
+  access_token: string;
+}
+
 // user
 
 export type User = {
@@ -59,6 +64,7 @@ export type User = {
   caloryExpenditure?: number; // manual override
 
   withings?: Withings;
+  oura?: Oura;
 }
 
 // product

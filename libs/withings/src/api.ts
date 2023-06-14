@@ -50,7 +50,6 @@ async function fetchNonce(signature: string): Promise<string> {
 
   const json = await nonceResponse.json();
   const nonce = json.body.nonce;
-  console.log('nonce', nonce);
   return nonce;
 }
 
@@ -74,23 +73,16 @@ async function getAuthCode(): Promise<string> {
 
   const url = `https://account.withings.com/oauth2_user/authorize2?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${encodeURIComponent(state)}&scope=${encodeURIComponent(scope)}`;
 
-  try {
-    console.log('getting auth code', url);
-    const response = await fetch(url, {
-      method: 'GET',
-      redirect: 'follow'
-    });
+  const response = await fetch(url, {
+    method: 'GET',
+    redirect: 'follow'
+  });
 
-    if (!response.ok) {
-      throw new Error(`Failed to get authorization code: ${response.status} ${response.statusText}`);
-    }
+  if (!response.ok) {
+    throw new Error(`Failed to get authorization code: ${response.status} ${response.statusText}`);
+  }
 
-    return response.url
-  }
-  catch (e) {
-    console.error(e);
-    return ''
-  }
+  return response.url
 
 }
 
@@ -117,7 +109,6 @@ async function getAccessToken({ code }: GetAccessTokenInput): Promise<t.AccessRe
     redirect_uri: redirectUri
   };
 
-  console.log('getAccessToken', url, body);
   const response = await fetch(url, {
     method: 'POST',
     headers: {
@@ -156,7 +147,6 @@ async function refreshAccessToken({ refreshToken }: RefreshAccessTokenInput): Pr
     refresh_token: refreshToken,
   };
 
-  console.log('refreshAccessToken', url, body);
   const response = await fetch(url, {
     method: 'POST',
     headers: {
@@ -185,12 +175,11 @@ type GetMeasurementsInput = {
   lastUpdate?: number
 }
 
-async function fetchMeasurement({
+async function getMeasureMent({
   accessToken,
   measureType = 1,
   lastUpdate = 0
 }: GetMeasurementsInput): Promise<void> {
-  console.log('getMeaurements', accessToken);
   // const nonce = await withingsApi.getNonce()
   // const code = await withingsApi.getAuthCode()
   // console.log('nounce', nonce );
@@ -226,34 +215,43 @@ async function fetchMeasurement({
   // Handle the response as needed
   const data = await response.json();
   if (data.error) throw new Error(data.error);
-  console.log('Measurements response:', data);
+  console.log('WITHINGS_MEASUREMENTS response:', data);
   return data.body
 }
 
-async function getMeasurements(accessToken: string) {
-  const weight = await withingsApi.fetchMeasurement({
+async function getData(accessToken: string) {
+  const weightPromise = withingsApi.getMeasureMent({
     accessToken,
     measureType: MEASURE_TYPE.weight,
-  })
-
-  const muscleMass = await withingsApi.fetchMeasurement({
+  });
+  const muscleMassPromise = withingsApi.getMeasureMent({
     accessToken,
     measureType: MEASURE_TYPE.muscleMass,
-  })
-
-  const fatMass = await withingsApi.fetchMeasurement({
+  });
+  const fatMassPromise = withingsApi.getMeasureMent({
     accessToken,
     measureType: MEASURE_TYPE.fatMass,
-  })
+  });
 
-  const measurements: t.Measurements = {
-    weight,
-    muscleMass,
-    fatMass,
+  try {
+    const [weight, muscleMass, fatMass] = await Promise.all([
+      weightPromise,
+      muscleMassPromise,
+      fatMassPromise,
+    ]);
+
+    const data: t.Data = {
+      weight,
+      muscleMass,
+      fatMass,
+    };
+
+    return data;
+  } catch (error) {
+    // Handle the error here
+    console.error('Error occurred while fetching data:', error);
+    throw error; // Optional: Rethrow the error if needed
   }
-
-  return measurements;
-
 }
 
 function checkIfAccessTokenExpired(
@@ -275,8 +273,8 @@ const withingsApi = {
   refreshAccessToken,
 
   checkIfAccessTokenExpired,
-  fetchMeasurement,
-  getMeasurements,
+  getMeasureMent,
+  getData,
 
 };
 
