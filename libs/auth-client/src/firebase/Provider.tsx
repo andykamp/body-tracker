@@ -44,6 +44,8 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     return () => unsubscribe();
   }, []);
 
+  console.log('authhh',user, loading);
+
   if (loading) {
     return <div>loading...</div>
   }

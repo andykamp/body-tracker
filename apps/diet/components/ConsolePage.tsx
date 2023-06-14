@@ -21,15 +21,6 @@ function ConsolePage() {
   const pathname = usePathname()
   const router = useRouter()
 
-  // make sure we reset the cache when logged out
-  // if not the next user will se prev users data
-  const queryClient = useQueryClient()
-  useEffect(() => {
-    return () => {
-      queryClient.removeQueries()
-    }
-  }, []);
-
   const signIn = async () => {
     try {
       await signInWithGoogle();
@@ -70,24 +61,9 @@ function ConsolePage() {
         pathname={pathname}
       />
       <Page>
-        <h1>Only logged in users can view this page</h1>
-        <Fieldset.Group value="Daily" onChange={handler}>
-          <Fieldset label="Daily">
-            <Fieldset.Title>Daily</Fieldset.Title>
-            <Fieldset.Subtitle>Showing you all daily goodies</Fieldset.Subtitle>
             <Daily />
-          </Fieldset>
-          <Fieldset label="Meals and products">
-            <Fieldset.Title>Meals and products</Fieldset.Title>
-            <Fieldset.Subtitle>Meals and product goodies</Fieldset.Subtitle>
             <MealsAndProducts />
-          </Fieldset>
-          <Fieldset label="Profile">
-            <Fieldset.Title>Profile</Fieldset.Title>
-            <Fieldset.Subtitle>Profile goodies</Fieldset.Subtitle>
             <Profile />
-          </Fieldset>
-        </Fieldset.Group>
       </Page>
     </>
   )
