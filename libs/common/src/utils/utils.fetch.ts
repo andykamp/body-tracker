@@ -4,7 +4,7 @@ export type FetchOptions = RequestInit & {
   params?: Record<string, any>
 }
 
-export async function fetch(
+export async function _fetch(
   url: string,
   options?: FetchOptions
 ) {
@@ -19,7 +19,7 @@ export async function fetch(
   }
 
   try {
-    const res = await window.fetch(url, {
+    const res = await fetch(url, {
       ...options,
       method: options?.method?.toUpperCase() || "GET"
     })

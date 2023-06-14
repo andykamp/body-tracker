@@ -1,4 +1,5 @@
 import { createHmac } from 'crypto';
+// import { fetch, parse } from '@/common/utils/utils.fetch'
 import { v4 as uuid } from 'uuid';
 import { createFormBody } from '@/withings/utils';
 // const timestamp = Date.now();

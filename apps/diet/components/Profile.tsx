@@ -5,6 +5,7 @@ import WithingsGetAccess from "@/withings-client/GetAccess";
 import WithingsWeight from "@/diet/components/withings/WithingsWeight";
 import OuraGetAccess from "@/oura-client/GetAccess";
 import WithingsBodyComposition from "@/diet/components/withings/WithingsBodyComposition";
+import OuraSleep from "./oura/OuraSleep";
 
 function ProfilePage() {
   const { user: authUser } = useAuthContext()
@@ -24,6 +25,7 @@ function ProfilePage() {
       <WithingsBodyComposition/>
       <h3>Oura API</h3>
       <OuraGetAccess/>
+      <OuraSleep/>
     </div>
   )
 }

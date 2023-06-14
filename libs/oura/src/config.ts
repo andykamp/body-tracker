@@ -1,6 +1,7 @@
 const config = {
   baseUrl: 'https://api.ouraring.com/v2',
-  sleepUrl: '/usercollection/daily_sleep'
+  sleepDailyUrl: '/usercollection/daily_sleep',
+  sleepUrl: '/usercollection/sleep'
 }
 
 export default config

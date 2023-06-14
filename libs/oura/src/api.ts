@@ -1,33 +1,56 @@
-// import type * as t from '@/oura/types';
+import type * as t from '@/oura/types';
 import config from '@/oura/config'
+import { _fetch, parse } from '@/common/utils/utils.fetch'
 
-const getSleep = async (accessToken: string, startDate:string, endDate:string) => {
-  const myHeaders = new Headers();
-  myHeaders.append('Authorization', `Bearer ${accessToken}`);
-
-  // const startDate = '2021-11-01'
-  // const endDate = '2021-12-01`'
-
+async function getSleepDailyDocuments(accessToken: string, startDate: string, endDate: string) {
   const requestOptions = {
     method: 'GET',
-    headers: myHeaders
+    headers: {
+      Authorization: `Bearer ${accessToken}`
+    }
   }
-  try {
-    let res = await fetch(`${config.baseUrl}${config.sleepUrl}?start_date=${startDate}&end_date=${endDate}`, requestOptions)
-    res = await res.json()
-    return res
-  } catch (e) {
-    console.log(e)
-    throw e
-  }
+  let res = await _fetch(`${config.baseUrl}${config.sleepDailyUrl}?start_date=${startDate}&end_date=${endDate}`, requestOptions)
+  return await parse(res as any)
 }
 
-const getData = (accessToken: string, startDate:string, endDate:string) => {
-  return getSleep(accessToken, startDate, endDate)
+async function getSleepDocuments(accessToken: string, startDate: string, endDate: string) {
+  const requestOptions = {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${accessToken}`
+    }
+  }
+  let res = await _fetch(`${config.baseUrl}${config.sleepUrl}?start_date=${startDate}&end_date=${endDate}`, requestOptions)
+  return await parse(res as any)
+}
+
+async function getData(accessToken: string, startDate: string, endDate: string) {
+  const sleepDailyPromise = getSleepDailyDocuments(accessToken, startDate, endDate)
+  const sleepPromise = getSleepDocuments(accessToken, startDate, endDate)
+
+  try {
+    const [sleepDaily, sleep] = await Promise.all([
+      sleepDailyPromise,
+      sleepPromise
+    ]);
+
+    const data: t.Data = {
+      sleep: sleep as t.SleepDataResponse,
+      sleepDaily: sleepDaily as t.SleepDailyDataResponse,
+    };
+
+    return data;
+  } catch (error) {
+    // Handle the error here
+    console.error('Error occurred while fetching data:', error);
+    throw error; // Optional: Rethrow the error if needed
+  }
+
 }
 
 const ouraApi = {
-  getSleep,
+  getSleepDailyDocuments,
+  getSleepDocuments,
   getData,
 };
 

@@ -1,10 +1,10 @@
 import withingsApi from '@/withings/api';
 import { useQuery } from '@tanstack/react-query'
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import type * as t from '@/withings-client/types';
 import userApi from '@/diet-server/user/user.api';
 import { GET_DATA_URL } from '@/withings-client/constants'
-import { fetch, parse } from '@/common/utils/utils.fetch'
+import { _fetch, parse } from '@/common/utils/utils.fetch'
 
 // redirect timeouts after 30 seconds
 const REDIRECT_TIMEOUT = 30 * 60 * 1000
@@ -62,7 +62,7 @@ const getData = async (accessResponse: t.AccessResponse, userId: string) => {
     accessToken = refreshReponse.access_token
   }
 
-  const res = await fetch(GET_DATA_URL, {
+  const res = await _fetch(GET_DATA_URL, {
     method: 'POST',
     body: JSON.stringify({ accessToken }),
   });
