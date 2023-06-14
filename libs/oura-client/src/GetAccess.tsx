@@ -12,15 +12,12 @@ function GetAccess() {
   const { state, setState, reset, bindings } = useInput(user.oura?.access_token)
 
   const queryClient = useQueryClient()
-  console.log('queryClient', queryClient);
 
   const addAccessTokenMutation = useMutation({
     mutationFn: userApi.updateUser,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['getUser'] })
       console.log('onsuccess',);
-      queryClient.setQueryData(['getUser'], { hei: 'ho' })
-
     },
   })
 

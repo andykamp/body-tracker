@@ -8,9 +8,6 @@ import Daily from "@/diet/components/Daily";
 import MealsAndProducts from "@/diet/components/MealsAndProducts";
 import Profile from "@/diet/components/Profile";
 import { signInWithGoogle, signOutOfGoogle, deleteAccount } from '@/diet/utils/auth.utils'
-import {
-  useQueryClient,
-} from '@tanstack/react-query'
 import { Fieldset } from "@geist-ui/core";
 import { useAuthContext } from "@/auth-client/firebase/Provider";
 import { useUserContext } from "@/user-client/Provider";
@@ -61,9 +58,24 @@ function ConsolePage() {
         pathname={pathname}
       />
       <Page>
+        <h1>Only logged in users can view this page</h1>
+        <Fieldset.Group value="Daily" onChange={handler}>
+          <Fieldset label="Daily">
+            <Fieldset.Title>Daily</Fieldset.Title>
+            <Fieldset.Subtitle>Showing you all daily goodies</Fieldset.Subtitle>
             <Daily />
+          </Fieldset>
+          <Fieldset label="Meals and products">
+            <Fieldset.Title>Meals and products</Fieldset.Title>
+            <Fieldset.Subtitle>Meals and product goodies</Fieldset.Subtitle>
             <MealsAndProducts />
+          </Fieldset>
+          <Fieldset label="Profile">
+            <Fieldset.Title>Profile</Fieldset.Title>
+            <Fieldset.Subtitle>Profile goodies</Fieldset.Subtitle>
             <Profile />
+          </Fieldset>
+        </Fieldset.Group>
       </Page>
     </>
   )

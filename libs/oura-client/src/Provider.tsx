@@ -3,9 +3,6 @@ import { ReactNode, useEffect } from 'react';
 import { createContext, useContext } from 'react';
 import { useUserContext } from "@/user-client/Provider";
 import { useData } from '@/oura-client/utils';
-import {
-  useQueryClient,
-} from '@tanstack/react-query'
 
 interface OuraContextValue {
   dataState?: t.DataState
@@ -23,21 +20,11 @@ export function OuraContextProvider({
   children
 }: OuraContextProviderProps) {
   const { user } = useUserContext()
-  console.log('OURAPROVIDER_USER', user);
-
-  useEffect(() => {
-    console.log('OURAPROVIDER_USER_UPDATE', user);
-  }, [user?.oura]);
-
-
-  const queryClient = useQueryClient()
-  // queryClient.invalidateQueries({ queryKey: ['getUser'] })
 
   // get Oura data
-  const dataState = null
-  // const dataState = useData({
-  //   accessToken: user?.oura?.access_token
-  // })
+  const dataState = useData({
+    accessToken: user?.oura?.access_token
+  })
 
   return (
     <OuraContext.Provider value={{ dataState }

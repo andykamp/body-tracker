@@ -19,7 +19,7 @@ export async function fetch(
   }
 
   try {
-    const res = await fetch(url, {
+    const res = await window.fetch(url, {
       ...options,
       method: options?.method?.toUpperCase() || "GET"
     })

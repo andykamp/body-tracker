@@ -34,11 +34,10 @@ export function WithingsContextProvider({
   }, [user?.withings])
 
   // get withings measurements
-  const dataState = null
-  // const dataState = useData({
-  //   userId: user?.id,
-  //   accessResponse
-  // })
+  const dataState = useData({
+    userId: user?.id,
+    accessResponse
+  })
 
   return (
     <WithingsContext.Provider value={{ accessResponse, setAccessResponse, dataState }

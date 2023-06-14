@@ -38,8 +38,6 @@ export function UserContextProvider({
   const loading = query.isLoading || query.isFetching
   const error = query.error
 
-  console.log('USERPROVIDER_QUERY', authUser, query, user, loading,);
-
   if (loading) {
     return <div>userProvider loading...</div>
   }

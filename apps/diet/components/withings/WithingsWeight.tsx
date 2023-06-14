@@ -35,9 +35,10 @@ function WithingsWeight() {
 
   const { data, error, isLoading } = dataState;
     // error handling
-  if (isLoading) return <div>Loading...</div>
-  if (error) return <div>{error}</div>
+  if (isLoading) return <div>Loading weight composition...</div>
+  if (error) return <div>{error.message}</div>
   if (!data) return null;
+  console.log('data',data );
 
   // extract data
   const { weight } = data

@@ -53,6 +53,7 @@ const getData = async (accessResponse: t.AccessResponse, userId: string) => {
   console.log('WHITINGS_HAR_EXPIRED?', hasExpired);
 
   if (hasExpired) {
+    console.log('whitings_refreshing token', );
     const refreshReponse = await withingsApi.refreshAccessToken({ refreshToken: accessResponse.refresh_token });
     console.log('WITHINGS_REFRESH_ACCESSTOKEN', refreshReponse);
     // update user with new access token
