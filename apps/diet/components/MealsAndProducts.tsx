@@ -3,7 +3,7 @@ import {
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query'
-import { useAuthContext } from "@/auth-client/firebase/auth.context";
+import { useAuthContext } from "@/auth-client/firebase/Provider";
 import mealApi from "@/diet-server/meal/meal.api"
 import productApi from "@/diet-server/product/product.api"
 import itemApi from '@/diet-server/item/item.api'

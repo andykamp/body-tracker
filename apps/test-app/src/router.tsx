@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'r
 import LoginForm from './login';
 import Home from './app/home';
 import Protected from './app/protected';
-import { useAuthContext } from '@/auth-client/firebase/auth.context'
+import { useAuthContext } from '@/auth-client/firebase/Provider'
 
 export type ProtectedRouteProps = {
   children: JSX.Element;

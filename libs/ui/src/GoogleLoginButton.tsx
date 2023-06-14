@@ -1,8 +1,14 @@
+import { ReactNode } from "react";
+
 type GoogleLoginButtonProps = {
   signIn(): void
+  children?: ReactNode;
 }
 
-const GoogleLoginButton = ({ signIn }: GoogleLoginButtonProps) => {
+const GoogleLoginButton = ({
+  signIn,
+  children = 'Sign in',
+}: GoogleLoginButtonProps) => {
 
   const handleLogin = async () => {
     try {
@@ -13,7 +19,7 @@ const GoogleLoginButton = ({ signIn }: GoogleLoginButtonProps) => {
   };
 
   return (
-    <button onClick={handleLogin}>Login</button>
+    <button onClick={handleLogin}>{children}</button>
   );
 };
 

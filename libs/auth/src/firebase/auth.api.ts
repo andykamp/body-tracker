@@ -26,7 +26,9 @@ async function signInWithGoogle({
   onError,
 }: SignInWithGoogleInput) {
   try {
+    console.log('signing in', );
     const result = await signInWithPopup(auth, provider)
+    console.log('signed in', );
     // This gives you a Google Access Token. You can use it to access the Google API.
     const userInfo = getAdditionalUserInfo(result)
     if (userInfo?.isNewUser) {

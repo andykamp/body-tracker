@@ -5,7 +5,7 @@ import {
   useQueryClient,
 } from '@tanstack/react-query'
 import dailyApi from "@/diet-server/daily/daily.api"
-import { useAuthContext } from "@/auth-client/firebase/auth.context";
+import { useAuthContext } from "@/auth-client/firebase/Provider";
 import StockSearch from '@/diet/components/StockSearch'
 import itemApi from '@/diet-server/item/item.api'
 import { ITEM_TYPES } from '@/diet-server/diet.constants'

@@ -1,5 +1,5 @@
 import React from "react";
-import { useAuthContext } from '@/auth-client/firebase/auth.context'
+import { useAuthContext } from '@/auth-client/firebase/Provider'
 import { useRouter } from "next/navigation";
 import authApi from "@/auth/firebase/auth.api"
 import userApi from "@/diet-server/user/user.api";
@@ -18,7 +18,7 @@ export function useAuthRedirect() {
 export async function signInWithGoogle() {
   await authApi.signInWithGoogle({
     onNewUser: async (result) => {
-      const r = await userApi.addUser({ uid: result.user.uid })
+      await userApi.addUser({ uid: result.user.uid })
     }
   });
 }

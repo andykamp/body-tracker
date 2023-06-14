@@ -4,25 +4,20 @@ import Navbar from '@/ui/Navbar'
 import { usePathname } from "next/navigation";
 import { NAVIGATION_ROUTES_HOME, ROUTES_CONSOLE } from "@/diet/app/constants"
 import { useRouter } from "next/navigation";
-import { signInWithGoogle } from '@/diet/utils/auth.utils'
 import Page from "@/ui/Page";
 
 function HomePage() {
   const pathname = usePathname()
   const router = useRouter()
 
-  const signIn = async () => {
-    try {
-      await signInWithGoogle();
-      router.push(ROUTES_CONSOLE.console)
-    } catch (error) {
-      console.error(error);
-    }
+  const goToSignin = async () => {
+    router.push(ROUTES_CONSOLE.login)
   };
+
   return (
     <Page>
       <Navbar
-        signIn={signIn}
+        signIn={goToSignin}
         navigation={NAVIGATION_ROUTES_HOME}
         pathname={pathname}
       />

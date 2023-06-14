@@ -5,7 +5,21 @@ import {
 import authApi from '@/auth/firebase/auth.api';
 const auth = authApi.getAuth()
 import { User } from '@/auth/firebase/auth.types'
-import { AuthContext } from '@/auth-client/firebase/auth.context'
+import { useRouter } from "next/navigation";
+import { createContext, useContext } from 'react';
+
+interface AuthContextValue {
+  user: User;
+  loading: boolean;
+}
+
+export const AuthContext = createContext<AuthContextValue>({
+  user: undefined,
+  loading: false
+});
+
+export const useAuthContext = () => useContext(AuthContext);
+
 
 type AuthContextProviderProps = {
   children: ReactNode;
@@ -14,12 +28,14 @@ type AuthContextProviderProps = {
 export function AuthContextProvider({ children }: AuthContextProviderProps) {
   const [user, setUser] = useState<User>();
   const [loading, setLoading] = useState<boolean>(true);
+  const router = useRouter()
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
       } else {
+        router.push("/")
         setUser(undefined);
       }
       setLoading(false);
@@ -28,17 +44,13 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     return () => unsubscribe();
   }, []);
 
-  if(loading) {
+  if (loading) {
     return <div>loading...</div>
-  }
-
-  if(!user) {
-    return <div>no user</div>
   }
 
   return (
     <AuthContext.Provider value={{ user, loading }}>
-      { children}
+      {children}
     </AuthContext.Provider>
   );
 };

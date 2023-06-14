@@ -3,7 +3,7 @@ import { usePathname } from "next/navigation";
 import { NAVIGATION_ROUTES_CONSOLE } from "../constants"
 import { signInWithGoogle, signOutOfGoogle, deleteAccount } from '../utils/auth.utils'
 import Page from "@/ui/Page";
-import { useAuthContext } from '@/auth-client/firebase/auth.context';
+import { useAuthContext } from '@/auth-client/firebase/Provider'
 
 function ConsolePage() {
   const { user } = useAuthContext()

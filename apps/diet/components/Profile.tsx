@@ -1,5 +1,5 @@
 import React from "react";
-import { useAuthContext } from "@/auth-client/firebase/auth.context";
+import { useAuthContext } from '@/auth-client/firebase/Provider'
 import { useUserContext } from "@/user-client/Provider";
 import WithingsGetAccess from "@/withings-client/GetAccess";
 import WithingsWeight from "@/diet/components/withings/WithingsWeight";

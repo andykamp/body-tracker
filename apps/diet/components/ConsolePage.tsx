@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { useAuthRedirect } from "../utils/auth.utils";
 import Navbar from '@/ui/Navbar'
 import { usePathname } from "next/navigation";
 import { NAVIGATION_ROUTES_CONSOLE, ROUTES_CONSOLE } from "@/diet/app/constants"
@@ -13,9 +12,12 @@ import {
   useQueryClient,
 } from '@tanstack/react-query'
 import { Fieldset } from "@geist-ui/core";
+import { useAuthContext } from "@/auth-client/firebase/Provider";
+import { useUserContext } from "@/user-client/Provider";
 
 function ConsolePage() {
-  const user = useAuthRedirect()
+  const { user: authUser } = useAuthContext()
+  const { user } = useUserContext()
   const pathname = usePathname()
   const router = useRouter()
 
@@ -60,7 +62,7 @@ function ConsolePage() {
 
     <>
       <Navbar
-        user={user}
+        user={authUser}
         signIn={signIn}
         signOut={signOut}
         deleteAccount={deleteGoogleAccount}

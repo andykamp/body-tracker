@@ -4,7 +4,7 @@ import {
   useQuery,
 } from '@tanstack/react-query'
 import userApi from '@/diet-server/user/user.api';
-import { useAuthContext } from "@/auth-client/firebase/auth.context";
+import { useAuthContext } from '@/auth-client/firebase/Provider'
 
 import { createContext, useContext } from 'react';
 
@@ -32,24 +32,24 @@ export function UserContextProvider({
   const query = useQuery({
     queryKey: ['getUser'],
     queryFn: () => userApi.getUser({ uid: authUser.uid }),
-    staleTime: 10000, // only eligible to refetch after 10 seconds
   })
 
   const user = query.data
   const loading = query.isLoading || query.isFetching
+  const error = query.error
 
-  console.log('USERPROVIDER_QUERY', query, user,loading, );
+  console.log('USERPROVIDER_QUERY', query, user, loading,);
 
   if (loading) {
-    return <div>loading...</div>
+    return <div>userProvider loading...</div>
   }
 
-  if (!user) {
-    return <div>no user</div>
+  if (error) {
+    return <div>userProvider error...</div>
   }
 
   return (
-    <UserContext.Provider value={{ user, loading }
+    <UserContext.Provider value={{ user: user!, loading }
     }>
       {
         children

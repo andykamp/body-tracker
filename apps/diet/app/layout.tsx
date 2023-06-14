@@ -1,4 +1,3 @@
-'use client'
 import './globals.css'
 import { Analytics } from '@vercel/analytics/react'
 import ThemeProvider from '@/diet/components/ThemeProvider'

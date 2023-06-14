@@ -1,3 +1,5 @@
+'use client'
+
 import { ComponentProps } from 'react'
 import { GeistProvider, CssBaseline } from '@geist-ui/core'
 
