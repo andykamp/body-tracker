@@ -6,14 +6,14 @@ export type FetchOptions = RequestInit & {
 
 export async function _fetch(
   url: string,
-  options?: FetchOptions
+  options?: Omit<FetchOptions, 'body'> & {body?: any}
 ) {
   if (options?.params) {
     url = `${url}?${stringifyParams(options.params)}`
   }
 
   if (options?.body && options?.headers?.["Content-Type"] === "application/x-www-form-urlencoded") {
-    parseToUrlEncoded(options.body)
+    options.body = parseToUrlEncoded(options.body)
   } else if (typeof options?.body === "object") {
     options.body = JSON.stringify(options.body)
   }

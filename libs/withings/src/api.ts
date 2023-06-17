@@ -1,12 +1,11 @@
 import { createHmac } from 'crypto';
-// import { fetch, parse } from '@/common/utils/utils.fetch'
+import { _fetch, parse } from '@/common/utils/utils.fetch'
 import { v4 as uuid } from 'uuid';
-import { createFormBody } from '@/withings/utils';
-// const timestamp = Date.now();
-const timestamp = Math.floor(Date.now() / 1000); // Get the current timestamp in seconds
 import config from '@/withings/config';
 import { MEASURE_TYPE } from '@/withings/constants';
 import type * as t from '@/withings/types';
+
+const timestamp = Math.floor(Date.now() / 1000); // Get the current timestamp in seconds
 
 // see https://web.postman.co/workspace/2bdccbac-c484-4dfb-b164-7631036384aa/request/23220387-932d145f-4a68-4bd1-89e3-a3aa42fcd12b
 
@@ -37,21 +36,19 @@ async function fetchNonce(signature: string): Promise<string> {
     signature,
   }
 
-  const nonceResponse = await fetch(`${baseUrl}/v2/signature`, {
+  const res = await _fetch(`${baseUrl}/v2/signature`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body: createFormBody(body),
+    body,
   });
 
-  if (!nonceResponse.ok) {
+  if (!res.ok) {
     throw new Error('Failed to retrieve nonce.');
   }
 
-  const json = await nonceResponse.json();
-  const nonce = json.body.nonce;
-  return nonce;
+ return await (parse(res) as any).body.nonce
 }
 
 async function getNonce(): Promise<string> {
@@ -74,21 +71,14 @@ async function getAuthCode(): Promise<string> {
 
   const url = `https://account.withings.com/oauth2_user/authorize2?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${encodeURIComponent(state)}&scope=${encodeURIComponent(scope)}`;
 
-  const response = await fetch(url, {
+  const response = await _fetch(url, {
     method: 'GET',
     redirect: 'follow'
   });
 
-  if (!response.ok) {
-    throw new Error(`Failed to get authorization code: ${response.status} ${response.statusText}`);
-  }
-
   return response.url
 
 }
-
-// Define your other functions for Withings API here
-// ...
 
 type GetAccessTokenInput = {
   code: string
@@ -110,19 +100,15 @@ async function getAccessToken({ code }: GetAccessTokenInput): Promise<t.AccessRe
     redirect_uri: redirectUri
   };
 
-  const response = await fetch(url, {
+  const res = await _fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body: createFormBody(body),
+    body
   });
 
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
-  const data = await response.json();
+  const data = await parse(res) as any;
   if (data.error) throw new Error(data.error);
   return {
     ...data.body,
@@ -148,26 +134,21 @@ async function refreshAccessToken({ refreshToken }: RefreshAccessTokenInput): Pr
     refresh_token: refreshToken,
   };
 
-  const response = await fetch(url, {
+  const res = await _fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body: createFormBody(body),
+    body
   });
 
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
-  const data = await response.json();
+  const data = await parse(res) as any;
   if (data.error) throw new Error(data.error);
 
   return {
     ...data.body,
     access_token_created: Date.now()
   }
-
 }
 
 type GetMeasurementsInput = {
@@ -181,15 +162,9 @@ async function getMeasureMent({
   measureType = 1,
   lastUpdate = 0
 }: GetMeasurementsInput): Promise<void> {
-  // const nonce = await withingsApi.getNonce()
-  // const code = await withingsApi.getAuthCode()
-  // console.log('nounce', nonce );
-  // console.log('code', code );
 
   const oneDayInSeconds = 24 * 60 * 60;
   lastUpdate = timestamp - oneDayInSeconds;
-
-  // const accessToken = process.env.NEXT_PUBLIC_WITHINGS_ACCESS_TOKEN;
 
   const url = 'https://scalews.withings.com/measure';
 
@@ -203,20 +178,16 @@ async function getMeasureMent({
     // lastupdate: lastUpdate,
   }
 
-  const response = await fetch(url, {
+  const res = await _fetch(url, {
     method: 'POST',
     headers,
-    body: createFormBody(body),
+    body
   });
 
-  if (!response.ok) {
-    throw new Error(`Failed to get measurements: ${response.status} ${response.statusText}`);
-  }
-
-  // Handle the response as needed
-  const data = await response.json();
+  // Handle the res as needed
+  const data = await parse(res) as any;
   if (data.error) throw new Error(data.error);
-  console.log('WITHINGS_MEASUREMENTS response:', data);
+  console.log('WITHINGS_MEASUREMENTS res:', data);
   return data.body
 }
 
