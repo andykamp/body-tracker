@@ -17,7 +17,6 @@ function GetAccess() {
     mutationFn: userApi.updateUser,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['getUser'] })
-      console.log('onsuccess',);
     },
   })
 

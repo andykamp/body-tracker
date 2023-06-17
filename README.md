@@ -126,6 +126,7 @@ Should also start the emulator on yarn dev!!
     - 
 
 ## Todo
+- use _fetch in withings api
 - remove stupid try catches
 - always return updated object and full object exept on delete
     - will enable uptimistic udpates??

@@ -11,7 +11,6 @@ const getData = async (accessToken: string) => {
     method: 'POST',
     body: JSON.stringify({ accessToken, startDate: '2023-01-01', endDate: '2023-05-05' }),
   });
-  console.log('OURA_RESPONSE', res)
   const data = await parse(res)
   console.log('OURA_DATA', data);
   return data
