@@ -18,8 +18,11 @@ function WithingsWeight() {
 
   // parse data
   const parsedData = graphApi.getWeightData(weight.measuregrps);
+  const weekAvg = graphApi.getWeekAvg(parsedData);
+  console.log('wee',parsedData, weekAvg );
 
   return (
+    <>
     <Card className="mt-8">
       <Title>Weight</Title>
       <Text>Your body weight over time</Text>
@@ -31,6 +34,18 @@ function WithingsWeight() {
         colors={["cyan"]}
       />
     </Card>
+    <Card className="mt-8">
+      <Title>Week Avg- Weight</Title>
+      <Text>Your body weight over time</Text>
+      <AreaChart
+        className="mt-4 h-80"
+        data={weekAvg}
+        index="time"
+        categories={['weight']}
+        colors={["cyan"]}
+      />
+    </Card>
+    </>
   )
 }
 

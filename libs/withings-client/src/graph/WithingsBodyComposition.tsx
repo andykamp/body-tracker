@@ -21,7 +21,10 @@ function WithingsBodyComposition() {
   // parse data
   const parsedData = graphApi.getBodyCompositionData(muscleMass.measuregrps, fatMass.measuregrps)
 
+  const weekAvg = graphApi.getWeekAvg(parsedData);
+  console.log('wee',parsedData, weekAvg );
   return (
+    <>
     <Card className="mt-8">
       <Title>Body Composition</Title>
       <Text>Your Fat vs Muscle</Text>
@@ -33,6 +36,19 @@ function WithingsBodyComposition() {
         colors={["cyan", "red"]}
       />
     </Card>
+        <Card className="mt-8">
+      <Title>Week AVG-Body Composition</Title>
+      <Text>Your Fat vs Muscle</Text>
+      <AreaChart
+        className="mt-4 h-80"
+        data={weekAvg}
+        index="time"
+        categories={['fatMass', 'muscleMass']}
+        colors={["cyan", "red"]}
+      />
+    </Card>
+    </>
+
   )
 }
 

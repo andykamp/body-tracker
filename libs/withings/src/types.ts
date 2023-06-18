@@ -49,7 +49,7 @@ export type MeasureGroup = {
   timezone: string;
 };
 
-type Measure = {
+export type Measure = {
   value: number;
   type: number;
   unit: number;
@@ -58,4 +58,8 @@ type Measure = {
   fw?: number;
 };
 
+export type GraphData = {
+  time: number;
+  [key: string]: number
+}
 
