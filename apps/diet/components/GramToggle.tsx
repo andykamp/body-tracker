@@ -75,6 +75,9 @@ function GramToggle({
         value={currentValue.toFixed(0).toString()}
         placeholder="grams"
         iconClickable
+        onChange={(e) => {
+          handleValueChange(Number(e.target.value))
+        }}
 
         iconRight={
           <ClickAndDragWrapper
@@ -90,11 +93,13 @@ function GramToggle({
               console.log('ondrag', v);
               handleValueChange(v)
             }}
+
           >
             <Github />
           </ClickAndDragWrapper >
 
-        } />
+        }
+      />
       <span>g: </span>
       <input
         type="number"
