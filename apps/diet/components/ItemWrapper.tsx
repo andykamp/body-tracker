@@ -71,7 +71,7 @@ function ItemWrapper({
       {item.name}
 
       <Input
-        width="100px"
+        width="80px"
         value={nutrition.protein.toFixed(0).toString()}
         iconRight={
           <Github />
@@ -79,7 +79,7 @@ function ItemWrapper({
       />
 
       <Input
-        width="100px"
+        width="80px"
         value={nutrition.calories.toFixed(0).toString()}
         iconRight={
           <Github />

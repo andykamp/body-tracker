@@ -71,7 +71,7 @@ function GramToggle({
     <div className="flex">
 
       <Input
-        width="100px"
+        width="80px"
         value={currentValue.toFixed(0).toString()}
         placeholder="grams"
         iconClickable
