@@ -1,6 +1,6 @@
 import { useWithingsContext } from "@/withings-client/Provider";
 import { Card, AreaChart, Title, Text } from '@tremor/react';
-import {parseData} from '@/withings/utils/utils.parser';
+import graphApi from '@/withings/graph/graph.api'
 
 function WithingsWeight() {
   const { dataState } = useWithingsContext();
@@ -8,19 +8,16 @@ function WithingsWeight() {
 
   const { data, error, isLoading } = dataState;
 
-    // error handling
+  // error handling
   if (isLoading) return <div>Loading weight...</div>
   if (error) return <div>{error.message}</div>
   if (!data) return null;
 
   // extract data
   const { weight } = data
-  const { measuregrps } = weight || {};
 
   // parse data
-  if (!measuregrps) return null;
-
-  const parsedData = parseData(measuregrps, 'weight');
+  const parsedData = graphApi.getWeightData(weight.measuregrps);
 
   return (
     <Card className="mt-8">

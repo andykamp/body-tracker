@@ -126,6 +126,11 @@ Should also start the emulator on yarn dev!!
     - 
 
 ## Todo
+- create test & tytpes for oura and withing to know each rest call is vaid
+- create graphApi in oura and whiting to make it simple to write test and use graph parsing
+    - write test
+    - use graphApi in diet
+- create a diet-scraper in node and run in grithub actions as cron-jos
 - use _fetch in withings api
 - remove stupid try catches
 - always return updated object and full object exept on delete

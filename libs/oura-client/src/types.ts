@@ -1,5 +1,7 @@
+import * as t from '@/oura/types'
+
 export type DataState = {
-  data?: any,
+  data?: t.Data,
   error?: any,
   isLoading: boolean
 }

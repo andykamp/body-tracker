@@ -2,10 +2,11 @@ import React from "react";
 import { useAuthContext } from '@/auth-client/firebase/Provider'
 import { useUserContext } from "@/user-client/Provider";
 import WithingsGetAccess from "@/withings-client/GetAccess";
-import WithingsWeight from "@/diet/components/withings/WithingsWeight";
+import WithingsWeight from "@/withings-client/graph/WithingsWeight";
+import WithingsBodyComposition from "@/withings-client/graph/WithingsBodyComposition";
 import OuraGetAccess from "@/oura-client/GetAccess";
-import WithingsBodyComposition from "@/diet/components/withings/WithingsBodyComposition";
-import OuraSleep from "./oura/OuraSleep";
+import OuraSleep from "@/oura-client/graph/OuraSleep";
+import OuraSleepAvg from "@/oura-client/graph/OuraSleepAvg";
 
 function ProfilePage() {
   const { user: authUser } = useAuthContext()
@@ -26,6 +27,7 @@ function ProfilePage() {
       <h3>Oura API</h3>
       <OuraGetAccess/>
       <OuraSleep/>
+      <OuraSleepAvg/>
     </div>
   )
 }

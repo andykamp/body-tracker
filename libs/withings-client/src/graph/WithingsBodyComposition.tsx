@@ -1,6 +1,6 @@
 import { useWithingsContext } from "@/withings-client/Provider";
 import { Card, AreaChart, Title, Text } from '@tremor/react';
-import {parseData} from '@/withings/utils/utils.parser';
+import graphApi  from '@/withings/graph/graph.api'
 
 function WithingsBodyComposition() {
   const { dataState } = useWithingsContext();
@@ -19,9 +19,7 @@ function WithingsBodyComposition() {
   if (!fatMass || !muscleMass) return null;
 
   // parse data
-  const parsedFatMass = parseData(fatMass.measuregrps, 'fatMass')
-  const parsedMuscleMass = parseData(muscleMass.measuregrps, 'muscleMass');
-  const parsedData = parsedFatMass.map(( _, index) => ({time: _.time, fatMass: _.fatMass, muscleMass: parsedMuscleMass[index].muscleMass}))
+  const parsedData = graphApi.getBodyCompositionData(muscleMass.measuregrps, fatMass.measuregrps)
 
   return (
     <Card className="mt-8">

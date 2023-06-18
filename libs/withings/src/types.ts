@@ -7,8 +7,55 @@ export type AccessResponse = {
 }
 
 export type Data = {
-  weight?: any;
-  fatMass?: any;
-  muscleMass?: any;
+  weight?: GetMeasResponseBody;
+  fatMass?: GetMeasResponseBody;
+  muscleMass?: GetMeasResponseBody;
 }
+
+export type GetMeasInput = {
+  action: string;
+  meastypes: number | number[];
+  category?: number;
+  startdate?: number;
+  enddate?: number;
+  offset?: number;
+  limit?: number;
+};
+
+export type GetMeasOutput = {
+  status: number;
+  body: GetMeasResponseBody;
+  error?: any;
+};
+
+export type GetMeasResponseBody = {
+  updatetime: string;
+  timezone: string;
+  measuregrps: MeasureGroup[];
+  more: number;
+  offset: number;
+};
+
+export type MeasureGroup = {
+  grpid: number;
+  attrib: number;
+  date: number;
+  created: number;
+  modified: number;
+  category: number;
+  deviceid: string;
+  measures: Measure[];
+  comment?: string;
+  timezone: string;
+};
+
+type Measure = {
+  value: number;
+  type: number;
+  unit: number;
+  algo?: number;
+  fm?: number;
+  fw?: number;
+};
+
 

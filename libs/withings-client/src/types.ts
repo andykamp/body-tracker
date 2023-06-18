@@ -1,17 +1,9 @@
-export type AccessResponse = {
-  refresh_token: string
-  access_token: string
-  expires_in: number
-  access_token_created: number
-  error?: string
-}
+import * as t from '@/withings/types'
 
-export type AccessResponseError = {
-  error: string;
-}
+export type AccessResponse = t.AccessResponse;
 
 export type DataState = {
-  data?: any,
+  data?: t.Data,
   error?: any,
   isLoading: boolean
 }

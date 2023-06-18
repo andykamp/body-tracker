@@ -1,21 +1,16 @@
+import type * as t from '@/withings/types';
 
-function adjustValueByUnit(value: number, unit: number): number {
+export function adjustValueByUnit(value: number, unit: number): number {
   const decimalFactor = Math.pow(10, Math.abs(unit));
   return unit < 0 ? value / decimalFactor : value * decimalFactor;
 }
-
-
-type InputData = {
-  date: number;
-  measures: { value: number; unit: number; }[];
-};
 
 type OutputData = {
   time: number;
   [key: string]: number
 };
 
-export function parseData(data: InputData[], outputName: string): OutputData[] {
+export function parseData(data: t.MeasureGroup[], outputName: string): OutputData[] {
   return data.map(({ date, measures }) => {
     const time = date * 1000
 

@@ -9,7 +9,7 @@ async function getSleepDailyDocuments(accessToken: string, startDate: string, en
       Authorization: `Bearer ${accessToken}`
     }
   }
-  let res = await _fetch(`${config.baseUrl}${config.sleepDailyUrl}?start_date=${startDate}&end_date=${endDate}`, requestOptions)
+  const res = await _fetch(`${config.baseUrl}${config.sleepDailyUrl}?start_date=${startDate}&end_date=${endDate}`, requestOptions)
   return await parse(res as any)
 }
 
@@ -20,7 +20,7 @@ async function getSleepDocuments(accessToken: string, startDate: string, endDate
       Authorization: `Bearer ${accessToken}`
     }
   }
-  let res = await _fetch(`${config.baseUrl}${config.sleepUrl}?start_date=${startDate}&end_date=${endDate}`, requestOptions)
+  const res = await _fetch(`${config.baseUrl}${config.sleepUrl}?start_date=${startDate}&end_date=${endDate}`, requestOptions)
   return await parse(res as any)
 }
 

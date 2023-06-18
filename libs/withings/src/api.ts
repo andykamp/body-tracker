@@ -48,7 +48,7 @@ async function fetchNonce(signature: string): Promise<string> {
     throw new Error('Failed to retrieve nonce.');
   }
 
- return await (parse(res) as any).body.nonce
+  return await (parse(res) as any).body.nonce
 }
 
 async function getNonce(): Promise<string> {
@@ -151,6 +151,17 @@ async function refreshAccessToken({ refreshToken }: RefreshAccessTokenInput): Pr
   }
 }
 
+
+function checkIfAccessTokenExpired(
+  accessTokenCreated: number,
+  expiresIn: number
+) {
+  const now = Date.now();
+  const expiresAt = accessTokenCreated + (expiresIn * 1000);
+  const isExpired = now > expiresAt;
+  return isExpired;
+}
+
 type GetMeasurementsInput = {
   accessToken: string,
   measureType: number,
@@ -161,7 +172,7 @@ async function getMeasureMent({
   accessToken,
   measureType = 1,
   lastUpdate = 0
-}: GetMeasurementsInput): Promise<void> {
+}: GetMeasurementsInput): Promise<t.GetMeasResponseBody> {
 
   const oneDayInSeconds = 24 * 60 * 60;
   lastUpdate = timestamp - oneDayInSeconds;
@@ -172,7 +183,7 @@ async function getMeasureMent({
     'Content-Type': 'application/x-www-form-urlencoded',
     Authorization: `Bearer ${accessToken}`,
   };
-  const body: Record<string, any> = {
+  const body: t.GetMeasInput = {
     action: 'getmeas',
     meastypes: measureType,
     // lastupdate: lastUpdate,
@@ -185,13 +196,13 @@ async function getMeasureMent({
   });
 
   // Handle the res as needed
-  const data = await parse(res) as any;
+  const data:t.GetMeasOutput = await parse(res) as any;
   if (data.error) throw new Error(data.error);
   console.log('WITHINGS_MEASUREMENTS res:', data);
   return data.body
 }
 
-async function getData(accessToken: string) {
+async function getData(accessToken: string): Promise<t.Data> {
   const weightPromise = withingsApi.getMeasureMent({
     accessToken,
     measureType: MEASURE_TYPE.weight,
@@ -224,16 +235,6 @@ async function getData(accessToken: string) {
     console.error('Error occurred while fetching data:', error);
     throw error; // Optional: Rethrow the error if needed
   }
-}
-
-function checkIfAccessTokenExpired(
-  accessTokenCreated: number,
-  expiresIn: number
-) {
-  const now = Date.now();
-  const expiresAt = accessTokenCreated + (expiresIn * 1000);
-  const isExpired = now > expiresAt;
-  return isExpired;
 }
 
 const withingsApi = {

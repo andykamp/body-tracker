@@ -1,7 +1,6 @@
 import { useOuraContext } from "@/oura-client/Provider";
 import { Card, AreaChart, Title, Text } from '@tremor/react';
-import type * as t from '@/oura/types';
-import { parseSleepData, parseSleepDataWeeklyAverage } from '@/oura/utils/utils.sleep';
+import graphApi from '@/oura/graph/graph.api';
 
 function OuraSleep() {
   const { dataState } = useOuraContext();
@@ -16,23 +15,9 @@ function OuraSleep() {
   // extract data
   const { sleep } = data
 
-  // parse data
-  const parsedData = parseSleepData(sleep?.data);
-  const parsedWeekData = parseSleepDataWeeklyAverage(parsedData);
+  const parsedWeekData =graphApi.getSleepDataWeeklyAverage(sleep?.data);
 
   return (
-    <div>
-      <Card className="mt-8">
-        <Title>Sleep</Title>
-        <Text>Your time in bed vs actual sleep</Text>
-        <AreaChart
-          className="mt-4 h-80"
-          data={parsedData}
-          index="time"
-          categories={['timeInBed', 'totalSleep']}
-          colors={["cyan", "blue"]}
-        />
-      </Card>
       <Card className="mt-8">
         <Title>Sleep avg</Title>
         <Text>Your time in bed vs actual sleep</Text>
@@ -44,8 +29,6 @@ function OuraSleep() {
           colors={["cyan", "blue"]}
         />
       </Card>
-
-    </div>
   )
 }
 
