@@ -1,7 +1,7 @@
 # BodyTracker
 
 ### Setup
-- frontend: nextjs
+- frontend: nextjs and sanity 
 - auth: firebase google
 - database: firestore
 - cache: redis (kv vercel)
@@ -126,63 +126,87 @@ Should also start the emulator on yarn dev!!
     - 
 
 ## Todo
-- create test & tytpes for oura and withing to know each rest call is vaid
-- create graphApi in oura and whiting to make it simple to write test and use graph parsing
-    - write test
-    - use graphApi in diet
-- create a diet-scraper in node and run in grithub actions as cron-jos
-- use _fetch in withings api
-- remove stupid try catches
-- always return updated object and full object exept on delete
-    - will enable uptimistic udpates??
-- FIX invalidateing userProvider so it updates children!!!!
-- update cache rather than refetch
-- use react-query on useMeasurements....
-- use a rest api for error handling
-- look at tailwind templates or markus library
-- protein/calory targets should adjust to the average weight!
-    - maybe put in provider??
-- add light/dark theme
-- fix auth loading state
-- fix loading state while user is loggin in
-- so that the user is never null. add types for this
-- user-server should be a sepearea lib
-    - should import types from diet, oura and withing
-    - their types etc should be in a common lib
-- determine data or measurements
-- use chatGPT to generate input/output forn whitings and oura
-- create fixtures and tests
-- add weeksly average
-- add sleep diff on weekends and weekdays
-- add gradient pointers to graph
-- add "custom daily" entry
-- add "custom product" entry
-- scrape ODA and add to firestore
-- add redis cache to stock 
-- create PWA
-- 
-- flush react query cache when loggin out. if not all data is cached
-- move "meals" etc into contsant and set a standard for capital/lowercase names
-- add id instead of names to meals etc. will fuck up stock atm
-- CANNOT ADD MULTIPLE EGGS :(
-- decide on pascal case etc
-- 
-- create UX kit in figma
-    - add app UX overview
-    - add powerpoint kepler slide with UX overview that we can use on website
-    - 
-- add e2e and component tests
-- search should have acceess to all stock and personal products/meals...
-- remove explixit exports in the .apis
-- add "timestamp" to meals added to daily
-- 
-- Delete 
-    - delete should only set isDelete and not actually delete. you can setup custom ttl in firestore https://firebase.google.com/docs/firestore/ttl. it will still show up in queries (unless you demand the isDeleted should not be returned)
-    - delete should just re-use update. 
+- external apis
+    - create test & tytpes for oura and withing to know each rest call is vaid
+    - create graphApi in oura and whiting to make it simple to write test and use graph parsing
+        - write test
+        - use graphApi in diet
+- scraping 
+    - create a diet-scraper in node and run in grithub actions as cron-jos
+ 
+ - workflow
+     - clean up UI
+     - add storybook figma 
+     - move all components into UI
+     - create input fields and rows as described in figma
+     - create own meals/products
+     - add custom meal into daily
+         - need to find a way to distinguish between custom and non-custom meals/product
 
-- add re-route param to signing/signout so i dont have to re-define it all the time 
+- storybook 
+    - add manager
+    - add theme and setup
+
+- docs
+    - add developer docs where i can add actual todos etc
+    - use docusaurus or mkdir
+
+ - general
+    - remove stupid try catches
+    - always return updated object and full object exept on delete
+        - will enable uptimistic udpates??
+    - FIX invalidateing userProvider so it updates children!!!!
+    - update cache rather than refetch
+    - use react-query on useMeasurements....
+    - use a rest api for error handling
+    - look at tailwind templates or markus library
+    - protein/calory targets should adjust to the average weight!
+        - maybe put in provider??
+    - add light/dark theme
+    - fix auth loading state
+    - fix loading state while user is loggin in
+    - so that the user is never null. add types for this
+    - user-server should be a sepearea lib
+        - should import types from diet, oura and withing
+        - their types etc should be in a common lib
+    - determine data or measurements
+    - use chatGPT to generate input/output forn whitings and oura
+    - create fixtures and tests
+    - add weeksly average
+    - add sleep diff on weekends and weekdays
+    - add gradient pointers to graph
+    - add "custom daily" entry
+    - add "custom product" entry
+    - scrape ODA and add to firestore
+    - add redis cache to stock 
+    - create PWA
+    - 
+    - flush react query cache when loggin out. if not all data is cached
+    - move "meals" etc into contsant and set a standard for capital/lowercase names
+    - add id instead of names to meals etc. will fuck up stock atm
+    - CANNOT ADD MULTIPLE EGGS :(
+    - decide on pascal case etc
+    - 
+    - create UX kit in figma
+        - add app UX overview
+        - add powerpoint kepler slide with UX overview that we can use on website
+        - 
+    - add e2e and component tests
+    - search should have acceess to all stock and personal products/meals...
+    - remove explixit exports in the .apis
+    - add "timestamp" to meals added to daily
+    - 
+    - Delete 
+        - delete should only set isDelete and not actually delete. you can setup custom ttl in firestore https://firebase.google.com/docs/firestore/ttl. it will still show up in queries (unless you demand the isDeleted should not be returned)
+        - delete should just re-use update. 
+
+    - add re-route param to signing/signout so i dont have to re-define it all the time 
+    - 
+    - rename updateProductTo user to updateProductForCurrentUser
+    - decide how to manage xxforCurrentUser and if that is neccesarry
+    - should use create, update, delete instead of add, update, remove
+    - delete subcollections on delete
+
+
+## Next up
 - 
-- rename updateProductTo user to updateProductForCurrentUser
-- decide how to manage xxforCurrentUser and if that is neccesarry
-- should use create, update, delete instead of add, update, remove
-- delete subcollections on delete

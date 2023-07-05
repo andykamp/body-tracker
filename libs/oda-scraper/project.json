@@ -1,0 +1,30 @@
+{
+  "name": "oda-scraper",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/oda-scraper/src",
+  "projectType": "library",
+  "tags": ["type:backend", "scope:shared"],
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/oda-scraper/**/*.ts"]
+      }
+    },
+    "type-check": {
+      "command": "tsc -b ./libs/oda-scraper/tsconfig.json --incremental --pretty"
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/oda-scraper/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "scrape": {
+      "command": "ts-node -r tsconfig-paths/register --project ./libs/oda-scraper/tsconfig.json ./libs/oda-scraper/src/scraper.ts"
+    },
+  }
+}
