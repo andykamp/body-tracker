@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 import { BASE_URL } from '@/oda-scraper/oda.constants';
+import { v4 as uuid } from 'uuid';
 
 const RUN_HEADLESS_MODE = false;
 
@@ -14,6 +15,17 @@ const listItemSelector = '.product-category-list .product-list-item a'
 const itemInfoTabSelector = 'ul.nav.nav-tabs li[role="presentation"] a[aria-controls^="contents-"]'
 const itemNutritionTabSelector = 'ul.nav.nav-tabs li[role="presentation"] a[aria-controls^="nutrition-"]'
 
+async function removeCookieDialog(page) {
+  try {
+    await page.evaluate(() => {
+      let element = document.querySelector('div.cookie-widget-wrapper');
+      if (element) element.remove();
+    });
+  } catch (error) {
+    console.error(`could not remove cookie popup: ${error.message}`);
+  }
+}
+
 async function getCategoriesLinks(page) {
   const hrefs = await page.$$eval(categorySelector, links => links.map(link => link.href));
   return hrefs
@@ -27,45 +39,40 @@ async function getSubCategoryLinks(href, browser) {
   return subCategoriesHref
 }
 
-async function getSubCategoryItems(subCategoriesHref, browser) {
-  const items = {}
+async function getSubCategoryItems(subCategoriesHref, browser, categoryName) {
+  let items = {}
 
   for (let subCategoryHref of subCategoriesHref) {
     const subCategoryPage = await browser.newPage();
-    const subCategoryName = subCategoryHref.split('/').pop();
+    const subCategoryName = subCategoryHref.split('/').filter(i => i !== '').pop();
+    console.log('subCategoryName', subCategoryName);
     await subCategoryPage.goto(subCategoryHref);
-    const items = await getItems(subCategoryPage)
-    items[subCategoryName] = items;
+    const subCategoryItems = await getItems(subCategoryPage, subCategoryName, categoryName)
+    items = { ...items, ...subCategoryItems };
     await subCategoryPage.close();
   }
   return items
 }
 
-async function removeCookieDialog(page) {
-  try {
-    await page.evaluate(() => {
-      let element = document.querySelector('div.cookie-widget-wrapper');
-      if (element) element.remove();
-    });
-  } catch (error) {
-    console.error(`could not remove cookie popup: ${error.message}`);
-  }
-
-}
-export async function getItems(page: any) {
+export async function getItems(page: any, subCategoryName?: string, categoryName?: string) {
   const items = {}
-  // Extract the links of each list item
-  const listItems = await page.$$(listItemSelector);
 
+  // Extract the links of each list item
+  let listItems = await page.$$(listItemSelector);
+  listItems = listItems.slice(0, 4);
 
   // remove the cookie popup
   await removeCookieDialog(page);
 
-  // @todo: remove the cookie popup?
-
   for (let i = 0; i < listItems.length; i++) {
+    let productUid = uuid(),
+      odaUid: null,
+      productTitle = '',
+      productInfo = {},
+      productNutrition = {};
 
     try {
+
       // Click on each list item
       await listItems[i].click();
 
@@ -79,12 +86,24 @@ export async function getItems(page: any) {
       continue; // Move to the next iteration of the loop
     }
 
+    // @todo: extract getters to own utils
     // Select second tab
-    let mergedTitle = '', infoValues = {}, nutritionValues = {};
     try {
 
       try {
-        mergedTitle = await page.evaluate(() => {
+        odaUid = await page.evaluate(() => {
+          const link = document.querySelector('#modal-container ul.nav.nav-tabs a[href^="#contents-"]') as any;
+          if(!link)return null
+          const href = link.href.split('/').filter(i => i !== '').pop()
+          // this will be on the format #contents-1234 where 1234 is the id we want
+          return href.split('-').pop();
+        });
+      } catch (error) {
+        console.error(`odaUid failed: ${error.message}`);
+      }
+
+      try {
+        productTitle = await page.evaluate(() => {
           const nameSpan = document.querySelector('h1 span[itemprop="name"]');
           // Return the text content, which includes the content of child elements
           let content = nameSpan.textContent;
@@ -92,7 +111,7 @@ export async function getItems(page: any) {
           content = content.replace(/\s\s+/g, ' ').trim();
           return content;
         });
-        console.log('title', mergedTitle);
+        console.log('title', productTitle);
       } catch (error) {
         console.error(`title failed: ${error.message}`);
       }
@@ -102,7 +121,7 @@ export async function getItems(page: any) {
         await page.waitForSelector(itemInfoTabSelector);
         await page.click(itemInfoTabSelector);
 
-        const infoValues = await page.evaluate(() => {
+        productInfo = await page.evaluate(() => {
           const itemInfoContentSelector = '.tab-content [id^="contents-"] table tbody tr'
           const rows = Array.from(document.querySelectorAll(itemInfoContentSelector));
           return rows.map(row => {
@@ -110,7 +129,6 @@ export async function getItems(page: any) {
             return { [cells[0]]: cells[1] };
           });
         });
-        console.log('infoValues', infoValues);
       } catch (error) {
         console.error(`info failed: ${error.message}`);
       }
@@ -120,7 +138,7 @@ export async function getItems(page: any) {
         await page.waitForSelector(itemNutritionTabSelector);
         await page.click(itemNutritionTabSelector);
 
-        nutritionValues = await page.evaluate(() => {
+        productNutrition = await page.evaluate(() => {
           const itemNutritionContentSelector = '.tab-content [id^="nutrition-"] table tbody tr'
           const rows = Array.from(document.querySelectorAll(itemNutritionContentSelector));
           return rows.map(row => {
@@ -128,15 +146,18 @@ export async function getItems(page: any) {
             return { [cells[0]]: cells[1] };
           });
         });
-        console.log(`Nutrition values for item ${i + 1}: `, nutritionValues);
       } catch (error) {
         console.error(`nutrition failed: ${error.message}`);
       }
 
-      items[mergedTitle] = {
-        title: mergedTitle,
-        info: infoValues,
-        nutrition: nutritionValues
+      items[productUid] = {
+        uid: productUid,
+        odaUid,
+        odacategoryName: categoryName,
+        odaSubCategoryName: subCategoryName,
+        title: productTitle,
+        info: productInfo,
+        nutrition: productNutrition
       }
 
     } catch (error) {
@@ -153,6 +174,7 @@ export async function getItems(page: any) {
     await page.waitForSelector('#modal-container', { hidden: true });
 
   }
+  console.log('subcategory items', items);
   return items;
 }
 
@@ -173,20 +195,24 @@ export async function getContents() {
   hrefs = hrefs.filter(href => href.toLowerCase().includes('kylling'));
   console.log('hrefs', hrefs);
 
-  const items = {}
+  let items = {}
+
   // @todo: currently assumes there is only one level of subCategory
   for (let href of hrefs) {
     // const href = hrefs[3];
     // if (href.toLowerCase().includes('frukt')) continue;
-    const subCategoriesHrefs = await getSubCategoryLinks(href, browser)
-    const subCategoryName = href.split('/').pop();
+    let subCategoriesHrefs = await getSubCategoryLinks(href, browser)
+    subCategoriesHrefs = subCategoriesHrefs.slice(0, 1);
+
+    const subCategoryName = href.split('/').filter(i => i !== '').pop();
 
     // loop all categories
     console.log('subCategory', subCategoriesHrefs);
-    const items = await getSubCategoryItems(subCategoriesHrefs, browser)
-    items[subCategoryName] = items;
+    const newItems = await getSubCategoryItems(subCategoriesHrefs, browser, subCategoryName)
+    items = {...items, ...newItems};
   }
 
+  console.dir(items, { depth: null, colors: true });
   await page.close()
   await browser.close();
   return items;
