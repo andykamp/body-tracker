@@ -1,6 +1,7 @@
 const puppeteer = require('puppeteer');
 import { BASE_URL } from '@/oda-scraper/oda.constants';
 import { v4 as uuid } from 'uuid';
+import { mapInfoToEnglish, mapNutritionToEnglish } from './oda.utils';
 
 const RUN_HEADLESS_MODE = false;
 
@@ -59,7 +60,7 @@ export async function getItems(page: any, subCategoryName?: string, categoryName
 
   // Extract the links of each list item
   let listItems = await page.$$(listItemSelector);
-  listItems = listItems.slice(0, 4);
+  listItems = listItems.slice(0, 1);
 
   // remove the cookie popup
   await removeCookieDialog(page);
@@ -93,7 +94,7 @@ export async function getItems(page: any, subCategoryName?: string, categoryName
       try {
         odaUid = await page.evaluate(() => {
           const link = document.querySelector('#modal-container ul.nav.nav-tabs a[href^="#contents-"]') as any;
-          if(!link)return null
+          if (!link) return null
           const href = link.href.split('/').filter(i => i !== '').pop()
           // this will be on the format #contents-1234 where 1234 is the id we want
           return href.split('-').pop();
@@ -123,16 +124,17 @@ export async function getItems(page: any, subCategoryName?: string, categoryName
 
         productInfo = await page.evaluate(() => {
           const itemInfoContentSelector = '.tab-content [id^="contents-"] table tbody tr'
+          const obj = {}
           const rows = Array.from(document.querySelectorAll(itemInfoContentSelector));
-          return rows.map(row => {
+          rows.forEach(row => {
             const cells = Array.from(row.querySelectorAll('th, td')).map(el => (el as HTMLElement).innerText.trim());
-            return { [cells[0]]: cells[1] };
+            obj[cells[0]] = cells[1];
           });
+          return obj
         });
       } catch (error) {
         console.error(`info failed: ${error.message}`);
       }
-
 
       try {
         await page.waitForSelector(itemNutritionTabSelector);
@@ -140,11 +142,13 @@ export async function getItems(page: any, subCategoryName?: string, categoryName
 
         productNutrition = await page.evaluate(() => {
           const itemNutritionContentSelector = '.tab-content [id^="nutrition-"] table tbody tr'
+          const obj = {}
           const rows = Array.from(document.querySelectorAll(itemNutritionContentSelector));
-          return rows.map(row => {
+          rows.forEach(row => {
             const cells = Array.from(row.querySelectorAll('th, td')).map(el => (el as HTMLElement).innerText.trim());
-            return { [cells[0]]: cells[1] };
+            obj[cells[0]] = cells[1];
           });
+          return obj
         });
       } catch (error) {
         console.error(`nutrition failed: ${error.message}`);
@@ -156,8 +160,9 @@ export async function getItems(page: any, subCategoryName?: string, categoryName
         odacategoryName: categoryName,
         odaSubCategoryName: subCategoryName,
         title: productTitle,
-        info: productInfo,
-        nutrition: productNutrition
+        info: mapInfoToEnglish(productInfo),
+        nutrition: mapNutritionToEnglish(productNutrition),
+        unit: 'grams'
       }
 
     } catch (error) {
@@ -209,7 +214,7 @@ export async function getContents() {
     // loop all categories
     console.log('subCategory', subCategoriesHrefs);
     const newItems = await getSubCategoryItems(subCategoriesHrefs, browser, subCategoryName)
-    items = {...items, ...newItems};
+    items = { ...items, ...newItems };
   }
 
   console.dir(items, { depth: null, colors: true });
@@ -218,6 +223,9 @@ export async function getContents() {
   return items;
 };
 
+export function parseItem() {
+  // what type do we want to output
+}
 
 export function storeProducts(products: any[]) {
   console.log('storeprduct', products);
