@@ -1,5 +1,5 @@
 export type OdaProductInfo = {
-  Størrelse?: string;
+  Størrelse: string;
   Utleveringsdager?: string;
   Ingredienser?: string;
   Opprinnelsesland?: string;
@@ -10,16 +10,17 @@ export type OdaProductInfo = {
 };
 
 export type OdaNutritionInfo = {
-  Energi?: string;
-  Fett?: string;
+  Energi: string;
+  Fett: string;
   'hvorav mettede fettsyrer'?: string;
   'hvorav enumettede fettsyrer'?: string;
   'hvorav flerumettede fettsyrer'?: string;
-  Karbohydrater?: string;
-  Protein?: string;
+  Karbohydrater: string;
+  Protein: string;
   Salt?: string;
 };
 
+//@todo: make uppercase???
 export type ProductInfo = {
   size?: string;
   grams?: number;
@@ -32,6 +33,7 @@ export type ProductInfo = {
   shelfLifeGuarantee?: string;
 };
 
+//@todo: make uppercase???
 export type NutritionInfo = {
   energy?: string;
   calories?: string;
@@ -44,14 +46,15 @@ export type NutritionInfo = {
   salt?: string;
 };
 
+//@todo: make uppercase???
 export type Product= {
   uid: string;
   odaUid: string;
   odacategoryName: string;
   odaSubCategoryName: string;
   title: string;
-  info: ProductInfo[];
-  nutrition: NutritionInfo[];
+  info: ProductInfo;
+  nutrition: NutritionInfo;
   unit: string;
 };
 
