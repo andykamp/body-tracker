@@ -1,5 +1,6 @@
-import { Product } from "@/oda-scraper/oda.types";
+import { Product } from "@/oda-scraper/types";
 import fs from 'fs';
+
 const FILE_PATH = '/Users/anderskampenes/side-projects/body-tracker/oda_products.json'
 
 // Check if search term was passed

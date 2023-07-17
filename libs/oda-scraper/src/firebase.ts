@@ -22,7 +22,6 @@ if (SHOULD_CONNECT_TO_EMULATOR) {
   });
 }
 
-
 // initilize database
 crudApi.initializeDB(db);
 

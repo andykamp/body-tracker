@@ -12,7 +12,8 @@
     "type-check": "nx run-many --target=type-check --parallel --exclude=workspace",
     "prepare": "husky install",
     "oda-scrape": "nx run oda-scraper:scrape",
-    "oda-search": "nx run oda-scraper:search"
+    "oda-search": "nx run oda-scraper:search",
+    "oda-repl": "nx run oda-scraper:search-REPL"
   },
   "private": true,
   "dependencies": {

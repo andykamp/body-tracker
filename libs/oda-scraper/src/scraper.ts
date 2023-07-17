@@ -1,4 +1,4 @@
-import { getContents } from '@/oda-scraper/oda.api';
+import { getContents } from '@/oda-scraper/api';
 // import firebaseCrudApi from '@/oda-scraper/oda.firebase';
 import { writeLargeJsonToFile} from '@/oda-scraper/utils/utils.fs';
 // import { products } from './__support__/fixtures/product';
