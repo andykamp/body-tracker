@@ -26,5 +26,8 @@
     "scrape": {
       "command": "ts-node -r tsconfig-paths/register --project ./libs/oda-scraper/tsconfig.json ./libs/oda-scraper/src/scraper.ts"
     },
+    "search": {
+      "command": "ts-node -r tsconfig-paths/register --project ./libs/oda-scraper/tsconfig.json ./libs/oda-scraper/src/searchScript.ts"
+    },
   }
 }

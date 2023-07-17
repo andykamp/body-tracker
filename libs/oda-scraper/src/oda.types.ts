@@ -20,7 +20,6 @@ export type OdaNutritionInfo = {
   Salt?: string;
 };
 
-//@todo: make uppercase???
 export type ProductInfo = {
   size?: string;
   grams?: number;
@@ -33,7 +32,6 @@ export type ProductInfo = {
   shelfLifeGuarantee?: string;
 };
 
-//@todo: make uppercase???
 export type NutritionInfo = {
   energy?: string;
   calories?: string;
@@ -46,7 +44,6 @@ export type NutritionInfo = {
   salt?: string;
 };
 
-//@todo: make uppercase???
 export type Product= {
   uid: string;
   odaUid: string;

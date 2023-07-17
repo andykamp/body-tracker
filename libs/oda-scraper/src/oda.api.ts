@@ -1,25 +1,20 @@
-const puppeteer = require('puppeteer');
-import { BASE_URL } from '@/oda-scraper/oda.constants';
+import puppeteer, { type Browser, type Page, } from 'puppeteer'
 import { v4 as uuid } from 'uuid';
-import { mapInfoToEnglish, mapNutritionToEnglish } from './oda.utils';
+import { BASE_URL } from '@/oda-scraper/oda.constants';
+import { mapInfoToEnglish, mapNutritionToEnglish }
+  from '@/oda-scraper/utils/utils.format';
+import { CATEGORY_WHITLELIST } from '@/oda-scraper/oda.constants'
+import { writeLargeJsonToFile } from '@/oda-scraper/utils/utils.fs';
+import { OdaNutritionInfo, OdaProductInfo } from '@/oda-scraper/oda.types';
 
-const RUN_HEADLESS_MODE = false;
+const RUN_HEADLESS_MODE = true;
 
-// @todo:make the pill-check recursive in case there is alooot of submenus
+// misc
 
-// @todo: make uppercase
-
-const categorySelector = 'div.c-block.c-categories__link-list__container:nth-child(2) ul.c-categories__link-list__content li.c-categories__link-list__item a'
-const subCategorySelector = 'ul.nav.nav-pills li a'
-
-const listItemSelector = '.product-category-list .product-list-item a'
-const itemInfoTabSelector = 'ul.nav.nav-tabs li[role="presentation"] a[aria-controls^="contents-"]'
-const itemNutritionTabSelector = 'ul.nav.nav-tabs li[role="presentation"] a[aria-controls^="nutrition-"]'
-
-async function removeCookieDialog(page) {
+async function removeCookieDialog(page: Page) {
   try {
     await page.evaluate(() => {
-      let element = document.querySelector('div.cookie-widget-wrapper');
+      const element = document.querySelector('div.cookie-widget-wrapper');
       if (element) element.remove();
     });
   } catch (error) {
@@ -27,50 +22,137 @@ async function removeCookieDialog(page) {
   }
 }
 
-async function getCategoriesLinks(page) {
-  const hrefs = await page.$$eval(categorySelector, links => links.map(link => link.href));
-  return hrefs
+// category helpers
+
+async function getCategoriesLinks(page: Page) {
+  const CATEGORY_SELECTOR = 'div.c-block.c-categories__link-list__container:nth-child(2) ul.c-categories__link-list__content li.c-categories__link-list__item a'
+  const hrefs = await page.$$eval(CATEGORY_SELECTOR, links => links.map(link => link.href));
+  let filteredHrefs = hrefs.filter((i: string) => CATEGORY_WHITLELIST.includes(i))
+  filteredHrefs = [...new Set(filteredHrefs)];
+  return filteredHrefs
 }
 
-async function getSubCategoryLinks(href, browser) {
+// subcategory helpers
+
+const SUB_CATEGORY_SELECTOR = 'ul.nav.nav-pills li a'
+
+async function getSubCategoryLinks(href: string, browser: Browser) {
   const categoryPage = await browser.newPage();
   await categoryPage.goto(href);
-  const subCategoriesHref = await categoryPage.$$eval(subCategorySelector, links => links.map(link => link.href));
+  let subCategoriesHrefs = await categoryPage.$$eval(SUB_CATEGORY_SELECTOR, links => links.map(link => link.href));
+  subCategoriesHrefs = [...new Set(subCategoriesHrefs)];
   await categoryPage.close();
-  return subCategoriesHref
+  return subCategoriesHrefs
 }
 
-async function getSubCategoryItems(subCategoriesHref, browser, categoryName) {
+async function getSubCategoryItems(subCategoriesHref: string[], browser: Browser, categoryName: string) {
   let items = {}
+  const CHILD_CATEGORY_HEADLINE_SELECTOR = 'h4.child-category-headline';
 
-  for (let subCategoryHref of subCategoriesHref) {
+  console.log('subCategoriesHref', subCategoriesHref);
+  for (const subCategoryHref of subCategoriesHref) {
+    console.log('current subCategoryHref', subCategoryHref);
     const subCategoryPage = await browser.newPage();
-    const subCategoryName = subCategoryHref.split('/').filter(i => i !== '').pop();
-    console.log('subCategoryName', subCategoryName);
     await subCategoryPage.goto(subCategoryHref);
-    const subCategoryItems = await getItems(subCategoryPage, subCategoryName, categoryName)
-    items = { ...items, ...subCategoryItems };
+
+    // Check for additional subcategories, indicated by having more "show all child-categories-headlines"
+    const additionalSubcategoriesExist = await subCategoryPage.$(CHILD_CATEGORY_HEADLINE_SELECTOR);
+
+    // If there are additional subcategories, recursively get items from them
+    if (additionalSubcategoriesExist) {
+      let additionalSubCategoriesHref = await subCategoryPage.$$eval(SUB_CATEGORY_SELECTOR, links => links.map(link => link.href));
+      additionalSubCategoriesHref = [...new Set(additionalSubCategoriesHref)];
+      const additionalItems = await getSubCategoryItems(additionalSubCategoriesHref, browser, categoryName);
+      items = { ...items, ...additionalItems };
+    }
+    else {
+      const subCategoryName = subCategoryHref.split('/').filter(i => i !== '').pop();
+      console.log('subCategoryName', subCategoryName);
+      const subCategoryItems = await getItems(subCategoryPage, subCategoryName, categoryName)
+      items = { ...items, ...subCategoryItems };
+    }
+
     await subCategoryPage.close();
   }
-  return items
+
+  return items;
 }
 
-export async function getItems(page: any, subCategoryName?: string, categoryName?: string) {
+// item helpers
+
+async function getOdaProductUid(page: Page) {
+  const uid = await page.evaluate(() => {
+    const link = document.querySelector('#modal-container ul.nav.nav-tabs a[href^="#contents-"]') as any;
+    if (!link) return null
+    const href = link.href.split('/').filter((i: string) => i !== '').pop()
+    // this will be on the format #contents-1234 where 1234 is the id we want
+    return href.split('-').pop();
+  });
+  return uid
+}
+
+async function getProductTitle(page: Page) {
+  const title = await page.evaluate(() => {
+    const nameSpan = document.querySelector('h1 span[itemprop="name"]');
+    // Return the text content, which includes the content of child elements
+    let content = nameSpan.textContent;
+    // Remove extra spaces and line breaks
+    content = content.replace(/\s\s+/g, ' ').trim();
+    return content;
+  });
+  console.log('title', title);
+  return title
+}
+async function getProductThumbnail(page: Page) {
+  const IMAGE_SELECTOR = '.image-container img';
+  const imageUrl = await page.$eval(IMAGE_SELECTOR, img => img.src);
+  console.log(imageUrl);
+  return imageUrl
+}
+
+async function getOdaProductInfo(page: Page) {
+  const productInfo = await page.evaluate(() => {
+    const obj = {}
+    const rows = Array.from(document.querySelectorAll('.tab-content [id^="contents-"] table tbody tr'));
+    rows.forEach(row => {
+      const cells = Array.from(row.querySelectorAll('th, td')).map(el => (el as HTMLElement).innerText.trim());
+      obj[cells[0]] = cells[1];
+    });
+    return obj
+  });
+  return productInfo
+}
+
+async function getProductNutrition(page: Page) {
+  const productNutrition = await page.evaluate(() => {
+    const obj = {}
+    const rows = Array.from(document.querySelectorAll('.tab-content [id^="nutrition-"] table tbody tr'));
+    rows.forEach(row => {
+      const cells = Array.from(row.querySelectorAll('th, td')).map(el => (el as HTMLElement).innerText.trim());
+      obj[cells[0]] = cells[1];
+    });
+    return obj
+  });
+  return productNutrition
+}
+
+export async function getItems(page: Page, subCategoryName?: string, categoryName?: string) {
   const items = {}
 
   // Extract the links of each list item
-  let listItems = await page.$$(listItemSelector);
-  listItems = listItems.slice(0, 1);
+  const listItemSelector = '.product-category-list .product-list-item a'
+  const listItems = await page.$$(listItemSelector);
+  // listItems = listItems.slice(0, 20);
 
   // remove the cookie popup
   await removeCookieDialog(page);
 
   for (let i = 0; i < listItems.length; i++) {
-    let productUid = uuid(),
-      odaUid: null,
+    let odaUid = null,
       productTitle = '',
       productInfo = {},
-      productNutrition = {};
+      productNutrition = {},
+      thumbnail = '';
 
     try {
 
@@ -87,86 +169,73 @@ export async function getItems(page: any, subCategoryName?: string, categoryName
       continue; // Move to the next iteration of the loop
     }
 
-    // @todo: extract getters to own utils
     // Select second tab
     try {
 
       try {
-        odaUid = await page.evaluate(() => {
-          const link = document.querySelector('#modal-container ul.nav.nav-tabs a[href^="#contents-"]') as any;
-          if (!link) return null
-          const href = link.href.split('/').filter(i => i !== '').pop()
-          // this will be on the format #contents-1234 where 1234 is the id we want
-          return href.split('-').pop();
-        });
+        odaUid = await getOdaProductUid(page)
       } catch (error) {
         console.error(`odaUid failed: ${error.message}`);
       }
 
       try {
-        productTitle = await page.evaluate(() => {
-          const nameSpan = document.querySelector('h1 span[itemprop="name"]');
-          // Return the text content, which includes the content of child elements
-          let content = nameSpan.textContent;
-          // Remove extra spaces and line breaks
-          content = content.replace(/\s\s+/g, ' ').trim();
-          return content;
-        });
-        console.log('title', productTitle);
+        productTitle = await getProductTitle(page)
       } catch (error) {
-        console.error(`title failed: ${error.message}`);
+        console.error(`productTitle failed: ${error.message}`);
       }
 
       try {
+        thumbnail = await getProductThumbnail(page)
+      } catch (error) {
+        console.error(`thumbnail failed: ${error.message}`);
+      }
 
-        await page.waitForSelector(itemInfoTabSelector);
-        await page.click(itemInfoTabSelector);
+      try {
+        productInfo = await getOdaProductInfo(page)
 
-        productInfo = await page.evaluate(() => {
-          const itemInfoContentSelector = '.tab-content [id^="contents-"] table tbody tr'
-          const obj = {}
-          const rows = Array.from(document.querySelectorAll(itemInfoContentSelector));
-          rows.forEach(row => {
-            const cells = Array.from(row.querySelectorAll('th, td')).map(el => (el as HTMLElement).innerText.trim());
-            obj[cells[0]] = cells[1];
-          });
-          return obj
-        });
+        const ITEM_INFO_TAB_SELECTOR = 'ul.nav.nav-tabs li[role="presentation"] a[aria-controls^="contents-"]';
+        const infoTabElement = await page.$(ITEM_INFO_TAB_SELECTOR);
+
+        if (infoTabElement) {
+          await infoTabElement.click();
+          productInfo = await getOdaProductInfo(page);
+        } else {
+          console.log("Info tab doesn't exist.");
+        }
       } catch (error) {
         console.error(`info failed: ${error.message}`);
       }
 
       try {
-        await page.waitForSelector(itemNutritionTabSelector);
-        await page.click(itemNutritionTabSelector);
+        // @todo: dont wait in case it does not exist
+        const ITEM_NUTRITION_TAB_SELECTOR = 'ul.nav.nav-tabs li[role="presentation"] a[aria-controls^="nutrition-"]'
+        const nutritionTabElement = await page.$(ITEM_NUTRITION_TAB_SELECTOR);
 
-        productNutrition = await page.evaluate(() => {
-          const itemNutritionContentSelector = '.tab-content [id^="nutrition-"] table tbody tr'
-          const obj = {}
-          const rows = Array.from(document.querySelectorAll(itemNutritionContentSelector));
-          rows.forEach(row => {
-            const cells = Array.from(row.querySelectorAll('th, td')).map(el => (el as HTMLElement).innerText.trim());
-            obj[cells[0]] = cells[1];
-          });
-          return obj
-        });
+        if (nutritionTabElement) {
+          await nutritionTabElement.click();
+          productNutrition = await getProductNutrition(page);
+        } else {
+          console.log("Nutrition tab doesn't exist.");
+        }
       } catch (error) {
         console.error(`nutrition failed: ${error.message}`);
       }
 
+      const productUid = uuid()
       items[productUid] = {
         uid: productUid,
         odaUid,
         odacategoryName: categoryName,
         odaSubCategoryName: subCategoryName,
         title: productTitle,
-        info: mapInfoToEnglish(productInfo),
-        nutrition: mapNutritionToEnglish(productNutrition),
-        unit: 'grams'
+        info: mapInfoToEnglish(productInfo as OdaProductInfo),
+        nutrition: mapNutritionToEnglish(productNutrition as OdaNutritionInfo),
+        unit: 'grams',
+        thumbnail
       }
 
     } catch (error) {
-      console.error(`nutrition failed: ${error.message}`);
+      console.error(`parsing failed: ${error.message}`);
       // Handle the error or simply ignore it
       continue; // Move to the next iteration of the loop
     }
@@ -193,41 +262,30 @@ export async function getContents() {
   await removeCookieDialog(page);
 
   // Target only the links under the "Kategorier" section
-  let hrefs = await getCategoriesLinks(page)
+  const hrefs = await getCategoriesLinks(page)
 
   if (!hrefs) throw new Error('No hrefs found')
 
-  hrefs = hrefs.filter(href => href.toLowerCase().includes('kylling'));
+  // hrefs = hrefs.filter(href => href.toLowerCase().includes('kylling'));
   console.log('hrefs', hrefs);
 
   let items = {}
 
-  // @todo: currently assumes there is only one level of subCategory
-  for (let href of hrefs) {
-    // const href = hrefs[3];
-    // if (href.toLowerCase().includes('frukt')) continue;
-    let subCategoriesHrefs = await getSubCategoryLinks(href, browser)
-    subCategoriesHrefs = subCategoriesHrefs.slice(0, 1);
+  for (const href of hrefs) {
+    const subCategoriesHrefs = await getSubCategoryLinks(href, browser)
 
-    const subCategoryName = href.split('/').filter(i => i !== '').pop();
+    const subCategoryName = href.split('/').filter((i: string) => i !== '').pop();
 
     // loop all categories
     console.log('subCategory', subCategoriesHrefs);
     const newItems = await getSubCategoryItems(subCategoriesHrefs, browser, subCategoryName)
     items = { ...items, ...newItems };
+    console.log('subCategoryItems', items);
+    writeLargeJsonToFile('oda-scaper-products.json', items);
   }
 
-  console.dir(items, { depth: null, colors: true });
   await page.close()
   await browser.close();
   return items;
 };
-
-export function parseItem() {
-  // what type do we want to output
-}
-
-export function storeProducts(products: any[]) {
-  console.log('storeprduct', products);
-}
 

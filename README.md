@@ -209,4 +209,14 @@ Should also start the emulator on yarn dev!!
 
 
 ## Next up
-- 
+- oda-scraping
+    - write to csv
+    - make the scraper recursive
+    - whiteliset kategories so i dont get to much
+    - see how many items it becomes
+    - store in redis-lab 
+    - query based on key (which is the name)
+    - 
+    - consider bundeling it with the app
+    - condider adding it to redis mannually (dont store in firestore)
+    - hope the thumbnail is available and does not expire 
