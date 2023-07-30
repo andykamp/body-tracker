@@ -1,13 +1,13 @@
-import { Product } from "@/oda-scraper/types";
+import { Product } from "./types";
 import fs from 'fs';
 import readline from 'readline';
 
-console.log('REPLKLLL', );
+// @note: this cannot be run interativly from nx... so we have to spesifically use the ts-node and the path in package.json
+
 const FILE_PATH = '/Users/anderskampenes/side-projects/body-tracker/oda_products.json'
 
 // Read and parse JSON file
 const data: { [key: string]: Product } = JSON.parse(fs.readFileSync(FILE_PATH, 'utf8'));
-console.log('repll data loaded', );
 
 // Create readline interface for interactive input
 const rl = readline.createInterface({
@@ -17,7 +17,6 @@ const rl = readline.createInterface({
 
 const askQuestion = () => {
   rl.question('Please provide a search term, or type "exit" to quit: ', (searchTerm) => {
-    console.log('fdsfsdfsd', );
     if (searchTerm.toLowerCase() === 'exit') {
       rl.close();
     } else {
@@ -40,11 +39,6 @@ const askQuestion = () => {
     }
   });
 }
-console.log('asking question', );
-
 // Start the script by asking the first question
 askQuestion();
-  rl.question('Please provide a search term, or type "exit" to quit: ', (searchTerm) => {
-  console.log('fdsdsfsfsdfsdfsfsffsf', );
-  })
 
