@@ -1,4 +1,4 @@
-import { Product } from "./types";
+import { Product } from "../types";
 import fs from 'fs';
 import readline from 'readline';
 
