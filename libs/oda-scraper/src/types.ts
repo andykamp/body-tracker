@@ -44,14 +44,23 @@ export type NutritionInfo = {
   salt?: string;
 };
 
+
+export type ProductType = 'oda'
+
+export type ProductSource = {
+  type: ProductType;
+  uid: string;
+  categoryName: string;
+  subCategoryName: string;
+}
+
 export type Product= {
   uid: string;
-  odaUid: string;
-  odacategoryName: string;
-  odaSubCategoryName: string;
   title: string;
+  source?: ProductSource;
   info: ProductInfo;
   nutrition: NutritionInfo;
   unit: string;
+  thumbnail: string;
 };
 

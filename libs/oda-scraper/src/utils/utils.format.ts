@@ -60,4 +60,3 @@ export function mapNutritionToEnglish(nutrition: OdaNutritionInfo) {
     salt: parseGramToInt(nutrition['Salt']),
   });
 }
-

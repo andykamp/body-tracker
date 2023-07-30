@@ -5,7 +5,7 @@ import { mapInfoToEnglish, mapNutritionToEnglish }
   from '@/oda-scraper/utils/utils.format';
 import { CATEGORY_WHITLELIST } from '@/oda-scraper/constants'
 import { writeLargeJsonToFile } from '@/oda-scraper/utils/utils.fs';
-import { OdaNutritionInfo, OdaProductInfo } from '@/oda-scraper/types';
+import { Product, OdaNutritionInfo, OdaProductInfo } from '@/oda-scraper/types';
 
 const RUN_HEADLESS_MODE = true;
 
@@ -46,7 +46,7 @@ async function getSubCategoryLinks(href: string, browser: Browser) {
 }
 
 async function getSubCategoryItems(subCategoriesHref: string[], browser: Browser, categoryName: string) {
-  let items = {}
+  let items: Record<string, Product> = {}
   const CHILD_CATEGORY_HEADLINE_SELECTOR = 'h4.child-category-headline';
 
   console.log('subCategoriesHref', subCategoriesHref);
@@ -137,7 +137,7 @@ async function getProductNutrition(page: Page) {
 }
 
 export async function getItems(page: Page, subCategoryName?: string, categoryName?: string) {
-  const items = {}
+  const items: Record<string, Product> = {}
 
   // Extract the links of each list item
   const listItemSelector = '.product-category-list .product-list-item a'
@@ -224,15 +224,18 @@ export async function getItems(page: Page, subCategoryName?: string, categoryNam
       const productUid = uuid()
       items[productUid] = {
         uid: productUid,
-        odaUid,
-        odacategoryName: categoryName,
-        odaSubCategoryName: subCategoryName,
         title: productTitle,
+        source: {
+          type: 'oda',
+          uid: odaUid,
+          categoryName: categoryName,
+          subCategoryName: subCategoryName,
+        },
         info: mapInfoToEnglish(productInfo as OdaProductInfo),
         nutrition: mapNutritionToEnglish(productNutrition as OdaNutritionInfo),
         unit: 'grams',
         thumbnail
-      }
+      } as Product
 
     } catch (error) {
       console.error(`parsing failed: ${error.message}`);
@@ -269,7 +272,7 @@ export async function getContents() {
   // hrefs = hrefs.filter(href => href.toLowerCase().includes('kylling'));
   console.log('hrefs', hrefs);
 
-  let items = {}
+  let items: Record<string, Product> = {}
 
   for (const href of hrefs) {
     const subCategoriesHrefs = await getSubCategoryLinks(href, browser)
