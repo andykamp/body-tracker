@@ -13,7 +13,7 @@
     "prepare": "husky install",
     "oda-scrape": "nx run oda-scraper:scrape",
     "oda-search": "nx run oda-scraper:search",
-    "oda-repl": "nx run oda-scraper:search-REPL"
+    "oda-repl": "ts-node -r tsconfig-paths/register --project ./libs/oda-scraper/tsconfig.json ./libs/oda-scraper/src/searchREPL.ts"
   },
   "private": true,
   "dependencies": {
@@ -25,7 +25,7 @@
     "@swc/helpers": "~0.5.0",
     "@tanstack/react-query": "^4.29.5",
     "@tanstack/react-query-devtools": "^4.29.13",
-    "@tremor/react": "^2.4.0",
+    "@tremor/react": "^3.6.0",
     "@vercel/analytics": "^1.0.1",
     "firebase": "^9.21.0",
     "firebase-admin": "^11.9.0",
