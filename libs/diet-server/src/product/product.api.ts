@@ -23,15 +23,15 @@ function parseToValidProduct(product: t.Product): t.Product {
 
 type GetProductInput = {
   userId: string
-  name: string
+  id: string
 }
 
-export async function getProduct({ userId, name }: GetProductInput): Promise<t.Product> {
+export async function getProduct({ userId, id }: GetProductInput): Promise<t.Product> {
   const r = await baseApi.makeReqAndExec<t.Product>({
     proc: "getProduct",
     vars: {
       userId,
-      name,
+      id,
     }
   })
   return r
@@ -68,15 +68,14 @@ export async function addProduct({ userId, product }: AddProductInput): Promise<
 
 type UpdateProductInput = {
   userId: string,
-  name: string
   updatedProduct: Partial<t.Product>
 }
-export async function updateProduct({ userId, name, updatedProduct }: UpdateProductInput): Promise<t.Product> {
+export async function updateProduct({ userId, updatedProduct }: UpdateProductInput): Promise<t.Product> {
+  console.log('updateProduct',updatedProduct );
   const r = await baseApi.makeReqAndExec<t.Product>({
     proc: "updateProduct",
     vars: {
       userId,
-      name,
       product: updatedProduct
     }
   })
@@ -85,15 +84,15 @@ export async function updateProduct({ userId, name, updatedProduct }: UpdateProd
 
 type DeleteProductInput = {
   userId: string,
-  name: string
+  id: string
 }
-export async function deleteProduct({ userId, name }: DeleteProductInput): Promise<t.ResponseResult> {
+export async function deleteProduct({ userId, id }: DeleteProductInput): Promise<t.ResponseResult> {
   try {
     const r = await baseApi.makeReqAndExec<t.Product>({
       proc: "deleteProduct",
       vars: {
         userId,
-        name,
+        id,
       }
     })
     return {

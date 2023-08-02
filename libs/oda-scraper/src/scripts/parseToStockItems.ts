@@ -13,13 +13,20 @@ export function formatStockItem(json: Record<string, any>) {
   const stockItems: Record<string, t.StockItem> = {}
 
   Object.entries(json).forEach(([id, item]) => {
+
+    const grams = item.info.grams || 0
+    const numHundredGrams = grams / 100
+
     stockItems[id] = {
       type: itemType,
       id,
       name: item.title,
-      protein: item.nutrition.protein || 0,
-      calories: item.nutrition.calories || 0,
-      grams: item.info.grams || 0,
+
+      protein: item.nutrition.protein * numHundredGrams || 0,
+      calories: item.nutrition.calories * numHundredGrams || 0,
+      grams,
+
+      isStockItem: true,
     };
   });
 

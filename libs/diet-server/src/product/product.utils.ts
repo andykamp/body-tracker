@@ -9,6 +9,8 @@ export type CreateProductObjectInput = {
   protein?: number;
   calories?: number;
   grams?: number;
+  isStockItem?: boolean;
+  fromCustomMeal?: boolean;
 };
 
 export function createProductObject({
@@ -17,6 +19,8 @@ export function createProductObject({
   protein = 0,
   calories = 0,
   grams = 0,
+  isStockItem = false,
+  fromCustomMeal = false,
 }: CreateProductObjectInput): t.Product {
   const product: t.Product = {
     id: uuid(),
@@ -26,6 +30,10 @@ export function createProductObject({
     protein,
     calories,
     grams,
+
+    isStockItem,
+    fromCustomMeal,
+
     createdAt: getISODate(),
     updatedAt: undefined,
   };

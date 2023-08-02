@@ -1,10 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
-// ---------------------------------------------
-// Draggable label
-// ---------------------------------------------
-
-type WrapperProps = {
+type DraggableLabelProps = {
   children: React.ReactNode;
   onClick: () => void;
   onDrag: (value: number) => void;
@@ -22,7 +18,7 @@ type WrapperProps = {
   min = 0,
   max = 1,
   increment = 0.1,
-}: WrapperProps) {
+}: DraggableLabelProps) {
   // We are creating a snapshot of the values when the drag starts
   // because the [value] will itself change & we need the original
   // [value] to calculate during a drag.

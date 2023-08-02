@@ -3,15 +3,15 @@ import { Input, useInput } from "@geist-ui/core";
 import { Github } from '@geist-ui/icons'
 import ClickAndDragWrapper from "@/diet/components/DraggableLabel";
 
-type GramToggleProps = {
+type GramInputProps = {
   originalGrams?: number
   onGramChange: (val: number) => void;
 };
 
-function GramToggle({
+function GramInput({
   originalGrams = 0,
   onGramChange,
-}: GramToggleProps) {
+}: GramInputProps) {
 
   const [grams, setGrams] = useState(originalGrams);
   const [modificationMode, setModificationMode] = useState<'grams' | 'percentage' | 'items'>('grams');
@@ -56,7 +56,6 @@ function GramToggle({
     }
   };
 
-  const { state, setState, reset, bindings } = useInput('Geist UI')
 
   const prosentage = grams / originalGrams
   const currentValue = modificationMode === 'percentage'
@@ -86,11 +85,9 @@ function GramToggle({
             max={max}
             increment={increment}
             onClick={() => {
-              console.log('onClick')
               handleClick()
             }}
             onDrag={(v) => {
-              console.log('ondrag', v);
               handleValueChange(v)
             }}
 
@@ -100,6 +97,7 @@ function GramToggle({
 
         }
       />
+      {/*
       <span>g: </span>
       <input
         type="number"
@@ -108,10 +106,11 @@ function GramToggle({
       />
 
       <button onClick={handleClick}>
-            <Github />
+        <Github />
       </button>
+      */}
     </div>
   );
 };
 
-export default GramToggle;
+export default GramInput;

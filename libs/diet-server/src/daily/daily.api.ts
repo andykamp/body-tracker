@@ -4,10 +4,27 @@ import userApi from "@/diet-server/user/user.api";
 import mealApi from "@/diet-server/meal/meal.api";
 import productApi from "@/diet-server/product/product.api";
 import stockApi from "@/diet-server/stock/stock.api";
+import itemApi, { type GetItemInput } from '@/diet-server/item/item.api'
 import { STOCK_TYPE } from "@/diet-server/stock/stock.constants";
-import itemApi from '@/diet-server/item/item.api'
 import { createDailyObject } from '@/diet-server/daily/daily.utils'
 import { getISODate } from "@/diet-server/utils/date.utils";
+
+// @todo: merge with populate meal
+function populateDaily(dailyDietMinimal: t.DailyDietMinimal, lookup: GetItemInput) {
+  const newItems: t.Item[] = []
+
+  for (const itemMinimal of dailyDietMinimal.dailyItems) {
+    // we update the item with the original item in case it has changed
+    const originalItem = itemApi.getOriginalFromItem(itemMinimal, lookup)
+    if (!originalItem) throw new Error('Could not find daily item. Should display warning: ' + itemMinimal.id);
+    itemMinimal.name = originalItem.name
+    itemMinimal.description = originalItem.description
+
+    newItems.push({ ...itemMinimal, item: originalItem })
+  }
+  return newItems
+}
+
 
 export function getTodaysDailyKey() {
   const now = new Date();
@@ -33,25 +50,25 @@ type GetDailyInput = {
   userId: string,
   dateKey: string
 }
-export async function getDaily({ userId, dateKey }: GetDailyInput): Promise<t.DailyDietWithItem> {
-  let r: t.DailyDiet = await baseApi.makeReqAndExec<t.DailyDiet>({
+export async function getDaily({ userId, dateKey }: GetDailyInput): Promise<t.DailyDiet> {
+  let dailyDietMinimal: t.DailyDietMinimal = await baseApi.makeReqAndExec<t.DailyDiet>({
     proc: "getDaily",
     vars: {
       userId,
       dateKey
     }
   })
-  if (r) {
+  if (dailyDietMinimal) {
     // add the product and meal objects to the dailyItems for ease of use
     const meals = await mealApi.getMeals({ userId })
     const products = await productApi.getProducts({ userId })
     const stockItems = stockApi.getStockItems({ type: STOCK_TYPE.both })
+    const lookup = { meals, products, stockItems }
 
-    for (const item of r.dailyItems) {
-      item.item = await itemApi.getOriginalFromItem(item, { meals, products, stockItems })
-    }
+    const dailyItems: t.Item[] = populateDaily(dailyDietMinimal, lookup)
 
-    return r as t.DailyDietWithItem
+    const dailyDiet: t.DailyDiet = { ...dailyDietMinimal, dailyItems }
+    return dailyDiet
   }
   else {
 
@@ -68,8 +85,8 @@ export async function getDaily({ userId, dateKey }: GetDailyInput): Promise<t.Da
     if (y) {
       const user = await userApi.getUser({ uid: userId })
       const { targetCalories, targetProteins } = user
-      yesterdaysCaloryDiff = targetCalories - calculateDailyCalories(y)
-      yesterdaysProteinDiff = targetProteins - calculateDailyProteins(y)
+      yesterdaysCaloryDiff = targetCalories - itemApi.calculateCalories(y)
+      yesterdaysProteinDiff = targetProteins - itemApi.calculateProteins(y)
     }
 
     const newDaily: t.DailyDiet = dailyApi.createDailyObject({
@@ -79,14 +96,15 @@ export async function getDaily({ userId, dateKey }: GetDailyInput): Promise<t.Da
       yesterdaysProteinDiff
     })
 
-    r = await baseApi.makeReqAndExec<t.DailyDiet>({
+    // @todo: catch error here
+    await baseApi.makeReqAndExec<t.DailyDiet>({
       proc: "addDaily",
       vars: {
         userId,
         daily: newDaily
       }
     })
-    return newDaily as t.DailyDietWithItem
+    return newDaily
   }
 }
 
@@ -138,41 +156,6 @@ export async function removeDailyItem({ userId, daily, idToDelete }: RemoveDaily
   return newDaily;
 }
 
-// Calculate the user's daily calorie intake
-function calculateDailyCalories(daily: t.DailyDietWithItem): number {
-  let totalCalories = 0;
-  for (const item of daily.dailyItems) {
-    const calories = item.item.calories || 0;
-    totalCalories += (calories * item.prosentage);
-  }
-  return totalCalories;
-}
-
-// Calculate the user's daily protein intake
-function calculateDailyProteins(daily: t.DailyDietWithItem): number {
-  let totalProteins = 0;
-  for (const item of daily.dailyItems) {
-    const protein = item.item.protein || 0;
-    totalProteins += (protein * item.prosentage);
-  }
-  return totalProteins;
-}
-
-function calculateDailyMacros(daily: t.DailyDietWithItem): { calories: number, proteins: number } {
-  let totalProteins = 0;
-  let totalCalories = 0;
-  for (const item of daily.dailyItems) {
-    const protein = item.item.protein || 0;
-    const calories = item.item.calories || 0;
-    totalProteins += (protein * item.prosentage);
-    totalCalories += (calories * item.prosentage);
-  }
-
-  return {
-    calories: totalCalories,
-    proteins: totalProteins,
-  };
-}
 
 const dailyApi = {
   createDailyObject,
@@ -182,9 +165,6 @@ const dailyApi = {
   addDailyItem,
   updateDaily,
   removeDailyItem,
-  calculateDailyCalories,
-  calculateDailyProteins,
-  calculateDailyMacros,
 };
 
 export type DailyApi = typeof dailyApi;

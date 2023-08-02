@@ -1,27 +1,77 @@
 import * as t from "@/diet-server/diet.types";
 import productApi from "@/diet-server/product/product.api";
 import stockApi from "@/diet-server/stock/stock.api";
-import { STOCK_TYPE } from "@/diet-server/stock/stock.constants";
 import baseApi from "@/diet-server/base.api";
+import itemApi, { type GetItemInput } from '@/diet-server/item/item.api'
+import { STOCK_TYPE } from "@/diet-server/stock/stock.constants";
 import { createMealObject } from "@/diet-server/meal/meal.utils";
+
+function minimizeMeal(meal: t.Meal): t.MealMinimal {
+  const { protein, calories, grams, products, ...rest } = meal
+
+  // remove item references
+  const productsMinimal: t.ItemMinimal[] = []
+
+  products.forEach((i: t.Item) => {
+    const { item, ...rest } = i
+    productsMinimal.push(rest)
+  })
+
+  const mealMinimal: t.MealMinimal = {
+    ...rest,
+    products: productsMinimal
+  }
+  return mealMinimal
+}
+
+function getMacros(meal: t.Meal) {
+  const macros = itemApi.calculateMacros(meal.products)
+  return macros
+}
+
+// @todo: merge with populate Daily
+function populateMeal(mealMinimal: t.MealMinimal, lookup: GetItemInput) {
+  const newProducts: t.Item[] = []
+  // populate the meal's products with the original product
+  for (const itemMinimal of mealMinimal.products) {
+    // we update the item with the original item in case it has changed
+    const originalItem = itemApi.getOriginalFromItem(itemMinimal, lookup)
+    if (!originalItem) throw new Error('Could not find meal item. Should display warning: ' + itemMinimal.id);
+    itemMinimal.name = originalItem.name
+    itemMinimal.description = originalItem.description
+
+    newProducts.push({ ...itemMinimal, item: originalItem })
+  }
+
+  const macros = itemApi.calculateMacros(newProducts)
+  const meal: t.Meal = { ...mealMinimal, ...macros, products: newProducts }
+  return meal
+}
 
 type GetMealsInput = {
   userId: string;
 }
 
-export async function getMeals({ userId }: GetMealsInput): Promise<t.Meal[]> {
-  const r = await baseApi.makeReqAndExec<t.Meal>({
+async function getMeals({ userId }: GetMealsInput): Promise<t.Meal[]> {
+  const mealsMinimal = await baseApi.makeReqAndExec<t.MealMinimal>({
     proc: "getMeals",
     vars: { userId }
   })
-  return r
+
+  const products = await productApi.getProducts({ userId })
+  const stockItems = stockApi.getStockItems({ type: STOCK_TYPE.both })
+
+  const meals: t.Meal[] = []
+  for (const mealMinimal of mealsMinimal) {
+    meals.push(populateMeal(mealMinimal, { meals: [], products, stockItems }))
+  }
+  return meals
 }
 
 
 export type AddMealInput = {
   userId: string;
-  name: string;
-  products: (string | t.Product)[];
+  meal: t.Meal;
 };
 
 
@@ -32,71 +82,17 @@ export type AddMealInput = {
  *
  * @returns {t.ResponseResult} The result object containing a success flag and a message indicating the success or failure of the operation.
  */
-export async function addMeal({ userId, name, products }: AddMealInput): Promise<t.Meal> {
-
-  const userProducts: t.Product[] = await productApi.getProducts({ userId });
-  const stockProducts = stockApi.getStockItems({ type: STOCK_TYPE.both });
-
-
-  let totalProtein = 0;
-  let totalCalories = 0;
-  let grams = 0;
-
-  // Create an empty list of products for the meal.
-  const mealProducts: t.Product[] = [];
-
-  // Loop through the list of products in the meal.
-  for (const item of products) {
-    let product: t.Product;
-
-    // If the item is a string, assume it is the name of an existing product in the user's product list.
-    if (typeof item === "string") {
-      // Retrieve the product data from the user's product list using the product name.
-      product = stockProducts.byIds[item] || userProducts.find(p => p.name === item);
-
-      // If the product data does not exist, return an error result.
-      // TODO maybe throw error?
-      if (!product) {
-        throw new Error(`Product ${item} not found. You cannot spesify a custom string that does not exist in the database`);
-      }
-    } else {
-      // If the item is an object, assume it is a new product to be added to the user's product list.
-      await productApi.addProduct({ userId, product: item });
-
-      product = item;
-    }
-
-    // Add the product to the meal product list.
-    if (product) mealProducts.push(product);
-
-    // Calculate the total protein, calories, and grams for the meal based on the product data.
-    totalProtein += product.protein || 0;
-    totalCalories += product.calories || 0;
-    grams += product.grams || 0;
-  }
-
-  // If the meal product list is empty and the meal name or total protein and calories are not provided, return an error result.
-  if (!mealProducts.length && (!name || (!totalProtein && !totalCalories))) {
-    throw new Error(`Invalid meal data`);
-  }
-
-  // Create a meal object using the meal name, product names, and total protein, calories, and grams for the meal.
-  const meal: t.Meal = mealApi.createMealObject({
-    name,
-    products: mealProducts.map((p) => p.name),
-    protein: totalProtein,
-    calories: totalCalories,
-    grams
-  }
-  );
+async function addMeal({
+  userId,
+  meal
+}: AddMealInput): Promise<t.MealMinimal> {
 
   // Add the meal to the user's meal list.
-  const r = await baseApi.makeReqAndExec<t.Meal>({
+  const r = await baseApi.makeReqAndExec<t.MealMinimal>({
     proc: "addMeal",
     vars: {
       userId,
-      name,
-      meal
+      meal: minimizeMeal(meal)
     }
   })
   return r
@@ -105,22 +101,20 @@ export async function addMeal({ userId, name, products }: AddMealInput): Promise
 
 export type UpdateMealInput = {
   userId: string;
-  name: string;
-  meal: Partial<t.Meal>;
+  meal: t.Meal;
 };
 
-export async function updateMeal({
+async function updateMeal({
   userId,
-  name,
   meal
 }: UpdateMealInput
 ): Promise<t.Meal> {
-  const r = await baseApi.makeReqAndExec<t.Meal>({
+
+  const r = await baseApi.makeReqAndExec<t.MealMinimal>({
     proc: "updateMeal",
     vars: {
       userId,
-      name,
-      meal
+      meal: minimizeMeal(meal)
     }
   })
   return r
@@ -128,18 +122,18 @@ export async function updateMeal({
 
 type DeleteMealInput = {
   userId: string;
-  name: string;
+  id: string;
 }
 
-export async function deleteMeal(
-  { userId, name }: DeleteMealInput
+async function deleteMeal(
+  { userId, id }: DeleteMealInput
 ): Promise<t.ResponseResult> {
   try {
-    const r = await baseApi.makeReqAndExec<t.Meal>({
+    const r = await baseApi.makeReqAndExec<t.MealMinimal>({
       proc: "deleteMeal",
       vars: {
         userId,
-        name,
+        id,
       }
     })
     // Return a success result.
@@ -158,6 +152,7 @@ export async function deleteMeal(
 
 const mealApi = {
   createMealObject,
+  getMacros,
   getMeals,
   addMeal,
   updateMeal,

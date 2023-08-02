@@ -30,24 +30,24 @@ export async function deleteUser({ uid }: { uid: string }): Promise<void> {
 // Meals
 //
 
-export async function getMeals({ userId }: { userId: string }): Promise<t.Meal[]> {
-  return crudApi.readCollection<t.Meal>(`users/${userId}/meals`);
+export async function getMeals({ userId }: { userId: string }): Promise<t.MealMinimal[]> {
+  return crudApi.readCollection<t.MealMinimal>(`users/${userId}/meals`);
 }
 
-export async function getMeal({ userId, name }: { userId: string; name: string }): Promise<t.Meal | undefined> {
-  return crudApi.readDocument<t.Meal>(`users/${userId}/meals`, name);
+export async function getMeal({ userId, id }: { userId: string; id: string }): Promise<t.MealMinimal | undefined> {
+  return crudApi.readDocument<t.MealMinimal>(`users/${userId}/meals`, id);
 }
 
-export async function addMeal({ userId, meal }: { userId: string; meal: t.Meal }): Promise<void> {
-  return crudApi.createDocument(`users/${userId}/meals`, meal.name, meal);
+export async function addMeal({ userId, meal }: { userId: string; meal: t.MealMinimal }): Promise<void> {
+  return crudApi.createDocument(`users/${userId}/meals`, meal.id, meal);
 }
 
-export async function updateMeal({ userId, meal }: { userId: string; meal: t.Meal }): Promise<void> {
-  return crudApi.updateDocument(`users/${userId}/meals`, meal.name, meal);
+export async function updateMeal({ userId, meal }: { userId: string; meal: t.MealMinimal }): Promise<void> {
+  return crudApi.updateDocument(`users/${userId}/meals`, meal.id, meal);
 }
 
-export async function deleteMeal({ userId, name }: { userId: string; name: string }): Promise<void> {
-  return crudApi.deleteDocument(`users/${userId}/meals`, name);
+export async function deleteMeal({ userId, id }: { userId: string; id: string }): Promise<void> {
+  return crudApi.deleteDocument(`users/${userId}/meals`, id);
 }
 
 //
@@ -58,20 +58,20 @@ export async function getProducts({ userId }: { userId: string }): Promise<t.Pro
   return crudApi.readCollection<t.Product>(`users/${userId}/products`);
 }
 
-export async function getProduct({ userId, name }: { userId: string; name: string }): Promise<t.Product | undefined> {
-  return crudApi.readDocument<t.Product>(`users/${userId}/products`, name);
+export async function getProduct({ userId, id }: { userId: string; id: string }): Promise<t.Product | undefined> {
+  return crudApi.readDocument<t.Product>(`users/${userId}/products`, id);
 }
 
 export async function addProduct({ userId, product }: { userId: string; product: t.Product }): Promise<void> {
-  return crudApi.createDocument(`users/${userId}/products`, product.name, product);
+  return crudApi.createDocument(`users/${userId}/products`, product.id, product);
 }
 
 export async function updateProduct({ userId, product }: { userId: string; product: t.Product }): Promise<void> {
-  return crudApi.updateDocument(`users/${userId}/products`, product.name, product);
+  return crudApi.updateDocument(`users/${userId}/products`, product.id, product);
 }
 
-export async function deleteProduct({ userId, name }: { userId: string; name: string }): Promise<void> {
-  return crudApi.deleteDocument(`users/${userId}/products`, name);
+export async function deleteProduct({ userId, id }: { userId: string; id: string }): Promise<void> {
+  return crudApi.deleteDocument(`users/${userId}/products`, id);
 }
 
 //

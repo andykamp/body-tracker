@@ -43,7 +43,6 @@ function ConsolePage() {
     }
   };
   const handler = (e: any) => {
-    console.log('handler', e);
   }
 
   return (

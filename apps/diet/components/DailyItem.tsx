@@ -1,22 +1,21 @@
 import React, { useState, useEffect } from "react";
 import * as t from '@/diet-server/diet.types'
-import GramToggle from "@/diet/components/GramToggle";
+import GramInput from "@/diet/components/GramInput";
 import { Input } from "@geist-ui/core";
-import { Github } from '@geist-ui/icons'
 
 type RequiredItem = Omit<t.Item, 'item'> & Required<Pick<t.Item, 'item'>>;
 
-type ItemWrapperProps = {
+type DailyItemProps = {
   item: RequiredItem;
   onItemChange: (item: t.Item) => void;
   onItemDelete: (item: t.Item) => void;
 };
 
-function ItemWrapper({
+function DailyItem({
   item,
   onItemChange,
   onItemDelete,
-}: ItemWrapperProps) {
+}: DailyItemProps) {
 
   const [grams, setGrams] = useState((item.item.grams ?? 0) ** item.prosentage);
   const [nutrition, setNutrition] = useState({
@@ -71,22 +70,18 @@ function ItemWrapper({
       {item.name}
 
       <Input
-        width="80px"
+        width="130px"
         value={nutrition.protein.toFixed(0).toString()}
-        iconRight={
-          <Github />
-        }
+        label="protein"
       />
 
       <Input
-        width="80px"
+        width="130px"
         value={nutrition.calories.toFixed(0).toString()}
-        iconRight={
-          <Github />
-        }
+        label="calories"
       />
 
-      <GramToggle
+      <GramInput
         originalGrams={item.item.grams}
         onGramChange={onGramChange}
       />
@@ -100,4 +95,4 @@ function ItemWrapper({
   );
 
 };
-export default ItemWrapper;
+export default DailyItem;

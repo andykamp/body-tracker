@@ -6,11 +6,12 @@ import { getISODate } from "@/diet-server/utils/date.utils";
 export type CreateMealObjectInput = {
   name: string;
   description?: string;
-  products: string[];
+  products: t.Item[];
   fromCustomDaily?: boolean;
   protein?: number;
   calories?: number;
   grams?: number;
+  isStockItem?: boolean;
 };
 
 export function createMealObject({
@@ -18,9 +19,10 @@ export function createMealObject({
   description,
   products,
   fromCustomDaily = false,
-  protein=0,
-  calories=0,
-  grams
+  protein = 0,
+  calories = 0,
+  grams,
+  isStockItem = false,
 }: CreateMealObjectInput): t.Meal {
   const meal: t.Meal = {
     id: uuid(),
@@ -33,7 +35,9 @@ export function createMealObject({
     calories,
     grams,
 
+    isStockItem,
     fromCustomDaily,
+
     createdAt: getISODate(),
     updatedAt: undefined,
   };

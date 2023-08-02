@@ -79,6 +79,8 @@ export type Product = {
   calories?: number
   grams?: number;
 
+  isStockItem: boolean // makes it easy to find the source just from looking at the item
+  fromCustomMeal?: boolean; // shows if it is not a stored product. But nice to use for future suggestions on autocomplete
   createdAt?: string;
   updatedAt?: string;
 }
@@ -91,14 +93,19 @@ export type Meal = {
   name: string;
   description?: string;
 
-  products: (Item | string)[];
+  products: Item[];
   protein?: number;
   calories?: number;
   grams?: number;
 
+  isStockItem: boolean // makes it easy to find the source just from looking at the item
   fromCustomDaily?: boolean; // shows if it is not a stored Meal. But nice to use for future suggestions on autocomplete
   createdAt?: string;
   updatedAt?: string;
+}
+
+export type MealMinimal = Omit<Meal, "products" | "protein" | "calories" | "grams"> & {
+  products: ItemMinimal[]
 }
 
 // items
@@ -109,13 +116,21 @@ export type Item = {
   id: string
   name: string
   description?: string;
+
   createdAt: string
   updatedAt?: string
+
   prosentage: number
+
+  isStockItem?: boolean // makes it easy to find the source just from looking at the item
+  updateOriginalItem?: boolean, // if true, one can change all input fields of the original item
+
   itemType: ItemType
   itemId: string // reference id to the original item
-  item?: Product | Meal  //orignal full item, handy to add it directyl to the object sometimes
+  item: Product | Meal  //orignal full item, handy to add it directyl to the object sometimes
 }
+
+export type ItemMinimal = Omit<Item, "item">
 
 // daily
 
@@ -128,14 +143,10 @@ export type DailyDiet = {
   yesterdaysProteinDiff?: number;
 }
 
-// filled out daily
-export type DailyDietItem = DailyDiet & {
-  item: Item;
-};
+export type DailyDietMinimal = Omit<DailyDiet, "dailyItems"> & {
+  dailyItems: ItemMinimal[]
 
-export type DailyDietWithItem = DailyDiet & {
-  dailyItems: DailyDietItem[];
-};
+}
 
 // stock
 

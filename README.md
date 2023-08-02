@@ -209,14 +209,40 @@ Should also start the emulator on yarn dev!!
 
 
 ## Next up
+- TODO
+    - caching straegy to update at all places
+    - check dependency when i delete an item
+    - fix daily itemMinimal
+    - search outside of stock
+        - maybe the stock search of products can be done seperatly on the server :o
+    - add AI created meal
+  
+- remove calories/grams/protein form meal storage
+- create items and not products in meal
+- update how to calculate/populate the meal based on items (with the percentage)
+- rename item to refereneItem and move percentage out.
+    - then it can be re-used for the workout?
+
+- move stuff to storybook to make it clean
+- create skeleton loaders
+
+- distinguish between a store product which have a set nutrition, and the actual product (that has nutrients pr 100g)
+
+
 - oda-scraping
-    - write to csv
-    - make the scraper recursive
-    - whiteliset kategories so i dont get to much
-    - see how many items it becomes
+    - [X] write to csv
+    - [X] make the scraper recursive
+    - [X] whiteliset kategories so i dont get to much
+    - [ ] see how many items it becomes
+        - 6mb ish
+    - [X] local script for querying the json fil
+        - [X] local script to query the local json file
+        - [X] create a repl script that lets you query the json file
+    - 
     - store in redis-lab 
     - query based on key (which is the name)
     - 
     - consider bundeling it with the app
+    - 
     - condider adding it to redis mannually (dont store in firestore)
     - hope the thumbnail is available and does not expire 

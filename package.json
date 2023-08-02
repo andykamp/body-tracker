@@ -13,7 +13,8 @@
     "prepare": "husky install",
     "oda-scrape": "nx run oda-scraper:scrape",
     "oda-search": "nx run oda-scraper:search",
-    "oda-repl": "ts-node -r tsconfig-paths/register --project ./libs/oda-scraper/tsconfig.json ./libs/oda-scraper/src/searchREPL.ts"
+    "oda-repl": "ts-node -r tsconfig-paths/register --project ./libs/oda-scraper/tsconfig.json ./libs/oda-scraper/src/scripts/searchREPL.ts",
+    "oda-normalize": "nx run oda-scraper:normalize"
   },
   "private": true,
   "dependencies": {
@@ -30,6 +31,8 @@
     "firebase": "^9.21.0",
     "firebase-admin": "^11.9.0",
     "js-cookie": "^3.0.5",
+    "lodash.debounce": "^4.0.8",
+    "lodash.throttle": "^4.1.1",
     "next": "13.3.0",
     "next-axiom": "^0.17.0",
     "puppeteer": "^20.7.4",
@@ -62,6 +65,8 @@
     "@testing-library/react": "14.0.0",
     "@types/jest": "^29.4.0",
     "@types/js-cookie": "^3.0.3",
+    "@types/lodash.debounce": "^4.0.7",
+    "@types/lodash.throttle": "^4.1.7",
     "@types/node": "18.14.2",
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",

@@ -8,15 +8,8 @@ import dailyApi from "@/diet-server/daily/daily.api"
 import { useAuthContext } from "@/auth-client/firebase/Provider";
 import StockSearch from '@/diet/components/StockSearch'
 import itemApi from '@/diet-server/item/item.api'
-import { ITEM_TYPES } from '@/diet-server/diet.constants'
-import { createMeal } from '@/diet/utils/misc'
 import { useUserContext } from "@/user-client/Provider";
-import ItemWrapper from "@/diet/components/ItemWrapper";
-
-function createDailyMeal() {
-  const meal = createMeal()
-  return itemApi.createItemObject(meal, ITEM_TYPES.MEAL)
-}
+import DailyItem from "@/diet/components/DailyItem";
 
 function DailyPage() {
   const { user: authUser } = useAuthContext()
@@ -54,7 +47,7 @@ function DailyPage() {
 
   const daily = query.data
   const dailyItemsList = daily?.dailyItems ? daily?.dailyItems : []
-  const dailyMacros = daily ? dailyApi.calculateDailyMacros(daily) : { calories: 0, proteins: 0 }
+  const dailyMacros = daily ? itemApi.calculateMacros(daily.dailyItems) : { calories: 0, proteins: 0 }
 
   return (
     <div>
@@ -67,8 +60,9 @@ function DailyPage() {
         <p className="text-red-500">Yersterdays diff Proteins: {daily?.yesterdaysProteinDiff}</p>
       </div>
       <div>
-        <StockSearch onSelect={(item) => {
-          const newItem = itemApi.createItemObject(item, "product")
+        <StockSearch
+          onSelect={(item) => {
+          const newItem = itemApi.createItemWrapper(item, "product")
           const d = daily || { dailyItems: [] }
           addDailyMutation.mutate({
             userId: authUser?.uid,
@@ -85,7 +79,7 @@ function DailyPage() {
       </div>
       <div>
         {dailyItemsList.map((item: any) => (
-          <ItemWrapper
+          <DailyItem
             key={item.id}
             item={item}
             onItemDelete={(item) => {
@@ -119,21 +113,21 @@ function DailyPage() {
           <div>Loading...</div>
           : (
             <button
-              onClick={() => {
-                const dailyMeal = createDailyMeal();
-                const d = daily || { dailyItems: [] }
-                const dItems = d.dailyItems || []
-                addDailyMutation.mutate({
-                  userId: authUser?.uid,
-                  daily: {
-                    id: daily?.id || todaysDailyKey,
-                    dailyItems: [
-                      ...dItems,
-                      dailyMeal
-                    ]
-                  }
-                })
-              }}
+              // onClick={() => {
+              //   const dailyMeal = createDailyMeal();
+              //   const d = daily || { dailyItems: [] }
+              //   const dItems = d.dailyItems || []
+              //   addDailyMutation.mutate({
+              //     userId: authUser?.uid,
+              //     daily: {
+              //       id: daily?.id || todaysDailyKey,
+              //       dailyItems: [
+              //         ...dItems,
+              //         dailyMeal
+              //       ]
+              //     }
+              //   })
+              // }}
             >
               Add daily meal
             </button>

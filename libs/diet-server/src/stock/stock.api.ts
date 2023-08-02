@@ -35,10 +35,13 @@ type GetStockSearchResultsInput = {
 
 export function getStockSearchResults({ type, search }: GetStockSearchResultsInput): string[] {
   if (search === "") return []
-  return STOCK_ITEMS_BY_TYPE[type].allIds.filter(i => i.toLowerCase().includes(search.toLowerCase()))
+  return STOCK_ITEMS_BY_TYPE[type].allIds.filter(i => {
+    const term = STOCK_ITEMS_BY_TYPE[type].byIds[i].name
+    return term.toLowerCase().includes(search.toLowerCase())
+  })
 }
 
-const stockApi ={
+const stockApi = {
   stockItemExistInput,
   getStockItem,
   getStockItems,

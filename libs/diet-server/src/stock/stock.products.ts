@@ -1,9 +1,12 @@
 import * as t from '@/diet-server/diet.types'
-import {ITEM_TYPES} from "@/diet-server/diet.constants";
+import { ITEM_TYPES } from "@/diet-server/diet.constants";
+import { ODA_STOCK_PRODUCTS } from "@/diet-server/stock/oda_products_normalized";
 
 const itemType = ITEM_TYPES.PRODUCT;
 
-export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
+export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = ODA_STOCK_PRODUCTS as t.StockStateNormalized<t.Product>;
+
+export const STOCK_PRODUCTSSS: t.StockStateNormalized<t.Product> = {
   allIds: [
     "øl03",
     "øl05",
@@ -42,6 +45,7 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
       protein: 0,
       calories: 200,
       grams: 100,
+      isStockItem: true,
     },
     "øl03": {
       type: itemType,
@@ -50,6 +54,7 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
       protein: 0,
       calories: 130,
       grams: 300,
+      isStockItem: true,
     },
     "Big100": {
       type: itemType,
@@ -58,6 +63,7 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
       protein: 30,
       calories: 393,
       grams: 100,
+      isStockItem: true,
     },
     "Manchego": {
       type: itemType,
@@ -66,6 +72,7 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
       protein: 40,
       calories: 688,
       grams: 150,
+      isStockItem: true,
     },
     "CottageCheeseOriginal": {
       type: itemType,
@@ -74,6 +81,7 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
       protein: 54,
       calories: 384,
       grams: 400,
+      isStockItem: true,
     },
     "Whey": {
       type: itemType,
@@ -82,6 +90,7 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
       protein: 20,
       calories: 100,
       grams: 30,
+      isStockItem: true,
     },
     "Whey_Double": {
       type: itemType,
@@ -90,6 +99,7 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
       protein: 41,
       calories: 200,
       grams: 60,
+      isStockItem: true,
     },
     "Egg": {
       type: itemType,
@@ -98,6 +108,7 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
       protein: 7,
       calories: 80,
       grams: 60,
+      isStockItem: true,
     },
     // Other products
     // Note: I have used the ids directly as given, please ensure they are unique for each product
@@ -108,6 +119,7 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
       protein: 52,
       calories: 316,
       grams: 400,
+      isStockItem: true,
     },
     "PeanutSmør": {
       type: itemType,
@@ -116,6 +128,7 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
       protein: 3.6,
       calories: 91,
       grams: 15,
+      isStockItem: true,
     },
     "Syltetøy": {
       type: itemType,
@@ -124,6 +137,7 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
       protein: 0,
       calories: 0,
       grams: 15,
+      isStockItem: true,
     },
     "Kesam_stor": {
       type: itemType,
@@ -132,6 +146,7 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
       protein: 24,
       calories: 468,
       grams: 400,
+      isStockItem: true,
     },
     "Kesam_liten": {
       type: itemType,
@@ -140,6 +155,7 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
       protein: 18,
       calories: 351,
       grams: 400,
+      isStockItem: true,
     },
     "Kesam_mager_stor": {
       type: itemType,
@@ -148,6 +164,7 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
       protein: 38,
       calories: 256,
       grams: 400,
+      isStockItem: true,
     },
     "Kesam_mager_liten": {
       type: itemType,
@@ -156,6 +173,7 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
       protein: 28,
       calories: 192,
       grams: 300,
+      isStockItem: true,
     },
     "FetaBoksOriginal": {
       type: itemType,
@@ -164,6 +182,7 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
       protein: 26,
       calories: 480,
       grams: 200,
+      isStockItem: true,
     },
     "FetaBoksMager": {
       type: itemType,
@@ -172,6 +191,7 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
       protein: 0,
       calories: 0,
       grams: 200,
+      isStockItem: true,
     },
     "PinjeKjerner": {
       type: itemType,
@@ -180,6 +200,7 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
       protein: 9.5,
       calories: 351,
       grams: 50,
+      isStockItem: true,
     },
     "Jalapenos": {
       type: itemType,
@@ -188,6 +209,7 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
       protein: 0,
       calories: 12,
       grams: 120,
+      isStockItem: true,
     },
     "KjøttdeigSvin": {
       type: itemType,
@@ -196,6 +218,7 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
       protein: 72,
       calories: 576,
       grams: 400,
+      isStockItem: true,
     },
     "RevetOst": {
       type: itemType,
@@ -204,6 +227,7 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
       protein: 95,
       calories: 1540,
       grams: 500,
+      isStockItem: true,
     },
     "RømmeQDrømmelett": {
       type: itemType,
@@ -212,6 +236,7 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
       protein: 24,
       calories: 279,
       grams: 300,
+      isStockItem: true,
     },
     "TacoKrydder": {
       type: itemType,
@@ -220,6 +245,7 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
       protein: 5.2,
       calories: 126,
       grams: 40,
+      isStockItem: true,
     },
     "GuacamoleFerdigdip": {
       type: itemType,
@@ -228,6 +254,7 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
       protein: 5,
       calories: 307,
       grams: 250,
+      isStockItem: true,
     },
     "TortillaChips": {
       type: itemType,
@@ -236,6 +263,7 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
       protein: 14,
       calories: 940,
       grams: 200,
+      isStockItem: true,
     },
     "Kyllingfilet": {
       type: itemType,
@@ -244,6 +272,7 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
       protein: 216,
       calories: 936,
       grams: 900,
+      isStockItem: true,
     },
     "Svinekoteletter": {
       type: itemType,
@@ -252,6 +281,7 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
       protein: 450,
       calories: 2178,
       grams: 900,
+      isStockItem: true,
     },
     "SvinIndrefilet": {
       type: itemType,
@@ -260,6 +290,7 @@ export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
       protein: 132,
       calories: 690,
       grams: 600,
+      isStockItem: true,
     },
   }
 }

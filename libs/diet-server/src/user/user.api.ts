@@ -10,7 +10,6 @@ type GetUserInput = {
 }
 
 async function getUser({ uid }: GetUserInput): Promise<t.User> {
-  console.log('GETTT_USER',uid );
   const r = await baseApi.makeReqAndExec<t.User>({
     proc: "getUser",
     vars: {
@@ -67,7 +66,6 @@ type UpdateUserInput = {
 }
 
 async function updateUser({ uid, user }: UpdateUserInput): Promise<any> {
-  console.log('updateUser', uid, user);
   return await baseApi.makeReqAndExec<t.User>({
     proc: "updateUser",
     vars: {
