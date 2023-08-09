@@ -20,7 +20,6 @@ function Item({
   const { user } = useAuthContext()
 
   const isCustom = item.updateOriginalItem
-  console.log('isCustommmm', isCustom);
 
   const updateField = (key: string, value: any) => {
     // update original product
