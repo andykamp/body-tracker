@@ -55,7 +55,7 @@ function Meals() {
 
 
   return (
-    <div className="flex flex-col">
+    <div className="">
 
       <ul>
         {meals.map((meal: t.Meal) => (

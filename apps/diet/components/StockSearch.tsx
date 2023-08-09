@@ -13,13 +13,14 @@ import ProductItem from "./ProductItem";
 import MealItem from "./MealItem";
 
 type SearchInputProps = {
+        placeholder: string;
   initialValue?: string;
   onSelect: (item: t.StockItem) => void;
   onInputChange?: (value: string) => void;
   type?: "product" | "meal" | "both";
 }
 
-const SearchInput: React.FC<SearchInputProps> = ({ initialValue="", onSelect, onInputChange, type: _type = 'both' }) => {
+const SearchInput: React.FC<SearchInputProps> = ({ placeholder, initialValue="", onSelect, onInputChange, type: _type = 'both' }) => {
   const { user } = useAuthContext()
 
   const [isSearching, setIsSearching] = useState(false);
@@ -159,7 +160,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ initialValue="", onSelect, on
         searching={isSearching}
         initialValue={initialValue}
         value={search}
-        placeholder="Search meal/product"
+        placeholder={placeholder}
         options={options}
         onSelect={handleSelect}
         onChange={handleSearchChange}
