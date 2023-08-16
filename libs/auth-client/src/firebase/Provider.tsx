@@ -30,7 +30,9 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter()
 
+  console.log('AAAUTH rerender', );
   useEffect(() => {
+    console.log('authhhhh', );
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);

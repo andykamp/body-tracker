@@ -45,3 +45,11 @@ export function createMealObject({
   return meal;
 }
 
+
+export function createMealObjectEmpty(){
+  const meal = createMealObject({
+    name: '',
+    products: []
+  })
+  return meal
+}

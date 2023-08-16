@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import * as t from '@/diet-server/diet.types'
 import { Input } from "@geist-ui/core";
-import productApi from "@/diet-server/product/product.api"
-
 
 type ProductItemProps = {
   product: t.Product;
   onChange: (item: t.Product) => void;
   onDelete?: (item: t.Product) => void;
+  onRestore?: (item: t.Product) => void;
 };
 
 function ProductItem({
   product,
   onChange,
   onDelete,
+  onRestore,
 }: ProductItemProps) {
 
   const updateField = (key: string, value: any) => {
@@ -23,6 +23,8 @@ function ProductItem({
   const updateNumericField = (key: string, value: any) => {
     onChange(({ ...product, [key]: +value }));
   }
+
+  const isDeleted = product.isDeleted
 
   return (
     <div
@@ -58,11 +60,18 @@ function ProductItem({
         onChange={(e) => updateNumericField('grams', e.target.value)}
       />
 
-      {onDelete &&
+      {onDelete && !isDeleted &&
         <button
           onClick={() => onDelete?.(product)}
         >
-          delete (check meal dependencies)
+          delete
+        </button>
+      }
+      {onRestore && isDeleted &&
+        <button
+          onClick={() => onRestore?.(product)}
+        >
+          restore
         </button>
       }
     </div>

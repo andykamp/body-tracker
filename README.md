@@ -210,8 +210,31 @@ Should also start the emulator on yarn dev!!
 
 ## Next up
 - TODO
-    - caching straegy to update at all places
-    - check dependency when i delete an item
+- topology
+    - cache updates
+        - updat all references when changing and deleteing
+        - replace all cache stuff
+            - finish item + meal
+            - add daily cache
+        - fix delte/archive/references
+    - clean api and rename names
+        - own lib for diet-client
+        - own cache key variables
+        - make sure the return names e.g customProductToDelete is the same for al
+        - clear up use of customProduct and item and product
+    - clean routes
+    - create mocks
+    - fix UI
+- todos
+    - [X] decide how to calculate the daily protein. on the fly or store it. at some point one needs it for stats/analytics also
+    - [X] check dependency when i delete an item
+    - [X] fixed delete product and addProductToMeal caching!!! 
+    - create a "bring back" button on products instead of current delete
+    - fix cache for adding new meal
+    - fix cache for updateing meal, products and items
+    - devide into routes and not tabs..
+    - fix  inital re-render that causes page to refresh
+    - update the stock seach cache when adding meal and product
     - fix daily itemMinimal
     - search outside of stock
         - maybe the stock search of products can be done seperatly on the server :o
@@ -236,7 +259,7 @@ Should also start the emulator on yarn dev!!
     - [ ] see how many items it becomes
         - 6mb ish
     - [X] local script for querying the json fil
-        - [X] local script to query the local json file
+        - [X] local script to query the local json filen
         - [X] create a repl script that lets you query the json file
     - 
     - store in redis-lab 
@@ -246,3 +269,16 @@ Should also start the emulator on yarn dev!!
     - 
     - condider adding it to redis mannually (dont store in firestore)
     - hope the thumbnail is available and does not expire 
+
+## notes
+
+    - remove daily references at some point?
+        - maybe at some point the daily should remove all references and only be stored flat with the result values. i guess i want to adjust the lst week but after that i should not be able to. Then i can loop and update the product
+        - if i store the reference to the daily/meal, i can go in and upddate the daily/meal and then update the product. if daily is changed, i need to re-run the getAnalytics (if applicable) then all analytics will also be up-to-date
+    - caching straegy to update at all places
+        - use prefetch [link](https://tanstack.com/query/v4/docs/react/guides/prefetching) in root for:
+            - products
+            - meals
+            - daily
+        -  use optimistic updates https://tanstack.com/query/v4/docs/react/guides/optimistic-updates 
+

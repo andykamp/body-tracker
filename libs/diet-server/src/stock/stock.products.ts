@@ -4,9 +4,9 @@ import { ODA_STOCK_PRODUCTS } from "@/diet-server/stock/oda_products_normalized"
 
 const itemType = ITEM_TYPES.PRODUCT;
 
-export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = ODA_STOCK_PRODUCTS as t.StockStateNormalized<t.Product>;
+// export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = ODA_STOCK_PRODUCTS as t.StockStateNormalized<t.Product>;
 
-export const STOCK_PRODUCTSSS: t.StockStateNormalized<t.Product> = {
+export const STOCK_PRODUCTS: t.StockStateNormalized<t.Product> = {
   allIds: [
     "øl03",
     "øl05",

@@ -5,6 +5,7 @@ export type ProductListProps = {
   products: t.Product[],
   onChange: (product: t.Product) => void,
   onDelete: (product: t.Product) => void,
+  onRestore?: (item: t.Product) => void;
 }
 
 function ProductList(props: ProductListProps) {
@@ -12,6 +13,7 @@ function ProductList(props: ProductListProps) {
     products,
     onChange,
     onDelete,
+    onRestore,
   } = props
 
   return (
@@ -23,6 +25,7 @@ function ProductList(props: ProductListProps) {
             product={product}
             onChange={onChange}
             onDelete={onDelete}
+            onRestore={onRestore}
           />
         ))
       }

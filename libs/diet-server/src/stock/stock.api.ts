@@ -33,7 +33,10 @@ type GetStockSearchResultsInput = {
   search: string
 }
 
-export function getStockSearchResults({ type, search }: GetStockSearchResultsInput): string[] {
+export function getStockSearchResults({
+  type = 'both',
+  search
+}: GetStockSearchResultsInput) {
   if (search === "") return []
   return STOCK_ITEMS_BY_TYPE[type].allIds.filter(i => {
     const term = STOCK_ITEMS_BY_TYPE[type].byIds[i].name

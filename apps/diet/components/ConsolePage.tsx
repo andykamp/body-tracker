@@ -69,11 +69,13 @@ function ConsolePage() {
             <Fieldset.Subtitle>Meals and product goodies</Fieldset.Subtitle>
             <MealsAndProducts />
           </Fieldset>
+          {/*
           <Fieldset label="Profile">
             <Fieldset.Title>Profile</Fieldset.Title>
             <Fieldset.Subtitle>Profile goodies</Fieldset.Subtitle>
             <Profile />
           </Fieldset>
+          */}
         </Fieldset.Group>
       </Page>
     </>

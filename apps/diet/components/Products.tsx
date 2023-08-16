@@ -1,13 +1,12 @@
 import * as t from "@/diet-server/diet.types";
 import {
   useQuery,
-  useMutation,
   useQueryClient,
 } from '@tanstack/react-query'
 import { useAuthContext } from "@/auth-client/firebase/Provider";
 import productApi from "@/diet-server/product/product.api"
-import { createEmptyProduct } from '@/diet/utils/misc'
 import ProductMenu from "./ProductMenu";
+import { useProductMutations } from "./products.mutations";
 
 function Products() {
   const { user } = useAuthContext()
@@ -19,63 +18,52 @@ function Products() {
     queryFn: () => productApi.getProducts({ userId: user.uid })
   })
 
-  const addProductMutation = useMutation({
-    mutationFn: productApi.addProduct,
-    onSuccess: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ['getProductForCurrentUser'] })
-      queryClient.invalidateQueries({ queryKey: ['getDaily'] })
-    },
-  })
-
-  const updateProductMutation = useMutation({
-    mutationFn: productApi.updateProduct,
-    onSuccess: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ['getProductForCurrentUser'] })
-      queryClient.invalidateQueries({ queryKey: ['getDaily'] })
-    },
-  })
-
-  const deleteProductMutation = useMutation({
-    mutationFn: productApi.deleteProduct,
-    onSuccess: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ['getProductForCurrentUser'] })
-      queryClient.invalidateQueries({ queryKey: ['getDaily'] })
-    },
-  })
+  const {
+    addProductMutation,
+    updateProductMutation,
+    deleteProductMutation,
+    restoreDeletedProductMutation,
+  } = useProductMutations({ queryClient })
 
   if (!user) {
     return null
   }
 
   const products: t.Product[] = productsQuery.data || []
-  const sortedProducts = products.sort((a, b) => {
-    return new Date(a.createdAt as string).getTime() - new Date(b.createdAt as string).getTime();
-  });
 
   return (
     <ProductMenu
-      products={sortedProducts}
+      products={products}
       onChange={(product: t.Product) => {
-        console.log('onChange', );
+        console.log('onChange',);
         updateProductMutation.mutate({
           userId: user.uid,
           updatedProduct: product
         })
 
       }}
-      onDelete={(product: t.Product) => {
+      onDelete={async (product: t.Product) => {
+        // @todo: add a conformation dialog here
+        if (productApi.hasReferences(product)) {
+          alert('reference found here and here. We will archive it but hang on to it for your so you can re-store it at ay time')
+        }
+        // the delete will set isDeleted
         deleteProductMutation.mutate({
           userId: user.uid,
-          id: product.id
+          product: product
         })
       }}
-      onAdd={() => {
+      onRestore={async (product: t.Product) => {
+        restoreDeletedProductMutation.mutate({
+          userId: user.uid,
+          product
+        })
+      }}
+      onCreate={() => {
+        console.log('adddd',);
         addProductMutation.mutate({
           userId: user.uid,
-          product: createEmptyProduct()
+          product: productApi.createProductObjectEmpty()
         })
       }}
       isFetching={productsQuery.isFetching}

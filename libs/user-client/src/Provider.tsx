@@ -32,6 +32,7 @@ export function UserContextProvider({
   const query = useQuery({
     queryKey: ['getUser'],
     queryFn: () => userApi.getUser({ uid: authUser.uid }),
+    // refetchOnWindowFocus: false // @note: needed if not globally set
   })
 
   const user = query.data
@@ -46,12 +47,11 @@ export function UserContextProvider({
     return <div>userProvider error...</div>
   }
 
+  console.log('USER RE-RENDER',);
+
   return (
-    <UserContext.Provider value={{ user: user!, loading }
-    }>
-      {
-        children
-      }
+    <UserContext.Provider value={{ user: user!, loading }}>
+      {children}
     </UserContext.Provider>
   );
 };

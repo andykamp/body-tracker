@@ -1,6 +1,8 @@
 import { Disclosure } from '@headlessui/react';
 import Logo from '@/ui/Logo'
 import Profile from '@/ui/Profile'
+import Link from 'next/link'
+
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -22,8 +24,10 @@ type NavbarProps = {
   deleteAccount?(): void
 }
 
+// @todo: try not to use link here. it is spesific to next... could pass onRoute as a prop and the use next/navigation useRouter?
 export default function Navbar(props: NavbarProps) {
   const { user, pathname, navigation, signIn, signOut, deleteAccount } = props
+  console.log('pathName',pathname );
 
   return (
     <Disclosure as="nav" className="bg-white shadow-sm">
@@ -34,7 +38,7 @@ export default function Navbar(props: NavbarProps) {
                 <Logo />
                 <div className="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
                   {navigation.map((item) => (
-                    <a
+                    <Link
                       key={item.name}
                       href={item.href}
                       className={classNames(
@@ -46,7 +50,7 @@ export default function Navbar(props: NavbarProps) {
                       aria-current={pathname === item.href ? 'page' : undefined}
                     >
                       {item.name}
-                    </a>
+                    </Link>
                   ))}
                 </div>
               </div>

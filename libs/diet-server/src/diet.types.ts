@@ -67,6 +67,8 @@ export type User = {
   oura?: Oura;
 }
 
+export type References = {[referenceKey: string]: boolean}
+
 // product
 
 export type Product = {
@@ -74,6 +76,7 @@ export type Product = {
   type: ItemType;
   name: string;
   description?: string;
+  thumbnail?: string;
 
   protein?: number;
   calories?: number
@@ -83,6 +86,11 @@ export type Product = {
   fromCustomMeal?: boolean; // shows if it is not a stored product. But nice to use for future suggestions on autocomplete
   createdAt?: string;
   updatedAt?: string;
+
+  isDeleted?: boolean;
+
+  referenceMeals?: References;
+  referenceDailies?: References;
 }
 
 // meal
@@ -92,6 +100,7 @@ export type Meal = {
   type: ItemType;
   name: string;
   description?: string;
+  thumbnail?: string;
 
   products: Item[];
   protein?: number;
@@ -102,6 +111,11 @@ export type Meal = {
   fromCustomDaily?: boolean; // shows if it is not a stored Meal. But nice to use for future suggestions on autocomplete
   createdAt?: string;
   updatedAt?: string;
+
+  isDeleted?: boolean;
+
+  referenceProducts?: References;
+  referenceDailies?: References;
 }
 
 export type MealMinimal = Omit<Meal, "products" | "protein" | "calories" | "grams"> & {

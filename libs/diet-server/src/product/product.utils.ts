@@ -11,6 +11,8 @@ export type CreateProductObjectInput = {
   grams?: number;
   isStockItem?: boolean;
   fromCustomMeal?: boolean;
+  referenceMeals?: t.References;
+  referenceDailies?: t.References;
 };
 
 export function createProductObject({
@@ -21,6 +23,8 @@ export function createProductObject({
   grams = 0,
   isStockItem = false,
   fromCustomMeal = false,
+  referenceMeals,
+  referenceDailies,
 }: CreateProductObjectInput): t.Product {
   const product: t.Product = {
     id: uuid(),
@@ -36,8 +40,19 @@ export function createProductObject({
 
     createdAt: getISODate(),
     updatedAt: undefined,
+    referenceMeals,
+    referenceDailies,
+
   };
 
   return product;
+}
+
+export function createProductObjectEmpty(fromCustomMeal = false) {
+  const product = createProductObject({
+    name: '',
+    fromCustomMeal
+  })
+  return product
 }
 

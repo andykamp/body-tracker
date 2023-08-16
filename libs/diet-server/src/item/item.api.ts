@@ -1,6 +1,7 @@
 import * as t from '@/diet-server/diet.types'
 import { v4 as uuid } from 'uuid';
 import { getISODate } from "@/diet-server/utils/date.utils";
+import { parse, _fetch } from "@/common/utils/utils.fetch";
 
 
 function createItemWrapper(item: t.Meal | t.Product, type: t.ItemType): t.Item {
@@ -27,9 +28,9 @@ export type GetItemInput = {
 
 // @todo rename to someting more descriptive
 // @todo: add a isStockItem boolean to the item
-export function getOriginalFromItem(itemMinimal: t.ItemMinimal, input: GetItemInput): t.Product | t.Meal {
+export async function getOriginalFromItem(itemMinimal: t.ItemMinimal, input: GetItemInput) {
 
-  const item = {...itemMinimal}
+  const item = { ...itemMinimal }
   // Returns item.item if item is not null or undefined
   // if (item && item.item) {
   //   return item.item;
@@ -49,6 +50,13 @@ export function getOriginalFromItem(itemMinimal: t.ItemMinimal, input: GetItemIn
   } else if (item.itemType === "product") {
     if (item.isStockItem) {
       matchedItem = input.stockItems.byIds[item.itemId];
+      if (!matchedItem) {
+        const res = await _fetch(`/api/getStockItem?id=${item.itemId}`, {
+          method: 'GET',
+        });
+        matchedItem = await parse(res) as t.Product
+      }
+
     }
     else {
       matchedItem = input.products.find(product => product.id === item.itemId)
@@ -104,6 +112,11 @@ function calculateMacros(items: t.Item[]) {
   };
 }
 
+function updateItem() {
+  //@todo: check if it is custom
+
+}
+
 const itemApi = {
   createItemWrapper,
   getOriginalFromItem,
@@ -111,6 +124,8 @@ const itemApi = {
   calculateCalories,
   calculateProteins,
   calculateMacros,
+
+  updateItem,
 
 }
 

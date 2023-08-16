@@ -26,6 +26,7 @@ export function formatStockItem(json: Record<string, any>) {
       calories: item.nutrition.calories * numHundredGrams || 0,
       grams,
 
+      thumbnail: item.thumbnail,
       isStockItem: true,
     };
   });

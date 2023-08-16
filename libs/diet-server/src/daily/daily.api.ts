@@ -10,12 +10,12 @@ import { createDailyObject } from '@/diet-server/daily/daily.utils'
 import { getISODate } from "@/diet-server/utils/date.utils";
 
 // @todo: merge with populate meal
-function populateDaily(dailyDietMinimal: t.DailyDietMinimal, lookup: GetItemInput) {
+async function populateDaily(dailyDietMinimal: t.DailyDietMinimal, lookup: GetItemInput) {
   const newItems: t.Item[] = []
 
   for (const itemMinimal of dailyDietMinimal.dailyItems) {
     // we update the item with the original item in case it has changed
-    const originalItem = itemApi.getOriginalFromItem(itemMinimal, lookup)
+    const originalItem = await itemApi.getOriginalFromItem(itemMinimal, lookup)
     if (!originalItem) throw new Error('Could not find daily item. Should display warning: ' + itemMinimal.id);
     itemMinimal.name = originalItem.name
     itemMinimal.description = originalItem.description
@@ -51,7 +51,7 @@ type GetDailyInput = {
   dateKey: string
 }
 export async function getDaily({ userId, dateKey }: GetDailyInput): Promise<t.DailyDiet> {
-  let dailyDietMinimal: t.DailyDietMinimal = await baseApi.makeReqAndExec<t.DailyDiet>({
+  const dailyDietMinimal: t.DailyDietMinimal = await baseApi.makeReqAndExec<t.DailyDiet>({
     proc: "getDaily",
     vars: {
       userId,
@@ -65,7 +65,7 @@ export async function getDaily({ userId, dateKey }: GetDailyInput): Promise<t.Da
     const stockItems = stockApi.getStockItems({ type: STOCK_TYPE.both })
     const lookup = { meals, products, stockItems }
 
-    const dailyItems: t.Item[] = populateDaily(dailyDietMinimal, lookup)
+    const dailyItems: t.Item[] = await populateDaily(dailyDietMinimal, lookup)
 
     const dailyDiet: t.DailyDiet = { ...dailyDietMinimal, dailyItems }
     return dailyDiet
