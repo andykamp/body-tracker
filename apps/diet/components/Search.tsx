@@ -31,9 +31,10 @@ function SearchInput({
   const { user } = useAuthContext()
 
   const [isSearching, setIsSearching] = useState(false);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState<string>();
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const res = useRef<any>([]);
+  const isSelecting = useRef(false);
 
   const productsQuery = useQuery({
     queryKey: ['getProductForCurrentUser'],
@@ -73,12 +74,17 @@ function SearchInput({
   const onSearchDB = useDebounce(onSearch, 500)
 
   const handleSearchChange = (search: string) => {
-    onInputChange?.(search)
-    if (search === "") return
-    onSearchDB(search)
-
-    setIsSearching(true)
-    setSearch(search);
+    console.log('handleSearchChange', search, isSelecting.current);
+    if (isSelecting.current) {
+      console.log('do nothing', );
+      isSelecting.current = false;
+    } else {
+      onInputChange?.(search)
+      if (!search || search === "") return
+      onSearchDB(search)
+      setIsSearching(true)
+      setSearch(search);
+    }
   };
 
   const handleSelect = useCallback((itemId: string) => {
@@ -88,8 +94,10 @@ function SearchInput({
     // let item = getStockItems({ type }).byIds[itemId];
     // if (!item) item = products.find(p => p.id === itemId) as t.StockItem
     // if (!item) item = meals.find(p => p.id === itemId) as t.StockItem
+
+    isSelecting.current = true;
     onSelect(item);
-    setSearch("");
+    setSearch(item.name);
   }, [searchResults]);
 
   const options = searchResults ? searchResults.map(({ value, source, item }) => makeOptionBySource(value, source, item)) : []

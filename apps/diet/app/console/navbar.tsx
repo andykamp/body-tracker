@@ -46,6 +46,7 @@ function ConsolePage() {
       deleteAccount={deleteGoogleAccount}
       navigation={NAVIGATION_ROUTES_CONSOLE}
       pathname={pathname}
+      onNavigate={router.push}
     />
   )
 }

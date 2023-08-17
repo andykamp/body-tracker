@@ -212,6 +212,7 @@ Should also start the emulator on yarn dev!!
 - TODO
 - rename updateCacheONMUTATE to only updateCacheItem or somethign generic
 - rename tehe meals/api.mutation data to be more descriptive. e.g deletedMeal, updatedMeal, addedMeal. right now it is a little mixed
+- fix search pagination
 - topology
     - cache updates
         - updat all references when changing and deleteing
