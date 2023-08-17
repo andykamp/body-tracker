@@ -1,77 +1,40 @@
-import type * as t from "@/diet-server/diet.types"
 import {
   useMutation,
   QueryClient,
 } from '@tanstack/react-query'
 import productApi from "@/diet-server/product/product.api"
-import {
-  addToCacheOnMutate,
-  updateCacheOnMutate,
-  removeFromCacheOnMutate
-} from "../utils/caching";
-
-export function removeProductFromCache(product: t.Product, queryClient: QueryClient) {
-  // we only added the isDeleteFlag
-  if (product.isDeleted) {
-    console.log('deleSuccessfull', product);
-    // update the product state
-    updateCacheOnMutate({
-      queryClient,
-      mutatedObj: product,
-      cacheKey: ['getProductForCurrentUser'],
-    })
-  } else {
-    // we have permanently deleted the product and need to remove it from the cache
-    console.log('removeFromCache',);
-    removeFromCacheOnMutate({
-      queryClient,
-      mutatedObj: product,
-      cacheKey: ['getProductForCurrentUser'],
-    })
-  }
-
-}
+import productCacheApi from './products.cache';
 
 type UseProductMutationsProps = {
   queryClient: QueryClient
 }
+
 export function useProductMutations({
   queryClient
 }: UseProductMutationsProps) {
 
-
-  // @todo: extract the delteItem condition into a own function
-
   const addProductMutation = useMutation({
     mutationFn: productApi.addProduct,
-    onSettled: (newProduct, error) => {
+    onSettled: (addedProduct, error) => {
       if (error) {
         alert('addProductMutation error')
-      } else if (newProduct) {
-        console.log('addProductMutation successfull', newProduct);
+      } else if (addedProduct) {
+        console.log('addProductMutation successfull', addedProduct);
         // update the product state
-        addToCacheOnMutate({
-          queryClient,
-          mutatedObj: newProduct,
-          cacheKey: ['getProductForCurrentUser'],
-        })
+        productCacheApi.addProduct(addedProduct, queryClient)
       }
     }
   })
 
   const updateProductMutation = useMutation({
     mutationFn: productApi.updateProduct,
-    onSettled: (newProduct, error) => {
+    onSettled: (updatedProduct, error) => {
       if (error) {
         alert('updateProductMutation error')
-      } else if (newProduct) {
-        console.log('updateProductMutation successfull', newProduct);
+      } else if (updatedProduct) {
+        console.log('updateProductMutation successfull', updatedProduct);
         // update the product state
-        updateCacheOnMutate({
-          queryClient,
-          mutatedObj: newProduct,
-          cacheKey: ['getProductForCurrentUser'],
-        })
+        productCacheApi.updateProduct(updatedProduct, queryClient)
         // Invalidate and refetch
         queryClient.invalidateQueries({ queryKey: ['getDaily'] })
       }
@@ -80,34 +43,29 @@ export function useProductMutations({
 
   const deleteProductMutation = useMutation({
     mutationFn: productApi.deleteProduct,
-    onSettled: (newProduct, error) => {
+    onSettled: (deletedProduct, error) => {
       if (error) {
         alert('deleteProductMutation error')
-      } else if (newProduct) {
-        removeProductFromCache(newProduct, queryClient)
+      } else if (deletedProduct) {
+        productCacheApi.removeProduct(deletedProduct, queryClient)
       }
     }
   })
 
   const restoreDeletedProductMutation = useMutation({
     mutationFn: productApi.restoreDeletedProduct,
-    onSettled: (newProduct, error) => {
+    onSettled: (restoredProduct, error) => {
       if (error) {
         alert('restoreDeletedProductMutation error')
-      } else if (newProduct) {
-        console.log('restoreSuccessfull', newProduct);
+      } else if (restoredProduct) {
+        console.log('restoreSuccessfull', restoredProduct);
         // update the product state
-        updateCacheOnMutate({
-          queryClient,
-          mutatedObj: newProduct,
-          cacheKey: ['getProductForCurrentUser'],
-        })
+        productCacheApi.updateProduct(restoredProduct, queryClient)
         // Invalidate and refetch
         queryClient.invalidateQueries({ queryKey: ['getDaily'] })
       }
     },
   })
-
 
   return {
     addProductMutation,

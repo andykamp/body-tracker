@@ -27,7 +27,6 @@ type NavbarProps = {
 // @todo: try not to use link here. it is spesific to next... could pass onRoute as a prop and the use next/navigation useRouter?
 export default function Navbar(props: NavbarProps) {
   const { user, pathname, navigation, signIn, signOut, deleteAccount } = props
-  console.log('pathName',pathname );
 
   return (
     <Disclosure as="nav" className="bg-white shadow-sm">

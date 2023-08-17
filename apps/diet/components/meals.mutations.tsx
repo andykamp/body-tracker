@@ -3,12 +3,8 @@ import {
   QueryClient,
 } from '@tanstack/react-query'
 import mealApi from "@/diet-server/meal/meal.api"
-import {
-  addToCacheOnMutate,
-  updateCacheOnMutate,
-  removeFromCacheOnMutate
-} from "../utils/caching";
-import { removeProductFromCache } from './products.mutations';
+import productCacheApi from './products.cache';
+import mealCacheApi from './meals.cache'
 
 type UseMealMutationsProps = {
   queryClient: QueryClient
@@ -19,34 +15,26 @@ export function useMealMutations({
 
   const addMealMutation = useMutation({
     mutationFn: mealApi.addMeal,
-    onSettled: (newMeal, error) => {
+    onSettled: (addedMeal, error) => {
       if (error) {
         alert('addMealMutation error')
-      } else if (newMeal) {
-        console.log('addMealMutation successfull', newMeal);
+      } else if (addedMeal) {
+        console.log('addMealMutation successfull', addedMeal);
         // update the product state
-        addToCacheOnMutate({
-          queryClient,
-          mutatedObj: newMeal,
-          cacheKey: ['getMealsForCurrentUser'],
-        })
+        mealCacheApi.addMeal(addedMeal, queryClient)
       }
     }
   })
 
   const updateMealMutation = useMutation({
     mutationFn: mealApi.updateMeal,
-    onSettled: (newMeal, error) => {
+    onSettled: (updatedMeal, error) => {
       if (error) {
         alert('updateMealMutation error')
-      } else if (newMeal) {
-        console.log('updateMealMutation successfull', newMeal);
+      } else if (updatedMeal) {
+        console.log('updateMealMutation successfull', updatedMeal);
         // update the product state
-        updateCacheOnMutate({
-          queryClient,
-          mutatedObj: newMeal,
-          cacheKey: ['getMealsForCurrentUser'],
-        })
+        mealCacheApi.updateMeal(updatedMeal, queryClient)
         // @todo: update the getDailyCache
         queryClient.invalidateQueries({ queryKey: ['getDaily'] })
       }
@@ -55,27 +43,19 @@ export function useMealMutations({
 
   const deleteMealMutation = useMutation({
     mutationFn: mealApi.deleteMeal,
-    onSettled: (newMeal, error) => {
+    onSettled: (deletedMeal, error) => {
       if (error) {
         alert('deleteProductMutation error')
-      } else if (newMeal) {
+      } else if (deletedMeal) {
         // we only added the isDeleteFlag
-        if (newMeal.isDeleted) {
-          console.log('deleSuccessfull', newMeal);
+        if (deletedMeal.isDeleted) {
+          console.log('deleSuccessfull deleteMealMutation', deletedMeal);
           // update the product state
-          updateCacheOnMutate({
-            queryClient,
-            mutatedObj: newMeal,
-            cacheKey: ['getMealsForCurrentUser'],
-          })
+          mealCacheApi.updateMeal(deletedMeal, queryClient)
         } else {
           // we have permanently deleted the product and need to remove it from the cache
           console.log('removeFromCache',);
-          removeFromCacheOnMutate({
-            queryClient,
-            mutatedObj: newMeal,
-            cacheKey: ['getMealsForCurrentUser'],
-          })
+          mealCacheApi.removeMeal(deletedMeal, queryClient)
           // @todo: update the getDailyCache instead of invalidating it
           queryClient.invalidateQueries({ queryKey: ['getDaily'] })
         }
@@ -90,21 +70,14 @@ export function useMealMutations({
       if (error) {
         alert('addPrdouctMutation error')
       } else if (data) {
+        // @todo: rename to addedMeal
         const { newMeal, newProduct } = data
         // todo do nutation here
-        console.log('onSuccess')
+        console.log('onSuccess addProductMutation')
         // update the product cache
-        addToCacheOnMutate({
-          queryClient,
-          mutatedObj: newProduct,
-          cacheKey: ['getProductForCurrentUser'],
-        })
+        productCacheApi.addProduct(newProduct, queryClient)
         // update the meal cache
-        updateCacheOnMutate({
-          queryClient,
-          mutatedObj: newMeal,
-          cacheKey: ['getMealsForCurrentUser'],
-        })
+        mealCacheApi.updateMeal(newMeal, queryClient)
         // @note: we do NOT need to invalidate the daily beciase no calories have been added
       }
     },
@@ -117,24 +90,17 @@ export function useMealMutations({
       if (error) {
         alert('updateProductMutation error')
       } else if (data) {
+        // @todo: rename to updatedMeal
         // todo decide if original product was changed
         const { newMeal, updatedProduct } = data
         // todo do nutation here
-        console.log('onSuccess')
+        console.log('onSuccess updateProductMutation')
         if (updatedProduct) {
           // update the product cache if we changed a product directly
-          updateCacheOnMutate({
-            queryClient,
-            mutatedObj: updatedProduct,
-            cacheKey: ['getProductForCurrentUser'],
-          })
+          productCacheApi.updateProduct(updatedProduct, queryClient)
         }
         // update the meal cache
-        updateCacheOnMutate({
-          queryClient,
-          mutatedObj: newMeal,
-          cacheKey: ['getMealsForCurrentUser'],
-        })
+        mealCacheApi.updateMeal(newMeal, queryClient)
         // invalidate the getDaily cache as it might be updated
         // @todo: update the getDailyCache instead of invalidating it
         queryClient.invalidateQueries({ queryKey: ['getDaily'] })
@@ -149,20 +115,17 @@ export function useMealMutations({
       if (error) {
         alert('convertCustomProductToItemMutation error')
       } else if (data) {
+        // @todo: rename to something more descriptive
         // todo decide if original product was changed
         const { newMeal, customProductToDelete } = data
         // todo do nutation here
-        console.log('onSuccess')
+        console.log('onSuccess convertCustomProductToItemMutation')
 
         // update the product cache if we changed a product directly
-        removeProductFromCache(customProductToDelete, queryClient)
+        productCacheApi.removeProduct(customProductToDelete, queryClient)
 
         // update the meal cache
-        updateCacheOnMutate({
-          queryClient,
-          mutatedObj: newMeal,
-          cacheKey: ['getMealsForCurrentUser'],
-        })
+        mealCacheApi.updateMeal(newMeal, queryClient)
         // invalidate the getDaily cache as it might be updated
         // @todo: update the getDailyCache instead of invalidating it
         queryClient.invalidateQueries({ queryKey: ['getDaily'] })
@@ -178,22 +141,15 @@ export function useMealMutations({
       if (error) {
         alert('convertCustomProductToItemMutation error')
       } else if (data) {
+        // @todo: rename to something more descriptive
         // todo decide if original product was changed
         const { newMeal, addedProduct } = data
         // todo do nutation here
-        console.log('onSuccess')
+        console.log('onSuccess convertItemToCustomProductMutation')
         // add the new product to cache
-        addToCacheOnMutate({
-          queryClient,
-          mutatedObj: addedProduct,
-          cacheKey: ['getProductForCurrentUser'],
-        })
+        productCacheApi.addProduct(addedProduct, queryClient)
         // update the meal cache
-        updateCacheOnMutate({
-          queryClient,
-          mutatedObj: newMeal,
-          cacheKey: ['getMealsForCurrentUser'],
-        })
+        mealCacheApi.updateMeal(newMeal, queryClient)
         // invalidate the getDaily cache as it might be updated
         // @todo: update the getDailyCache instead of invalidating it
         queryClient.invalidateQueries({ queryKey: ['getDaily'] })
@@ -208,18 +164,14 @@ export function useMealMutations({
       if (error) {
         alert('deleteProductMutation error')
       } else if (data) {
+        // @todo: rename to something more descriptive
         const { newMeal, deletedProduct } = data
-        console.log('deleSuccessfull', newMeal);
+        console.log('onSuccess deleteProductMutation', newMeal);
         // update the product state
-        updateCacheOnMutate({
-          queryClient,
-          mutatedObj: newMeal,
-          cacheKey: ['getMealsForCurrentUser'],
-        })
-
+        mealCacheApi.updateMeal(newMeal, queryClient)
         // remove the deleted product if it is deleted
         if (deletedProduct) {
-          removeProductFromCache(deletedProduct, queryClient)
+          productCacheApi.removeProduct(deletedProduct, queryClient)
         }
         // @todo: update the getDailyCache instead of invalidating it
         queryClient.invalidateQueries({ queryKey: ['getDaily'] })
