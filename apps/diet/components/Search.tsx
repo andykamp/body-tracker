@@ -1,22 +1,12 @@
-import React, { useCallback, useRef, useState } from "react";
-import * as t from "@/diet-server/diet.types";
-import { getStockItems } from "@/diet-server/stock/stock.api";
-import { AutoComplete } from "@geist-ui/core";
+import React, { useEffect, useRef, useState } from "react";
+import { Modal, AutoComplete } from "@geist-ui/core";
 import { useDebounce } from "@/diet/utils/misc";
-import productApi from "@/diet-server/product/product.api"
-import { useAuthContext } from "@/auth-client/firebase/Provider";
-import mealApi from "@/diet-server/meal/meal.api"
-import {
-  useQuery,
-} from '@tanstack/react-query'
-import { makeOptionBySource, getSearchResults } from "./search.utils";
-
-const stockItems = getStockItems({ type: 'both' })
+import { parseSearchResultToOptions, makeOptionBySource } from "./search.utils";
 
 type SearchInputProps = {
   placeholder?: string;
   initialValue?: string;
-  onSelect: (item: t.StockItem) => void;
+  onSelect: (item: any) => void;
   onInputChange?: (value: string) => void;
   type?: "product" | "meal" | "both";
 }
@@ -25,101 +15,126 @@ function SearchInput({
   placeholder,
   initialValue = "",
   onSelect,
-  onInputChange,
-  type = "both"
 }: SearchInputProps) {
-  const { user } = useAuthContext()
 
+  const [searchValue, setSearchValue] = useState<string>(initialValue || "");
+  const [results, setResults] = useState<any[]>([]);
+  const [hasInteracted, setHasInteracted] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
-  const [search, setSearch] = useState<string>();
-  const [searchResults, setSearchResults] = useState<any[]>([]);
-  const res = useRef<any>([]);
-  const isSelecting = useRef(false);
 
-  const productsQuery = useQuery({
-    queryKey: ['getProductForCurrentUser'],
-    queryFn: () => productApi.getProducts({ userId: user.uid })
-  })
-  const products: t.Product[] = productsQuery.data || []
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [keyCounter, setKeyCounter] = useState(0);
+  const latestSearchValue = useRef<string>("");
 
 
-  // @todo move to a hook
-  const mealsQuery = useQuery({
-    queryKey: ['getMealsForCurrentUser'],
-    queryFn: () => mealApi.getMeals({ userId: user.uid })
-  })
-  const meals: t.Meal[] = mealsQuery.data || []
-
-  const onSearch = useCallback(async (search: string) => {
-
-    if (search === "") {
-      setIsSearching(false)
-      return
-    }
-
-    const searchOptions = await getSearchResults({
-      type,
-      search,
-      stockItems,
-      products,
-      meals
-    })
-
-    console.log('setting search', searchOptions);
-    setSearchResults(searchOptions)
-    res.current = searchOptions
-    setIsSearching(false)
-  }, [products, meals])
-
-  const onSearchDB = useDebounce(onSearch, 500)
-
-  const handleSearchChange = (search: string) => {
-    console.log('handleSearchChange', search, isSelecting.current);
-    if (isSelecting.current) {
-      console.log('do nothing', );
-      isSelecting.current = false;
+  const searchFromItems = async (value: string) => {
+    if (value && value !== "") {
+      try {
+        console.log('value', value);
+        const response = await fetch(`/api/searchStockItems?search=${value}`);
+        const data = await response.json();
+        const options = parseSearchResultToOptions(data, 'oda')
+        console.log('data', data, options);
+        if (latestSearchValue.current === value) {
+          setResults(options);
+        }
+      } catch (err) {
+        console.error("Failed to fetch search results", err);
+      }
     } else {
-      onInputChange?.(search)
-      if (!search || search === "") return
-      onSearchDB(search)
-      setIsSearching(true)
-      setSearch(search);
+      console.log('hi',);
+      setResults([]);
     }
+    setIsSearching(false);
   };
 
-  const handleSelect = useCallback((itemId: string) => {
-    console.log('itemId', itemId);
-    const item = res.current.find((o: any) => o.value === itemId)?.item
-    console.log('item', item);
-    // let item = getStockItems({ type }).byIds[itemId];
-    // if (!item) item = products.find(p => p.id === itemId) as t.StockItem
-    // if (!item) item = meals.find(p => p.id === itemId) as t.StockItem
+  const debouncedSearch = useDebounce(searchFromItems, 350);
 
-    isSelecting.current = true;
-    onSelect(item);
-    setSearch(item.name);
-  }, [searchResults]);
+  useEffect(() => {
+    if (!hasInteracted) {
+      return;
+    }
+    latestSearchValue.current = searchValue; // update the ref with the current value
 
-  const options = searchResults ? searchResults.map(({ value, source, item }) => makeOptionBySource(value, source, item)) : []
+    if (!searchValue.trim()) {
+      setResults([]);
+      return;
+
+    }
+    console.log('seaaaa', searchValue);
+    setIsSearching(true);
+    debouncedSearch(searchValue);
+  }, [searchValue, debouncedSearch, hasInteracted]);
+
+
+  //
+
+  const onInputSelect = (value: any) => {
+    console.log('onSelect', value);
+    if (value === 'show_more') {
+      setIsModalVisible(true);
+      setSearchValue(latestSearchValue.current); // revert to the last valid search value
+      setKeyCounter(prev => prev + 1); // increment the key counter to remount the component
+    } else {
+      // const selectedItem = results.find(item => item.id === value);
+      const selectedItem = results.find((o: any) => o.value === value)?.item
+      if (selectedItem) {
+        onSelect(selectedItem);
+      }
+    }
+  }
+
+  const onInputChange = (value: string) => {
+    setSearchValue(value)
+  }
+
+  const numberOfResults = results.length;
+  const displayResults = results.slice(0, 5);
+  const options = displayResults.length > 0 ? [
+    ...displayResults.map(item => makeOptionBySource(item.value, item.source, item.item)),
+    { label: `Show all(${numberOfResults})`, value: 'show_more' }
+  ] : []
 
   return (
-    <div className="flex">
-
+    <>
       <AutoComplete
-        clearable
-        searching={isSearching}
-        initialValue={initialValue}
-        value={search}
-        placeholder={placeholder}
-        options={options}
-        onSelect={handleSelect}
-        onChange={handleSearchChange}
-        disableMatchWidth={true}
-      />
+        key={keyCounter}
 
-    </div>
+        value={searchValue}
+        placeholder={placeholder || "Search..."}
+        searching={isSearching}
+        // disableFreeSolo
+        disableMatchWidth={true}
+        onFocus={() => setHasInteracted(true)}
+        options={options}
+        onSearch={onInputChange}
+        onSelect={onInputSelect}
+      />
+      <Modal
+        visible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+        width="50%"
+      >
+        <Modal.Title>Select an Item</Modal.Title>
+        <Modal.Content>
+          <div
+            className="h-40 overflow-y-scroll"
+          >
+            {results.map(item => (
+              <div
+                onClick={() => onSelect(item.item)}
+              >
+                {makeOptionBySource(item.value, item.source, item.item)}
+              </div>
+            ))}
+          </div>
+        </Modal.Content>
+        <Modal.Action passive onClick={() => setIsModalVisible(false)}>
+          Cancel
+        </Modal.Action>
+      </Modal>
+    </>
   );
 };
 
 export default SearchInput;
-
