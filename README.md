@@ -211,6 +211,16 @@ Should also start the emulator on yarn dev!!
 ## Next up
 - TODO
 - !!!!!FIX searchStock so that it does not re-render on init.... it re-sets the product so i cannot debugg!!!!!!!!!!!!!!!!!!!!!! 
+    - [X] create working search
+    - add custom meals and product from SearchWrapper
+        - should be prop so it can vary between e.g meal and daily (meal cannot choos other meals!!)
+    - clean up
+- Fix product item:
+    - Devide item into MealItemCusom and MealItemSyock
+        - Have different onchange on each but reuse the same search field 
+
+
+
 - rename updateCacheONMUTATE to only updateCacheItem or somethign generic
 - rename tehe meals/api.mutation data to be more descriptive. e.g deletedMeal, updatedMeal, addedMeal. right now it is a little mixed
 - fix search pagination

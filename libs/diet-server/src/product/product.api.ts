@@ -1,6 +1,7 @@
 import type * as t from "@/diet-server/diet.types"
 import baseApi from "@/diet-server/base.api";
 import { createProductObject, createProductObjectEmpty } from "@/diet-server/product/product.utils";
+import mealApi from "../meal/meal.api";
 
 function parseToValidProduct(product: t.Product): t.Product {
   if (!product.name) {
@@ -28,8 +29,16 @@ function hasReferenceToDaily(product: t.Product): boolean {
   return product.referenceDailies && Object.keys(product.referenceDailies).length > 0
 }
 
+function getReferencesDaily(product: t.Product) {
+  return product.referenceDailies
+}
+
 function hasReferenceToMeal(product: t.Product): boolean {
   return product.referenceMeals && Object.keys(product.referenceMeals).length > 0
+}
+
+function getReferencesMeal(product: t.Product) {
+  return product.referenceMeals
 }
 
 
@@ -84,7 +93,6 @@ type UpdateProductInput = {
   updatedProduct: t.Product
 }
 async function updateProduct({ userId, updatedProduct }: UpdateProductInput) {
-  // @todo: update all dependent meals
   console.log('updateProduct', updatedProduct);
   await baseApi.makeReqAndExec<t.Product>({
     proc: "updateProduct",
@@ -93,7 +101,34 @@ async function updateProduct({ userId, updatedProduct }: UpdateProductInput) {
       product: updatedProduct
     }
   })
-  // @todo: update all dependent meals
+  return updatedProduct
+}
+
+type UpdateProductAndReferencesInput = {
+  userId: string,
+  updatedProduct: t.Product
+}
+
+async function updateProductAndReferences({
+  userId,
+  updatedProduct
+}: UpdateProductAndReferencesInput) {
+
+  // productApi.updateProduct({ userId, updatedProduct })
+
+  // // @todo: update all dependent meals
+  // if (productApi.hasReferenceToMeal(updatedProduct)) {
+  //   const references = productApi.getReferencesMeal(updatedProduct)
+  //   for (const mealRef of Object.keys(references)) {
+  //     // .. get the meal
+  //     const meal = await mealApi.getMeal({ userId, id: mealRef })
+  //     // ..update the meal
+  //     const newMeal: t.Meal = { ...meal }
+  //     newMeal.products = newMeal.products.map(i => i.id === updatedItem.id ? updatedItem : i);
+  //     await mealApi.updateMeal({ userId, meal: newMeal })
+
+  //   }
+  // }
   // mealApi.updateReferencedMeals
 
   return updatedProduct
@@ -160,23 +195,6 @@ async function deleteProduct({
   }
 }
 
-type updateReferencedMealsInput = {
-  userId: string,
-  updatedProduct: t.Product
-}
-async function updateReferencedMeals({ userId, updatedProduct }: updateReferencedMealsInput): Promise<t.Product> {
-  // @todo: update all dependent meals and dailies
-  console.log('updateProduct', updatedProduct);
-  await baseApi.makeReqAndExec<t.Product>({
-    proc: "updateProduct",
-    vars: {
-      userId,
-      product: updatedProduct
-    }
-  })
-  return updatedProduct
-}
-
 
 const productApi = {
   createProductObject,
@@ -187,16 +205,17 @@ const productApi = {
   hasReferenceToDaily,
   hasReferences,
 
+  getReferencesMeal,
+  getReferencesDaily,
+
   getProduct,
   getProducts,
   addProduct,
   updateProduct,
+  updateProductAndReferences,
   deleteProduct,
   softDeleteProduct,
   restoreDeletedProduct,
-
-  updateReferencedMeals
-
 };
 
 export type ProductApi = typeof productApi;

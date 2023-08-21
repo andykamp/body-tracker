@@ -2,19 +2,22 @@ import React, { useEffect, useRef, useState } from "react";
 import { Modal, AutoComplete } from "@geist-ui/core";
 import { useDebounce } from "@/diet/utils/misc";
 import { parseSearchResultToOptions, makeOptionBySource } from "./search.utils";
+import SearchShowAll from "./SearchShowAll";
+
+const MAX_DISPLAY_NUMBER = 5
 
 type SearchInputProps = {
   placeholder?: string;
   initialValue?: string;
   onSelect: (item: any) => void;
-  onInputChange?: (value: string) => void;
-  type?: "product" | "meal" | "both";
+  onChange?: (value: string) => void;
 }
 
 function SearchInput({
   placeholder,
   initialValue = "",
   onSelect,
+  onChange,
 }: SearchInputProps) {
 
   const [searchValue, setSearchValue] = useState<string>(initialValue || "");
@@ -25,7 +28,8 @@ function SearchInput({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [keyCounter, setKeyCounter] = useState(0);
   const latestSearchValue = useRef<string>("");
-
+  // @note: needed because the onSelect is not updated with the correct data
+  const latestResult = useRef<any[]>([]);
 
   const searchFromItems = async (value: string) => {
     if (value && value !== "") {
@@ -37,6 +41,7 @@ function SearchInput({
         console.log('data', data, options);
         if (latestSearchValue.current === value) {
           setResults(options);
+          latestResult.current = options
         }
       } catch (err) {
         console.error("Failed to fetch search results", err);
@@ -66,7 +71,6 @@ function SearchInput({
     debouncedSearch(searchValue);
   }, [searchValue, debouncedSearch, hasInteracted]);
 
-
   //
 
   const onInputSelect = (value: any) => {
@@ -77,29 +81,34 @@ function SearchInput({
       setKeyCounter(prev => prev + 1); // increment the key counter to remount the component
     } else {
       // const selectedItem = results.find(item => item.id === value);
-      const selectedItem = results.find((o: any) => o.value === value)?.item
+      const selectedItem = latestResult.current.find((o: any) => o.value === value)?.item
+      console.log('selectedItem', results, value, selectedItem);
       if (selectedItem) {
+        console.log('onSelected', selectedItem);
         onSelect(selectedItem);
       }
     }
   }
 
-  const onInputChange = (value: string) => {
-    setSearchValue(value)
+  const onInputChange = (search: string) => {
+    console.log('onInputChange', );
+    onChange?.(search)
+    setSearchValue(search)
   }
 
   const numberOfResults = results.length;
-  const displayResults = results.slice(0, 5);
-  const options = displayResults.length > 0 ? [
-    ...displayResults.map(item => makeOptionBySource(item.value, item.source, item.item)),
-    { label: `Show all(${numberOfResults})`, value: 'show_more' }
-  ] : []
+  const displayResults = results.slice(0, MAX_DISPLAY_NUMBER);
+  const options = displayResults.length > 0 ?
+    displayResults.map(item => makeOptionBySource(item.value, item.source, item.item))
+    : []
+  if (results.length > MAX_DISPLAY_NUMBER) {
+    options.push({ label: `Show all(${numberOfResults})`, value: 'show_more' } as any)
+  }
 
   return (
     <>
       <AutoComplete
         key={keyCounter}
-
         value={searchValue}
         placeholder={placeholder || "Search..."}
         searching={isSearching}
@@ -117,17 +126,10 @@ function SearchInput({
       >
         <Modal.Title>Select an Item</Modal.Title>
         <Modal.Content>
-          <div
-            className="h-40 overflow-y-scroll"
-          >
-            {results.map(item => (
-              <div
-                onClick={() => onSelect(item.item)}
-              >
-                {makeOptionBySource(item.value, item.source, item.item)}
-              </div>
-            ))}
-          </div>
+          <SearchShowAll
+            results={results}
+            onSelect={onSelect}
+          />
         </Modal.Content>
         <Modal.Action passive onClick={() => setIsModalVisible(false)}>
           Cancel

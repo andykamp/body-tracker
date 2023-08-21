@@ -1,6 +1,6 @@
 import * as t from "@/diet-server/diet.types";
 import { getStockSearchResults } from "@/diet-server/stock/stock.api";
-import { AutoComplete, Select } from "@geist-ui/core";
+import { AutoComplete } from "@geist-ui/core";
 import SearchItem from "./SearchItem";
 import { parse, _fetch } from "@/common/utils/utils.fetch";
 
@@ -61,7 +61,7 @@ export async function getSearchResultsOda(search: string) {
 }
 
 export function parseSearchResultToOptions(searchResults: t.Product[] | t.Meal[], source: string) {
-  return searchResults.map((item: any) => {
+  return searchResults.map((item: t.Product | t.Meal) => {
     return { label: item.name, value: item.id, source, item }
   })
 }
@@ -103,11 +103,10 @@ export const getSearchResults = async ({
     return { label: item.name, value: item.id, source: 'stock', item }
   })
 
-  const searchUserProductOptions = products.map((item: t.Product) => {
-    return { label: item.name, value: item.id, source: 'userproducts', item }
-  })
+  const searchUserProductOptions =  parseSearchResultToOptions(products, 'userproducts')
 
-  const searchUserMealOptions = meals.map((item: t.Meal) => {
+  const searchUserMealOptions = parseSearchResultToOptions(meals, 'userMeals')
+  meals.map((item: t.Meal) => {
     return { label: item.name, value: item.id, source: 'usermeals', item }
   })
 

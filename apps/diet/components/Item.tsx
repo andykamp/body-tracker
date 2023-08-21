@@ -79,9 +79,8 @@ function Item({
       className="flex space-x-2 items-center">
 
       <Search
-        type="product"
         initialValue={item.name}
-        onInputChange={(searchTerm: string) => {
+        onChange={(searchTerm: string) => {
           console.log('searchTerm', searchTerm);
           if (isCustom) {
             updateField('name', searchTerm)
