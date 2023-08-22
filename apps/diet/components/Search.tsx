@@ -6,21 +6,21 @@ import SearchShowAll from "./SearchShowAll";
 
 const MAX_DISPLAY_NUMBER = 5
 
-type SearchInputProps = {
+type SearchInputControlledProps = {
+  value: string;
   placeholder?: string;
-  initialValue?: string;
   onSelect: (item: any) => void;
   onChange?: (value: string) => void;
 }
 
-function SearchInput({
+// @todo: this should be controlled?
+export function SearchInputControlled({
+  value: controlledValue,
   placeholder,
-  initialValue = "",
   onSelect,
   onChange,
-}: SearchInputProps) {
+}: SearchInputControlledProps) {
 
-  const [searchValue, setSearchValue] = useState<string>(initialValue || "");
   const [results, setResults] = useState<any[]>([]);
   const [hasInteracted, setHasInteracted] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
@@ -59,17 +59,17 @@ function SearchInput({
     if (!hasInteracted) {
       return;
     }
-    latestSearchValue.current = searchValue; // update the ref with the current value
+    latestSearchValue.current = controlledValue; // update the ref with the current value
 
-    if (!searchValue.trim()) {
+    if (!controlledValue.trim()) {
       setResults([]);
       return;
 
     }
-    console.log('seaaaa', searchValue);
+    console.log('seaaaa', controlledValue);
     setIsSearching(true);
-    debouncedSearch(searchValue);
-  }, [searchValue, debouncedSearch, hasInteracted]);
+    debouncedSearch(controlledValue);
+  }, [controlledValue, debouncedSearch, hasInteracted]);
 
   //
 
@@ -77,7 +77,6 @@ function SearchInput({
     console.log('onSelect', value);
     if (value === 'show_more') {
       setIsModalVisible(true);
-      setSearchValue(latestSearchValue.current); // revert to the last valid search value
       setKeyCounter(prev => prev + 1); // increment the key counter to remount the component
     } else {
       // const selectedItem = results.find(item => item.id === value);
@@ -91,9 +90,8 @@ function SearchInput({
   }
 
   const onInputChange = (search: string) => {
-    console.log('onInputChange', );
+    console.log('onInputChange',);
     onChange?.(search)
-    setSearchValue(search)
   }
 
   const numberOfResults = results.length;
@@ -109,7 +107,7 @@ function SearchInput({
     <>
       <AutoComplete
         key={keyCounter}
-        value={searchValue}
+        value={controlledValue}
         placeholder={placeholder || "Search..."}
         searching={isSearching}
         // disableFreeSolo
@@ -139,4 +137,34 @@ function SearchInput({
   );
 };
 
+type SearchInputProps = {
+  placeholder?: string;
+  onSelect: (item: any) => void;
+  onChange?: (value: string) => void;
+}
+
+function SearchInput({
+  placeholder,
+  onSelect: onSelectExternal,
+  onChange: onChangeExternal
+}: SearchInputProps) {
+  const [searchValue, setSearchValue] = useState<string>("");
+
+  const onSelect = (item: any) => {
+    onSelectExternal?.(item)
+  }
+  const onChange = (string: any) => {
+    setSearchValue(string)
+    onChangeExternal?.(string)
+  }
+
+  return (
+    <SearchInputControlled
+      value={searchValue}
+      placeholder={placeholder}
+      onSelect={onSelect}
+      onChange={onChange}
+    />
+  );
+}
 export default SearchInput;

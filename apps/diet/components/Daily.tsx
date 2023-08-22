@@ -6,7 +6,7 @@ import {
 } from '@tanstack/react-query'
 import dailyApi from "@/diet-server/daily/daily.api"
 import { useAuthContext } from "@/auth-client/firebase/Provider";
-import Search from '@/diet/components/Search'
+import SearchInput from '@/diet/components/Search'
 import itemApi from '@/diet-server/item/item.api'
 import { useUserContext } from "@/user-client/Provider";
 import DailyItem from "@/diet/components/DailyItem";
@@ -47,7 +47,7 @@ function DailyPage() {
 
   const daily = query.data
   const dailyItemsList = daily?.dailyItems ? daily?.dailyItems : []
-  const dailyMacros = daily ? itemApi.calculateMacros(daily.dailyItems) : { calories: 0, proteins: 0 }
+  const dailyMacros = daily ? itemApi.calculateMacros(daily.dailyItems) : { calories: 0, protein: 0, grams:0 }
 
   return (
     <div>
@@ -55,12 +55,12 @@ function DailyPage() {
         <p>Target Calories: {user.targetCalories}</p>
         <p>Target Proteins: {user.targetProteins}</p>
         <p>Remaining Calories: {user.targetCalories - dailyMacros.calories}</p>
-        <p>Remaining Proteins: {user.targetProteins - dailyMacros.proteins}</p>
+        <p>Remaining Proteins: {user.targetProteins - dailyMacros.protein}</p>
         <p className="text-red-500">Yesterdays diff Calories: {daily?.yesterdaysCaloryDiff}</p>
         <p className="text-red-500">Yersterdays diff Proteins: {daily?.yesterdaysProteinDiff}</p>
       </div>
       <div>
-        <Search
+        <SearchInput
           placeholder="Search meal/product"
           onSelect={(item) => {
             const newItem = itemApi.createItemWrapper(item, "product")

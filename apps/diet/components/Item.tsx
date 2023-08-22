@@ -1,7 +1,7 @@
 import React from "react";
 import * as t from '@/diet-server/diet.types'
 import { Input } from "@geist-ui/core";
-import Search from '@/diet/components/Search'
+import { SearchInputControlled } from '@/diet/components/Search'
 import itemApi from "@/diet-server/item/item.api";
 import { useAuthContext } from "@/auth-client/firebase/Provider";
 import {
@@ -19,6 +19,7 @@ function Item({
   item,
 }: ItemProps) {
   const { user } = useAuthContext()
+  console.log('ITEMMM', item.name);
 
   const queryClient = useQueryClient()
 
@@ -78,14 +79,14 @@ function Item({
       key={item.id}
       className="flex space-x-2 items-center">
 
-      <Search
-        initialValue={item.name}
+      <SearchInputControlled
+        value={item.name}
         onChange={(searchTerm: string) => {
           console.log('searchTerm', searchTerm);
           if (isCustom) {
             updateField('name', searchTerm)
           } else {
-            console.log('SEARCH_CONVERT', );
+            console.log('SEARCH_CONVERT',);
             convertItemToCustomProductMutation.mutate({
               userId: user.uid,
               meal,
@@ -168,7 +169,7 @@ function Item({
       {
         onDelete &&
         <button
-          onClick={() => onDelete?.(item)}
+          onClick={() => onDelete(item)}
         >
           delete
         </button>

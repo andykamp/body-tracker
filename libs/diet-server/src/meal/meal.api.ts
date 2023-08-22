@@ -255,8 +255,10 @@ async function updateProductFromMeal({
   // @todo: recalculate the macros
   const newMeal: t.Meal = { ...meal }
   newMeal.products = newMeal.products.map(i => i.id === updatedItem.id ? updatedItem : i);
-  await mealApi.updateMeal({ userId, meal: newMeal })
-  return { newMeal, updatedProduct }
+  const macros = mealApi.getMacros(newMeal)
+  const newMealWithMacros = { ...newMeal, ...macros }
+  await mealApi.updateMeal({ userId, meal: newMealWithMacros })
+  return { newMeal: newMealWithMacros, updatedProduct }
 }
 
 type RemoveProductFromMealInput = {
@@ -281,8 +283,11 @@ async function removeProductFromMeal({
 
   const newMeal: t.Meal = { ...meal }
   newMeal.products = newMeal.products.filter(i => i.id !== item.id);
-  await mealApi.updateMeal({ userId, meal: newMeal })
-  return { newMeal, deletedProduct }
+  const macros = mealApi.getMacros(newMeal)
+  const newMealWithMacros = { ...newMeal, ...macros }
+  await mealApi.updateMeal({ userId, meal: newMealWithMacros })
+  console.log('removeprodfrommeal',macros, newMealWithMacros);
+  return { newMeal: newMealWithMacros, deletedProduct }
 }
 
 type ConvertCustomProductToItemInput = {
@@ -302,20 +307,22 @@ async function convertCustomProductToItem({
   // delete the custom product that was created
   const customProductToDelete = oldItem.item as t.Product
 
-  console.log('delete custom item',customProductToDelete );
+  console.log('delete custom item', customProductToDelete);
   // @todo:update cache also
   productApi.deleteProduct({ userId, product: customProductToDelete })
 
   // create a new wrapper item
   const newItem = itemApi.createItemWrapper(newProduct, "product")
 
-  console.log('createNeitem',newItem );
+  console.log('createNeitem', newItem);
   // update the new meal
   // @todo: recalculate the macros
   const newMeal: t.Meal = { ...meal }
   newMeal.products = newMeal.products.map(i => i.id === newItem.id ? newItem : i);
-  await mealApi.updateMeal({ userId, meal: newMeal })
-  return { newMeal, customProductToDelete }
+  const macros = mealApi.getMacros(newMeal)
+  const newMealWithMacros = { ...newMeal, ...macros }
+  await mealApi.updateMeal({ userId, meal: newMealWithMacros })
+  return { newMeal: newMealWithMacros, customProductToDelete }
 }
 
 type ConvertItemToCustomProductInput = {
@@ -351,8 +358,10 @@ async function convertItemToCustomProduct({
   // @todo: recalculate the macros
   const newMeal: t.Meal = { ...meal }
   newMeal.products = newMeal.products.map(i => i.id === newItem.id ? newItem : i);
-  await mealApi.updateMeal({ userId, meal: newMeal })
-  return { newMeal, addedProduct }
+  const macros = mealApi.getMacros(newMeal)
+  const newMealWithMacros = { ...newMeal, ...macros }
+  await mealApi.updateMeal({ userId, meal: newMealWithMacros })
+  return { newMeal: newMealWithMacros, addedProduct }
 }
 
 const mealApi = {

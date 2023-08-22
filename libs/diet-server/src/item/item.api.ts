@@ -107,7 +107,7 @@ function calculateMacros(items: t.Item[]) {
   }
   return {
     calories: totalCalories,
-    proteins: totalProteins,
+    protein: totalProteins,
     grams: totalGrams
   };
 }

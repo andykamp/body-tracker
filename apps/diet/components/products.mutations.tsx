@@ -4,6 +4,7 @@ import {
 } from '@tanstack/react-query'
 import productApi from "@/diet-server/product/product.api"
 import productCacheApi from './products.cache';
+import { mealCacheKeys } from './meals.cache';
 
 type UseProductMutationsProps = {
   queryClient: QueryClient
@@ -35,7 +36,10 @@ export function useProductMutations({
         console.log('updateProductMutation successfull', updatedProduct);
         // update the product state
         productCacheApi.updateProduct(updatedProduct, queryClient)
+        // update related meals referencing the product
+
         // Invalidate and refetch
+        queryClient.invalidateQueries({ queryKey: mealCacheKeys.getMeals })
         queryClient.invalidateQueries({ queryKey: ['getDaily'] })
       }
     }

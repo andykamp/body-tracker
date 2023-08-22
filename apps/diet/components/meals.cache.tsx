@@ -8,7 +8,7 @@ import {
   removeFromCacheOnMutate
 } from "../utils/caching";
 
-export const productCacheKeys = {
+export const mealCacheKeys = {
   getMeals: ['getMealsForCurrentUser']
 }
 
@@ -16,7 +16,7 @@ function addMeal(meal: t.Meal, queryClient: QueryClient) {
   addToCacheOnMutate({
     queryClient,
     mutatedObj: meal,
-    cacheKey: productCacheKeys.getMeals,
+    cacheKey: mealCacheKeys.getMeals,
   })
 }
 
@@ -24,14 +24,14 @@ function updateMeal(meal: t.Meal, queryClient: QueryClient) {
   updateCacheOnMutate({
     queryClient,
     mutatedObj: meal,
-    cacheKey: productCacheKeys.getMeals,
+    cacheKey: mealCacheKeys.getMeals,
   })
 }
 function removeMeal(meal: t.Meal, queryClient: QueryClient) {
   removeFromCacheOnMutate({
     queryClient,
     mutatedObj: meal,
-    cacheKey: productCacheKeys.getMeals,
+    cacheKey: mealCacheKeys.getMeals,
   })
 }
 
