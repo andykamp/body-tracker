@@ -215,11 +215,20 @@ Should also start the emulator on yarn dev!!
     - add custom meals and product from SearchWrapper
         - should be prop so it can vary between e.g meal and daily (meal cannot choos other meals!!)
     - clean up
-- Fix product item:
-    - Devide item into MealItemCusom and MealItemSyock
-        - Have different onchange on each but reuse the same search field 
+    - [X] MAKE IT CONTROLLED SO IT WILL UPDATE ON CACHE UPDATE!!
 
-
+- 
+- IDEA
+    - lock button on item! so that one can adjust the amount with a relation ??
+    - or just a shift-drag to change (but ownt work on mobile)
+    - press the "gram" icon to toggle to "locked" mode
+- 
+- 
+- fix oda bilder
+- parse matvaretabellen til å bli søkbar (er 3k linjer
+-  
+- fix meal delete (soft etc) and references etc
+- fix daily mutations
 
 - rename updateCacheONMUTATE to only updateCacheItem or somethign generic
 - rename tehe meals/api.mutation data to be more descriptive. e.g deletedMeal, updatedMeal, addedMeal. right now it is a little mixed

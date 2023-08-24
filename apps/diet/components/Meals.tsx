@@ -29,6 +29,8 @@ function Meals() {
   }
 
   const meals: t.Meal[] = mealsQuery.data || []
+  console.log('mealfetch',mealsQuery.isLoading, mealsQuery.isFetched );
+  console.log('---',meals );
 
   return (
     <div className="">

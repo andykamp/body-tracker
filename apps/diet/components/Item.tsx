@@ -91,6 +91,7 @@ function Item({
               userId: user.uid,
               meal,
               item,
+              adjustedAttributes:{name:searchTerm}
             })
             // // toggle to custom
             // // mealApi.toggleCustomProduct

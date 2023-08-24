@@ -28,6 +28,7 @@ function MealItem({
     onChange(meal)
   }
 
+  console.log('mmmmmmmmmmmmm',meal );
   const isDeleted = meal.isDeleted
 
   return (
@@ -48,18 +49,21 @@ function MealItem({
           width="130px"
           value={meal.protein?.toFixed(0).toString()}
           label="protein"
+          disabled={true}
         />
 
         <Input
           width="130px"
           value={meal.calories?.toFixed(0).toString()}
           label="calories"
+          disabled={true}
         />
 
         <Input
           width="130px"
           value={meal.grams?.toFixed(0).toString()}
           label="grams"
+          disabled={true}
         />
 
         {onDelete && !isDeleted &&

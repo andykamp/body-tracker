@@ -286,7 +286,7 @@ async function removeProductFromMeal({
   const macros = mealApi.getMacros(newMeal)
   const newMealWithMacros = { ...newMeal, ...macros }
   await mealApi.updateMeal({ userId, meal: newMealWithMacros })
-  console.log('removeprodfrommeal',macros, newMealWithMacros);
+  console.log('removeprodfrommeal', macros, newMealWithMacros);
   return { newMeal: newMealWithMacros, deletedProduct }
 }
 
@@ -306,6 +306,8 @@ async function convertCustomProductToItem({
 
   // delete the custom product that was created
   const customProductToDelete = oldItem.item as t.Product
+  // remove this meal as a reference
+  delete customProductToDelete.referenceMeals[meal.id]
 
   console.log('delete custom item', customProductToDelete);
   // @todo:update cache also
@@ -318,8 +320,10 @@ async function convertCustomProductToItem({
   // update the new meal
   // @todo: recalculate the macros
   const newMeal: t.Meal = { ...meal }
-  newMeal.products = newMeal.products.map(i => i.id === newItem.id ? newItem : i);
+  newMeal.products = newMeal.products.map(i => i.id === oldItem.id ? newItem : i);
+  console.log('newMeal', newMeal.products);
   const macros = mealApi.getMacros(newMeal)
+  console.log('macrosjll', macros);
   const newMealWithMacros = { ...newMeal, ...macros }
   await mealApi.updateMeal({ userId, meal: newMealWithMacros })
   return { newMeal: newMealWithMacros, customProductToDelete }
@@ -329,16 +333,25 @@ type ConvertItemToCustomProductInput = {
   userId: string;
   meal: t.Meal;
   item: t.Item;
+  adjustedAttributes: {
+    name?: string;
+  }
 }
 
 async function convertItemToCustomProduct({
   userId,
   meal,
   item,
+  adjustedAttributes
 }: ConvertItemToCustomProductInput) {
 
   // extract the actual product
   const addedProduct = item.item
+  for (const key in adjustedAttributes) {
+    addedProduct[key] = adjustedAttributes[key]
+  }
+  console.log('added name',addedProduct.name );
+
   // create standalone product in database
   productApi.addProduct({
     userId,
@@ -346,18 +359,19 @@ async function convertItemToCustomProduct({
   })
 
   // create a new item that references the standalone product
-  const newItem = {
+  const newItem:t.Item = {
     ...item,
+    name: addedProduct.name,
     item: addedProduct,
     itemId: addedProduct.id,
     updateOriginalItem: true,
-    isDeleted: false,
-    isStock: false,
+    isStockItem: false,
   }
   // update the new meal
   // @todo: recalculate the macros
   const newMeal: t.Meal = { ...meal }
   newMeal.products = newMeal.products.map(i => i.id === newItem.id ? newItem : i);
+  console.log('newMeal.products ',newMeal.products  );
   const macros = mealApi.getMacros(newMeal)
   const newMealWithMacros = { ...newMeal, ...macros }
   await mealApi.updateMeal({ userId, meal: newMealWithMacros })
