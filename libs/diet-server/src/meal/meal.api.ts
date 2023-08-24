@@ -28,6 +28,11 @@ function getMacros(meal: t.Meal) {
   const macros = itemApi.calculateMacros(meal.products)
   return macros
 }
+function updateMacros(meal: t.Meal) {
+  const macros = mealApi.getMacros(meal)
+  const newMeal = { ...meal, ...macros }
+  return newMeal
+}
 
 function hasReferences(meal: t.Meal): boolean {
   return hasReferenceToDaily(meal)
@@ -255,8 +260,7 @@ async function updateProductFromMeal({
   // @todo: recalculate the macros
   const newMeal: t.Meal = { ...meal }
   newMeal.products = newMeal.products.map(i => i.id === updatedItem.id ? updatedItem : i);
-  const macros = mealApi.getMacros(newMeal)
-  const newMealWithMacros = { ...newMeal, ...macros }
+  const newMealWithMacros = updateMacros(newMeal)
   await mealApi.updateMeal({ userId, meal: newMealWithMacros })
   return { newMeal: newMealWithMacros, updatedProduct }
 }
@@ -283,10 +287,9 @@ async function removeProductFromMeal({
 
   const newMeal: t.Meal = { ...meal }
   newMeal.products = newMeal.products.filter(i => i.id !== item.id);
-  const macros = mealApi.getMacros(newMeal)
-  const newMealWithMacros = { ...newMeal, ...macros }
+  const newMealWithMacros = updateMacros(newMeal)
   await mealApi.updateMeal({ userId, meal: newMealWithMacros })
-  console.log('removeprodfrommeal', macros, newMealWithMacros);
+  console.log('removeprodfrommeal', newMealWithMacros);
   return { newMeal: newMealWithMacros, deletedProduct }
 }
 
@@ -322,9 +325,7 @@ async function convertCustomProductToItem({
   const newMeal: t.Meal = { ...meal }
   newMeal.products = newMeal.products.map(i => i.id === oldItem.id ? newItem : i);
   console.log('newMeal', newMeal.products);
-  const macros = mealApi.getMacros(newMeal)
-  console.log('macrosjll', macros);
-  const newMealWithMacros = { ...newMeal, ...macros }
+  const newMealWithMacros = updateMacros(newMeal)
   await mealApi.updateMeal({ userId, meal: newMealWithMacros })
   return { newMeal: newMealWithMacros, customProductToDelete }
 }
@@ -372,8 +373,7 @@ async function convertItemToCustomProduct({
   const newMeal: t.Meal = { ...meal }
   newMeal.products = newMeal.products.map(i => i.id === newItem.id ? newItem : i);
   console.log('newMeal.products ',newMeal.products  );
-  const macros = mealApi.getMacros(newMeal)
-  const newMealWithMacros = { ...newMeal, ...macros }
+  const newMealWithMacros = updateMacros(newMeal)
   await mealApi.updateMeal({ userId, meal: newMealWithMacros })
   return { newMeal: newMealWithMacros, addedProduct }
 }
@@ -382,6 +382,7 @@ const mealApi = {
   createMealObject,
   createMealObjectEmpty,
   getMacros,
+  updateMacros,
 
   getMeals,
   addMeal,
