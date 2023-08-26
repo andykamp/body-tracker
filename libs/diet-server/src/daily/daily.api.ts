@@ -11,7 +11,7 @@ import { getISODate } from "@/diet-server/utils/date.utils";
 import { assertMeal, assertProduct } from '@/diet-server/utils/asserts.utils'
 
 function minimizeDaily(daily: t.DailyDiet): t.DailyDietMinimal {
-  const { dailyItems, ...rest } = daily
+  const { protein, calories, grams, dailyItems, ...rest } = daily
 
   // remove item references
   const itemsMinimal: t.ItemMinimal[] = []
@@ -33,6 +33,13 @@ function getMacros(daily: t.DailyDiet) {
   return macros
 }
 
+function updateMacros(daily: t.DailyDiet) {
+  const macros = dailyApi.getMacros(daily)
+  const newDaily = { ...daily, ...macros }
+  return newDaily
+}
+
+
 // @todo: merge with populate meal
 async function populateDaily(dailyDietMinimal: t.DailyDietMinimal, lookup: GetItemInput) {
   const newItems: t.Item[] = []
@@ -49,7 +56,7 @@ async function populateDaily(dailyDietMinimal: t.DailyDietMinimal, lookup: GetIt
   return newItems
 }
 
-export function getTodaysDailyKey() {
+ function getTodaysDailyKey() {
   const now = new Date();
   const year = now.getFullYear();
   const month = (now.getMonth() + 1).toString().padStart(2, '0');
@@ -58,7 +65,7 @@ export function getTodaysDailyKey() {
   return `${year}${month}${day}`;
 }
 
-export function getPriorDaily(daysAgo: number) {
+ function getPriorDaily(daysAgo: number) {
   const now = new Date();
   now.setDate(now.getDate() - daysAgo);  // subtract a day
 
@@ -73,7 +80,7 @@ type GetDailyInput = {
   userId: string,
   dateKey: string
 }
-export async function getDaily({ userId, dateKey }: GetDailyInput): Promise<t.DailyDiet> {
+ async function getDaily({ userId, dateKey }: GetDailyInput): Promise<t.DailyDiet> {
   const dailyDietMinimal: t.DailyDietMinimal = await baseApi.makeReqAndExec<t.DailyDiet>({
     proc: "getDaily",
     vars: {
@@ -91,7 +98,8 @@ export async function getDaily({ userId, dateKey }: GetDailyInput): Promise<t.Da
 
     const dailyItems: t.Item[] = await populateDaily(dailyDietMinimal, lookup)
 
-    const dailyDiet: t.DailyDiet = { ...dailyDietMinimal, dailyItems }
+    let dailyDiet: t.DailyDiet = { ...dailyDietMinimal, dailyItems }
+    dailyDiet = dailyApi.updateMacros(dailyDiet)
     return dailyDiet
   }
   else {
@@ -99,7 +107,7 @@ export async function getDaily({ userId, dateKey }: GetDailyInput): Promise<t.Da
     let yesterdaysCaloryDiff = 0, yesterdaysProteinDiff = 0
     // get yesterdays daily to calculate the remaining calories and protein
     const yesterdaysDateKey = dailyApi.getPriorDaily(1) // 1 day ago
-    const y = await baseApi.makeReqAndExec<t.DailyDiet>({
+    const yesterdaysDaily = await baseApi.makeReqAndExec<t.DailyDiet>({
       proc: "getDaily",
       vars: {
         userId,
@@ -107,26 +115,27 @@ export async function getDaily({ userId, dateKey }: GetDailyInput): Promise<t.Da
       }
     })
 
-    if (y) {
+    if (yesterdaysDaily) {
       const user = await userApi.getUser({ uid: userId })
       const { targetCalories, targetProteins } = user
-      yesterdaysCaloryDiff = targetCalories - itemApi.calculateCalories(y)
-      yesterdaysProteinDiff = targetProteins - itemApi.calculateProteins(y)
+      yesterdaysCaloryDiff = targetCalories - yesterdaysDaily.calories
+      yesterdaysProteinDiff = targetProteins - yesterdaysDaily.protein
     }
 
-    const newDaily: t.DailyDiet = dailyApi.createDailyObject({
+    let newDaily: t.DailyDiet = dailyApi.createDailyObject({
       dateKey,
-      dailyItems: [],
       yesterdaysCaloryDiff,
       yesterdaysProteinDiff
     })
+    newDaily = dailyApi.updateMacros(newDaily)
+
 
     // @todo: catch error here
     await baseApi.makeReqAndExec<t.DailyDiet>({
       proc: "addDaily",
       vars: {
         userId,
-        daily: newDaily
+        daily: minimizeDaily(newDaily)
       }
     })
     return newDaily
@@ -139,8 +148,8 @@ type UpdateDailyInput = {
 }
 
 // Update a daily diet for a given user and date
-export async function updateDaily({ userId, daily }: UpdateDailyInput) {
-  const updatedDaily = { ...daily, updatedAt: getISODate() }
+ async function updateDaily({ userId, daily }: UpdateDailyInput) {
+  const updatedDaily: t.DailyDiet = { ...daily, updatedAt: getISODate() }
   await baseApi.makeReqAndExec<t.DailyDietMinimal>({
     proc: "updateDaily",
     vars: {
@@ -156,7 +165,7 @@ type AddDailyProductInput = {
   daily: t.DailyDiet,
 }
 // Add a daily meal to the user's meal history
-export async function addDailyProduct({
+ async function addDailyProduct({
   userId,
   daily
 }: AddDailyProductInput) {
@@ -177,7 +186,8 @@ export async function addDailyProduct({
   newItem.updateOriginalItem = true
 
   // update the daily item
-  const newDaily: t.DailyDiet = { ...daily, dailyItems: [...daily.dailyItems, newItem] }
+  let newDaily: t.DailyDiet = { ...daily, dailyItems: [...daily.dailyItems, newItem] }
+  newDaily = dailyApi.updateMacros(newDaily)
   const updatedDaily = await dailyApi.updateDaily({ userId, daily: newDaily })
   return { newDaily: updatedDaily, newProduct }
 }
@@ -187,7 +197,7 @@ type AddDailyMealInput = {
   daily: t.DailyDiet,
 }
 // Add a daily meal to the user's meal history
-export async function addDailyMeal({
+ async function addDailyMeal({
   userId,
   daily
 }: AddDailyMealInput) {
@@ -208,7 +218,8 @@ export async function addDailyMeal({
   newItem.updateOriginalItem = true
 
   // update the daily item
-  const newDaily: t.DailyDiet = { ...daily, dailyItems: [...daily.dailyItems, newItem] }
+  let newDaily: t.DailyDiet = { ...daily, dailyItems: [...daily.dailyItems, newItem] }
+  newDaily = dailyApi.updateMacros(newDaily)
   const updatedDaily = await dailyApi.updateDaily({ userId, daily: newDaily })
   return { newDaily: updatedDaily, newMeal }
 }
@@ -219,7 +230,7 @@ type RemoveDailyInput = {
   item: t.Item
 }
 // Remove a daily diet for a given user and date
-export async function deleteDailyItem({ userId, daily, item }: RemoveDailyInput) {
+ async function deleteDailyItem({ userId, daily, item }: RemoveDailyInput) {
 
   // @todo: remove references
   let deletedItem: t.Product | t.Meal
@@ -242,13 +253,13 @@ export async function deleteDailyItem({ userId, daily, item }: RemoveDailyInput)
     }
   }
 
-  const newDaily: t.DailyDiet = { ...daily }
+  let newDaily: t.DailyDiet = { ...daily }
   newDaily.dailyItems = daily.dailyItems.filter(i => {
     return i.id !== item.id;
   });
 
+  newDaily = dailyApi.updateMacros(newDaily)
   const updatedDaily = await dailyApi.updateDaily({ userId, daily: newDaily });
-
   return { newDaily: updatedDaily, deletedItem };
 }
 
@@ -288,10 +299,10 @@ async function updateItem({
   }
 
   // update the daily item
-  const newDaily: t.DailyDiet = { ...daily }
+  let newDaily: t.DailyDiet = { ...daily }
   newDaily.dailyItems = newDaily.dailyItems.map(i => i.id === updatedItem.id ? updatedItem : i);
   console.log('newDaily.dailyitem', newDaily.dailyItems);
-
+  newDaily = dailyApi.updateMacros(newDaily)
   const updatedDaily = await dailyApi.updateDaily({ userId, daily: newDaily })
   return { newDaily: updatedDaily, updatedItem }
 
@@ -328,8 +339,9 @@ async function convertCustomItemToItem({
 
   console.log('createNeitem', newItem);
   // update the daily item
-  const newDaily: t.DailyDiet = { ...daily }
+  let newDaily: t.DailyDiet = { ...daily }
   newDaily.dailyItems = newDaily.dailyItems.map(i => i.id === oldItem.id ? newItem : i);
+  newDaily = dailyApi.updateMacros(newDaily)
   const updatedDaily = await dailyApi.updateDaily({ userId, daily: newDaily })
   return { newDaily: updatedDaily, customProductOrMealToDelete }
 }
@@ -383,18 +395,23 @@ async function convertItemToCustomItem({
   }
 
   // update the daily item
-  const newDaily: t.DailyDiet = { ...daily }
+  let newDaily: t.DailyDiet = { ...daily }
   newDaily.dailyItems = newDaily.dailyItems.map(i => i.id === newItem.id ? newItem : i);
+  newDaily = dailyApi.updateMacros(newDaily)
   const updatedDaily = await dailyApi.updateDaily({ userId, daily: newDaily })
   return { newDaily: updatedDaily, addedProductOrMeal }
 }
 
 const dailyApi = {
   getMacros,
+  updateMacros,
+
   createDailyObject,
+
   getTodaysDailyKey,
   getPriorDaily,
   getDaily,
+
   updateDaily,
   addDailyProduct,
   addDailyMeal,

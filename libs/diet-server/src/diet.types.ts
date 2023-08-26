@@ -67,7 +67,7 @@ export type User = {
   oura?: Oura;
 }
 
-export type References = {[referenceKey: string]: boolean}
+export type References = { [referenceKey: string]: boolean }
 
 // product
 
@@ -104,9 +104,9 @@ export type Meal = {
   thumbnail?: string;
 
   products: Item[];
-  protein?: number;
-  calories?: number;
-  grams?: number;
+  protein: number;
+  calories: number;
+  grams: number;
 
   isStockItem: boolean // makes it easy to find the source just from looking at the item
   fromCustomDaily?: boolean; // shows if it is not a stored Meal. But nice to use for future suggestions on autocomplete
@@ -153,12 +153,19 @@ export type DailyDiet = {
   id: string;
   createdAt: string;
   updatedAt?: string;
+
   dailyItems: Item[];
+
   yesterdaysCaloryDiff?: number;
   yesterdaysProteinDiff?: number;
+
+  protein?: number;
+  calories?: number;
+  grams?: number;
+
 }
 
-export type DailyDietMinimal = Omit<DailyDiet, "dailyItems"> & {
+export type DailyDietMinimal = Omit<DailyDiet, "protein" | "calories" | "grams" | "dailyItems"> & {
   dailyItems: ItemMinimal[]
 
 }

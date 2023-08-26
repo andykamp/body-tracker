@@ -29,6 +29,7 @@ function getMacros(meal: t.Meal) {
   const macros = itemApi.calculateMacros(meal.products)
   return macros
 }
+
 function updateMacros(meal: t.Meal) {
   const macros = mealApi.getMacros(meal)
   const newMeal = { ...meal, ...macros }
@@ -124,6 +125,7 @@ async function addMeal({
       meal: minimizeMeal(meal)
     }
   })
+
   return meal
 
 }
@@ -310,7 +312,6 @@ async function removeProductFromMeal({
   newMeal.products = newMeal.products.filter(i => i.id !== item.id);
   const newMealWithMacros = updateMacros(newMeal)
   const updatedNewMeal = await mealApi.updateMeal({ userId, meal: newMealWithMacros })
-  console.log('removeprodfrommeal', newMealWithMacros);
   return { newMeal: updatedNewMeal, deletedProduct }
 }
 

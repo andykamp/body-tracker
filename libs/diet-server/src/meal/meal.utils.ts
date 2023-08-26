@@ -21,7 +21,7 @@ export function createMealObject({
   fromCustomDaily = false,
   protein = 0,
   calories = 0,
-  grams,
+  grams = 0,
   isStockItem = false,
 }: CreateMealObjectInput): t.Meal {
   const meal: t.Meal = {
