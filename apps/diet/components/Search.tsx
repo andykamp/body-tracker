@@ -1,24 +1,25 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Modal, AutoComplete } from "@geist-ui/core";
 import { useDebounce } from "@/diet/utils/misc";
-import { parseSearchResultToOptions, makeOptionBySource } from "./search.utils";
+import {makeOptionBySource } from "./search.utils";
 import SearchShowAll from "./SearchShowAll";
 
 const MAX_DISPLAY_NUMBER = 5
 
-type SearchInputControlledProps = {
+export type SearchInputControlledProps = {
   value: string;
   placeholder?: string;
   onSelect: (item: any) => void;
   onChange?: (value: string) => void;
+  onSearch: (value: string) => Promise<any[]>;
 }
 
-// @todo: this should be controlled?
 export function SearchInputControlled({
   value: controlledValue,
   placeholder,
   onSelect,
   onChange,
+  onSearch,
 }: SearchInputControlledProps) {
 
   const [results, setResults] = useState<any[]>([]);
@@ -31,14 +32,10 @@ export function SearchInputControlled({
   // @note: needed because the onSelect is not updated with the correct data
   const latestResult = useRef<any[]>([]);
 
-  const searchFromItems = async (value: string) => {
+  const searchFromItems = useCallback(async (value: string) => {
     if (value && value !== "") {
       try {
-        console.log('value', value);
-        const response = await fetch(`/api/searchStockItems?search=${value}`);
-        const data = await response.json();
-        const options = parseSearchResultToOptions(data, 'oda')
-        console.log('data', data, options);
+        const options = await onSearch(value);
         if (latestSearchValue.current === value) {
           setResults(options);
           latestResult.current = options
@@ -47,11 +44,10 @@ export function SearchInputControlled({
         console.error("Failed to fetch search results", err);
       }
     } else {
-      console.log('hi',);
       setResults([]);
     }
     setIsSearching(false);
-  };
+  }, [onSearch]);
 
   const debouncedSearch = useDebounce(searchFromItems, 350);
 
@@ -66,7 +62,6 @@ export function SearchInputControlled({
       return;
 
     }
-    console.log('seaaaa', controlledValue);
     setIsSearching(true);
     debouncedSearch(controlledValue);
   }, [controlledValue, debouncedSearch, hasInteracted]);
@@ -74,23 +69,19 @@ export function SearchInputControlled({
   //
 
   const onInputSelect = (value: any) => {
-    console.log('onSelect', value);
     if (value === 'show_more') {
       setIsModalVisible(true);
       setKeyCounter(prev => prev + 1); // increment the key counter to remount the component
     } else {
       // const selectedItem = results.find(item => item.id === value);
       const selectedItem = latestResult.current.find((o: any) => o.value === value)?.item
-      console.log('selectedItem', results, value, selectedItem);
       if (selectedItem) {
-        console.log('onSelected', selectedItem);
         onSelect(selectedItem);
       }
     }
   }
 
   const onInputChange = (search: string) => {
-    console.log('onInputChange',);
     onChange?.(search)
   }
 
@@ -141,12 +132,14 @@ type SearchInputProps = {
   placeholder?: string;
   onSelect: (item: any) => void;
   onChange?: (value: string) => void;
+  onSearch: (value: string) => Promise<any[]>;
 }
 
 function SearchInput({
   placeholder,
   onSelect: onSelectExternal,
-  onChange: onChangeExternal
+  onChange: onChangeExternal,
+  onSearch,
 }: SearchInputProps) {
   const [searchValue, setSearchValue] = useState<string>("");
 
@@ -164,6 +157,7 @@ function SearchInput({
       placeholder={placeholder}
       onSelect={onSelect}
       onChange={onChange}
+      onSearch={onSearch}
     />
   );
 }

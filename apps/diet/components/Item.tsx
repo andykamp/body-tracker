@@ -1,10 +1,11 @@
 import React from "react";
 import * as t from '@/diet-server/diet.types'
 import { Input } from "@geist-ui/core";
-import { SearchInputControlled } from '@/diet/components/Search'
+import Search from '@/diet/components/SearchWrapper'
 
 type ItemProps = {
   item: t.Item;
+  searchType?: 'product' | 'meal' | 'both';
   onSearchChange: (search: string) => void;
   onSearchSelect: (selectedProduct: t.Product | t.Meal) => void;
   updateNumericField: (key: string, value: any) => void;
@@ -13,6 +14,7 @@ type ItemProps = {
 
 function Item({
   item,
+  searchType= 'both',
   onSearchChange,
   onSearchSelect,
   updateNumericField,
@@ -28,8 +30,10 @@ function Item({
       key={item.id}
       className="flex space-x-2 items-center">
 
-      <SearchInputControlled
+      <Search
+        type={searchType}
         value={item.name}
+        blacklistedItemsId={[item.id, item.itemId]}
         onChange={onSearchChange}
         onSelect={onSearchSelect}
       />

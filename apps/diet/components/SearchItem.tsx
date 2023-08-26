@@ -64,7 +64,7 @@ function SearchItem({
         <Codepen />
       }
       {source === 'usermeals' &&
-        <Codepen />
+        <Codesandbox />
       }
     </div>
   );

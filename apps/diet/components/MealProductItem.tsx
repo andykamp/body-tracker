@@ -111,6 +111,7 @@ function MealProductItem({
   return (
     <Item
       item={item}
+      searchType="product"
       onSearchChange={onSearchChange}
       onSearchSelect={onSearchSelect}
       updateNumericField={updateNumericField}

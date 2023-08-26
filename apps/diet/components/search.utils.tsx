@@ -52,19 +52,6 @@ export const makeOptionBySource = (value: string, source: string, item: any) => 
   }
 }
 
-export async function getSearchResultsOda(search: string) {
-  // get oda search results
-  const odaResults = await _fetch(`/api/searchStockItems?search=${search}`, {
-    method: 'GET',
-  });
-  return await parse(odaResults) as t.Product[]
-}
-
-export function parseSearchResultToOptions(searchResults: t.Product[] | t.Meal[], source: string) {
-  return searchResults.map((item: t.Product | t.Meal) => {
-    return { label: item.name, value: item.id, source, item }
-  })
-}
 
 type SearchOptions = {
   label: string
@@ -73,48 +60,95 @@ type SearchOptions = {
   item: t.Meal | t.Product
 }
 
+export function parseSearchResultToOptions(searchResults: t.Product[] | t.Meal[], source: string) {
+  return searchResults.map((item: t.Product | t.Meal) => {
+    return { label: item.name, value: item.id, source, item } as SearchOptions
+  }) as SearchOptions[]
+}
+
+// oda
+
+export async function getSearchResultsOda(search: string) {
+  // get oda search results
+  const odaResults = await _fetch(`/api/searchStockItems?search=${search}`, {
+    method: 'GET',
+  });
+  return await parse(odaResults) as t.Product[]
+}
+
+export async function getSearchResultsOptionsOda(search: string) {
+  // get oda search results
+  const searchResult = await getSearchResultsOda(search)
+
+  // parse to search optios
+  return parseSearchResultToOptions(searchResult, 'oda')
+}
+
+
+
+function getSearchResultsOptionsMeals(search: string, meals: t.Meal[], blacklistedItemsId: string[]) {
+  if (!meals) { }
+  // search meals
+  const searchResult = meals.filter(i => i.name.includes(search) && !blacklistedItemsId.includes(i.id))
+
+  // parse to search optios
+  return parseSearchResultToOptions(searchResult, 'usermeals')
+}
+
+
+function getSearchResultsOptionsProducts(search: string, products: t.Product[], blacklistedItemsId: string[]) {
+  if (!products) { }
+  // search product
+  const searchResult = products.filter(i => i.name.includes(search) && !blacklistedItemsId.includes(i.id))
+
+  // parse to search optios
+  return parseSearchResultToOptions(searchResult, 'userproducts')
+}
+
+function getSearchResultsOptionsStock(search: string, type: t.StockType, stockItems: t.StockStateNormalized<t.StockItem>) {
+  if (!stockItems) { }
+  // search meals
+  const searchResult = getStockSearchResults({ type, search })
+
+  // parse to search optios
+  const options = searchResult.map((itemId: string) => {
+    const item = stockItems.byIds[itemId]
+    return { label: item.name, value: item.id, source: 'stock', item }
+  })
+  return options
+}
+
+// ------------------------------------
+
 type GetSearchResultInput = {
   search: string
   stockItems: t.StockStateNormalized<t.StockItem>
   products: t.Product[]
   meals: t.Meal[]
   type?: t.StockType
+  blacklistedItemsId?: string[]
 }
 
-export const getSearchResults = async ({
+export async function getSearchResultsOptions({
   search,
   stockItems,
   products,
   meals,
   type = "both",
-}: GetSearchResultInput) => {
+  blacklistedItemsId = []
+}: GetSearchResultInput) {
 
-  // get oda search results
-  const searchResultOda = await getSearchResultsOda(search)
 
-  // parse to search optios
-  const odaOptions: SearchOptions[] = parseSearchResultToOptions(searchResultOda, 'oda')
-
-  // get stock search results
-  const searchResultStock = getStockSearchResults({ type, search })
-
-  const searchStockOptions = searchResultStock.map((itemId: string) => {
-    const item = stockItems.byIds[itemId]
-    return { label: item.name, value: item.id, source: 'stock', item }
-  })
-
-  const searchUserProductOptions =  parseSearchResultToOptions(products, 'userproducts')
-
-  const searchUserMealOptions = parseSearchResultToOptions(meals, 'userMeals')
-  meals.map((item: t.Meal) => {
-    return { label: item.name, value: item.id, source: 'usermeals', item }
-  })
+  const odaOptions = await getSearchResultsOptionsOda(search)
+  const stockOptions = getSearchResultsOptionsStock(search, type, stockItems)
+  const productOptions = getSearchResultsOptionsProducts(search, products, blacklistedItemsId)
+  const mealOptions = getSearchResultsOptionsMeals(search, meals, blacklistedItemsId)
 
   const allSearchOptions = [
-    ...searchStockOptions,
-    ...searchUserProductOptions,
-    ...searchUserMealOptions,
+    ...productOptions,
+    ...mealOptions,
     ...odaOptions,
+    ...stockOptions,
   ]
 
   return allSearchOptions
