@@ -5,46 +5,45 @@ import { useAuthContext } from "@/auth-client/firebase/Provider";
 import {
   useQueryClient,
 } from '@tanstack/react-query'
-import { useDailyMutations } from "./daily.mutations";
+import { useMealMutations } from "./meals.mutations";
 import Item from "./Item";
 
-type DailyItemProps = {
-  daily: t.DailyDiet;
+type MealProductItem = {
+  meal: t.Meal;
   item: t.Item;
 };
 
-function DailyItem({
-  daily,
+function MealProductItem({
+  meal,
   item,
-}: DailyItemProps) {
+}: MealProductItem) {
   const { user } = useAuthContext()
   console.log('ITEMMM', item.name);
 
   const queryClient = useQueryClient()
 
   const {
-    updateItemMutation,
-    deleteItemMutation,
-    convertCustomItemToItemMutation,
-    convertItemToCustomItemMutation,
-  } = useDailyMutations({ queryClient })
+    updateProductMutation,
+    deleteProductMutation,
+    convertCustomProductToItemMutation,
+    convertItemToCustomProductMutation,
+  } = useMealMutations({ queryClient })
 
   const isCustom = item.updateOriginalItem
 
   const onUpdate = (newItem: t.Item) => {
-    console.log('onUpdtae',newItem.name );
-    updateItemMutation.mutate({
+    updateProductMutation.mutate({
       userId: user.uid,
-      daily,
+      meal,
       updatedItem: newItem
     })
   }
 
   const getUpdatedItem = (key: string, value: any) => {
     if (isCustom) {
-      const i = item.item
-      const updated = { ...i, [key]: value }
-      item.item = updated
+      const product = item.item
+      const updatedProduct = { ...product, [key]: value }
+      item.item = updatedProduct
     }
     return { ...item, [key]: value }
 
@@ -61,12 +60,11 @@ function DailyItem({
   }
 
   const onDelete = (item: t.Item) => {
-      deleteItemMutation.mutate({
-        userId: user.uid,
-        daily,
-        item
-      })
-
+    deleteProductMutation.mutate({
+      userId: user.uid,
+      meal,
+      item
+    })
   }
 
   const onSearchChange = (searchTerm: string) => {
@@ -75,34 +73,36 @@ function DailyItem({
       updateField('name', searchTerm)
     } else {
       console.log('SEARCH_CONVERT',);
-      convertItemToCustomItemMutation.mutate({
+      convertItemToCustomProductMutation.mutate({
         userId: user.uid,
-        daily,
+        meal,
         item,
         adjustedAttributes: { name: searchTerm }
       })
     }
   }
 
-  const onSearchSelect = (selected: t.Product) => {
-    const { type } = selected
+  const onSearchSelect = (selectedProduct: t.Product) => {
     // toggle to itemwrapper
     // delete the custom product that was created
     if (isCustom) {
-      console.log('SELECT_CUSTOM', selected);
-      convertCustomItemToItemMutation.mutate({
+      console.log('SELECT_CUSTOM', selectedProduct);
+
+      convertCustomProductToItemMutation.mutate({
         userId: user.uid,
-        daily,
+        meal,
         oldItem: item,
-        newProductOrMeal: selected
+        newProduct: selectedProduct
+
       })
     } else {
-      console.log('SELECT NOT CUSTOM', selected);
+      console.log('SELECT NOT CUSTOM', selectedProduct);
       // create a new wrapper item
-      const newItem = itemApi.createItemWrapper(selected, type)
-      updateItemMutation.mutate({
+      const newItem = itemApi.createItemWrapper(selectedProduct, "product")
+      // onChange(newItem)
+      updateProductMutation.mutate({
         userId: user.uid,
-        daily,
+        meal,
         updatedItem: newItem
       })
     }
@@ -119,4 +119,4 @@ function DailyItem({
   );
 
 };
-export default DailyItem;
+export default MealProductItem;

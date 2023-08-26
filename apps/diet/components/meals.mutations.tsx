@@ -5,6 +5,7 @@ import {
 import mealApi from "@/diet-server/meal/meal.api"
 import productCacheApi from './products.cache';
 import mealCacheApi from './meals.cache'
+import { dailyCacheKeys } from '@/diet/components/daily.cache'
 
 type UseMealMutationsProps = {
   queryClient: QueryClient
@@ -36,7 +37,7 @@ export function useMealMutations({
         // update the product state
         mealCacheApi.updateMeal(updatedMeal, queryClient)
         // @todo: update the getDailyCache
-        queryClient.invalidateQueries({ queryKey: ['getDaily'] })
+        queryClient.invalidateQueries({ queryKey: dailyCacheKeys.getDaily })
       }
     }
   })
@@ -57,7 +58,7 @@ export function useMealMutations({
           console.log('removeFromCache',);
           mealCacheApi.removeMeal(deletedMeal, queryClient)
           // @todo: update the getDailyCache instead of invalidating it
-          queryClient.invalidateQueries({ queryKey: ['getDaily'] })
+          queryClient.invalidateQueries({ queryKey: dailyCacheKeys.getDaily })
         }
       }
     }
@@ -103,7 +104,7 @@ export function useMealMutations({
         mealCacheApi.updateMeal(newMeal, queryClient)
         // invalidate the getDaily cache as it might be updated
         // @todo: update the getDailyCache instead of invalidating it
-        queryClient.invalidateQueries({ queryKey: ['getDaily'] })
+        queryClient.invalidateQueries({ queryKey: dailyCacheKeys.getDaily })
       }
     },
   })
@@ -128,7 +129,7 @@ export function useMealMutations({
         mealCacheApi.updateMeal(newMeal, queryClient)
         // invalidate the getDaily cache as it might be updated
         // @todo: update the getDailyCache instead of invalidating it
-        queryClient.invalidateQueries({ queryKey: ['getDaily'] })
+        queryClient.invalidateQueries({ queryKey: dailyCacheKeys.getDaily })
       }
     },
   })
@@ -152,7 +153,7 @@ export function useMealMutations({
         mealCacheApi.updateMeal(newMeal, queryClient)
         // invalidate the getDaily cache as it might be updated
         // @todo: update the getDailyCache instead of invalidating it
-        queryClient.invalidateQueries({ queryKey: ['getDaily'] })
+        queryClient.invalidateQueries({ queryKey: dailyCacheKeys.getDaily })
       }
     },
   })
@@ -174,7 +175,7 @@ export function useMealMutations({
           productCacheApi.removeProduct(deletedProduct, queryClient)
         }
         // @todo: update the getDailyCache instead of invalidating it
-        queryClient.invalidateQueries({ queryKey: ['getDaily'] })
+        queryClient.invalidateQueries({ queryKey: dailyCacheKeys.getDaily })
       }
     }
   })

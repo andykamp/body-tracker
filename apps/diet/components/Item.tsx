@@ -2,77 +2,26 @@ import React from "react";
 import * as t from '@/diet-server/diet.types'
 import { Input } from "@geist-ui/core";
 import { SearchInputControlled } from '@/diet/components/Search'
-import itemApi from "@/diet-server/item/item.api";
-import { useAuthContext } from "@/auth-client/firebase/Provider";
-import {
-  useQueryClient,
-} from '@tanstack/react-query'
-import { useMealMutations } from "./meals.mutations";
 
 type ItemProps = {
-  meal: t.Meal;
   item: t.Item;
+  onSearchChange: (search: string) => void;
+  onSearchSelect: (selectedProduct: t.Product | t.Meal) => void;
+  updateNumericField: (key: string, value: any) => void;
+  onDelete: (item: t.Item) => void;
 };
 
 function Item({
-  meal,
   item,
+  onSearchChange,
+  onSearchSelect,
+  updateNumericField,
+  onDelete,
+
 }: ItemProps) {
-  const { user } = useAuthContext()
   console.log('ITEMMM', item.name);
 
-  const queryClient = useQueryClient()
-
-  const {
-    updateProductMutation,
-    deleteProductMutation,
-    convertCustomProductToItemMutation,
-    convertItemToCustomProductMutation,
-  } = useMealMutations({ queryClient })
-
   const isCustom = item.updateOriginalItem
-
-  const updateField = (key: string, value: any) => {
-    // update original product
-    if (isCustom) {
-      console.log('updateName custom', key, value);
-      const product = item.item
-      const updatedProduct = { ...product, [key]: value }
-      item.item = updatedProduct
-    }
-    const newItem = { ...item, [key]: value }
-
-    updateProductMutation.mutate({
-      userId: user.uid,
-      meal,
-      updatedItem: newItem
-    })
-  }
-
-  const updateNumericField = (key: string, value: any) => {
-    value = +value
-    // update original product
-    if (isCustom) {
-      const product = item.item
-      const updatedProduct = { ...product, [key]: value }
-      item.item = updatedProduct
-    }
-    const newItem = { ...item, [key]: value }
-
-    updateProductMutation.mutate({
-      userId: user.uid,
-      meal,
-      updatedItem: newItem
-    })
-  }
-
-  const onDelete = (item: t.Item) => {
-    deleteProductMutation.mutate({
-      userId: user.uid,
-      meal,
-      item
-    })
-  }
 
   return (
     <div
@@ -81,65 +30,8 @@ function Item({
 
       <SearchInputControlled
         value={item.name}
-        onChange={(searchTerm: string) => {
-          console.log('searchTerm', searchTerm);
-          if (isCustom) {
-            updateField('name', searchTerm)
-          } else {
-            console.log('SEARCH_CONVERT',);
-            convertItemToCustomProductMutation.mutate({
-              userId: user.uid,
-              meal,
-              item,
-              adjustedAttributes:{name:searchTerm}
-            })
-            // // toggle to custom
-            // // mealApi.toggleCustomProduct
-            // const product = item.item
-            // // create prodict in database
-            // // @todo:update cache also
-            // productApi.addProduct({
-            //   userId: user.uid,
-            //   product
-            // })
-            // const newItem = {
-            //   ...item,
-            //   item: product,
-            //   itemId: product.id,
-            //   updateOriginalItem: true
-            // }
-            // onChange(newItem)
-          }
-        }}
-
-        onSelect={(selectedProduct: t.Product) => {
-          // toggle to itemwrapper
-          // delete the custom product that was created
-          if (isCustom) {
-            console.log('SELECT_CUSTOM', selectedProduct);
-
-            convertCustomProductToItemMutation.mutate({
-              userId: user.uid,
-              meal,
-              oldItem: item,
-              newProduct: selectedProduct
-
-            })
-            // const customProductToDelete = item.item
-            // // @todo:update cache also
-            // productApi.deleteProduct({ userId: user.uid, product: customProductToDelete })
-          } else {
-            console.log('SELECT NOT CUSTOM', selectedProduct);
-            // create a new wrapper item
-            const newItem = itemApi.createItemWrapper(selectedProduct, "product")
-            // onChange(newItem)
-            updateProductMutation.mutate({
-              userId: user.uid,
-              meal,
-              updatedItem: newItem
-            })
-          }
-        }}
+        onChange={onSearchChange}
+        onSelect={onSearchSelect}
       />
 
       <Input

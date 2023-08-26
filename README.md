@@ -225,7 +225,7 @@ Should also start the emulator on yarn dev!!
 - 
 - 
 - fix oda bilder
-- parse matvaretabellen til å bli søkbar (er 3k linjer
+- parse matvaretabellen til å bli søkbar (er 3k linjer)
 -  
 - fix meal delete (soft etc) and references etc
 - fix daily mutations

@@ -1,20 +1,16 @@
 import * as t from "@/diet-server/diet.types";
-import mealApi from "@/diet-server/meal/meal.api"
-import Item from "./Item";
+import MealProductItem from "./MealProductItem";
 import {
-  useMutation,
   useQueryClient,
 } from '@tanstack/react-query'
 import { useAuthContext } from "@/auth-client/firebase/Provider";
-import { updateCacheOnMutate } from "../utils/caching";
 import { useMealMutations } from "./meals.mutations";
 
 type MealItemListProps = {
   meal: t.Meal;
-  onMealItemChanged: (meal: t.Meal) => void;
 }
 function MealItemList(props: MealItemListProps) {
-  const { meal, onMealItemChanged } = props
+  const { meal } = props
   const { user } = useAuthContext()
 
   const queryClient = useQueryClient()
@@ -23,12 +19,6 @@ function MealItemList(props: MealItemListProps) {
     addProductMutation
   } = useMealMutations({ queryClient })
 
-  const updateMeal = (meal: t.Meal) => {
-    const macros = mealApi.getMacros(meal)
-    const newMeal = { ...meal, ...macros }
-    onMealItemChanged(newMeal)
-  }
-
   const onAdd = async () => {
     addProductMutation.mutate({
       userId: user.uid,
@@ -36,18 +26,6 @@ function MealItemList(props: MealItemListProps) {
     })
   }
 
-  const onItemChange = (item: t.Item) => {
-    console.log('onImputchage', item, meal);
-    const newMeal = { ...meal }
-    newMeal.products = newMeal.products.map(i => i.id === item.id ? item : i);
-    updateMeal(newMeal)
-  }
-
-  const onItemDelete = (item: t.Item) => {
-    const newMeal = { ...meal }
-    newMeal.products = newMeal.products.filter(i => i.id !== item.id)
-    updateMeal(newMeal)
-  }
 
   const sortedItems = meal.products
   console.log('sortedItem', sortedItems)
@@ -57,7 +35,7 @@ function MealItemList(props: MealItemListProps) {
 
       <ul>
         {sortedItems.map((item: t.Item) => (
-          <Item
+          <MealProductItem
             meal={meal}
             key={item.id}
             item={item}

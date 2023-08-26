@@ -7,6 +7,7 @@ import { useAuthContext } from "@/auth-client/firebase/Provider";
 import mealApi from "@/diet-server/meal/meal.api"
 import { useMealMutations } from "./meals.mutations";
 import MealMenu from "./MealMenu";
+import { mealCacheKeys } from './meals.cache';
 
 function Meals() {
   const { user } = useAuthContext()
@@ -14,7 +15,7 @@ function Meals() {
   const queryClient = useQueryClient()
 
   const mealsQuery = useQuery({
-    queryKey: ['getMealsForCurrentUser'],
+    queryKey: mealCacheKeys.getMeals,
     queryFn: () => mealApi.getMeals({ userId: user.uid })
   })
 
@@ -29,8 +30,8 @@ function Meals() {
   }
 
   const meals: t.Meal[] = mealsQuery.data || []
-  console.log('mealfetch',mealsQuery.isLoading, mealsQuery.isFetched );
-  console.log('---',meals );
+  console.log('mealfetch', mealsQuery.isLoading, mealsQuery.isFetched);
+  console.log('---', meals);
 
   return (
     <div className="">

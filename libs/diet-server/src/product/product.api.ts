@@ -1,7 +1,7 @@
 import type * as t from "@/diet-server/diet.types"
 import baseApi from "@/diet-server/base.api";
 import { createProductObject, createProductObjectEmpty } from "@/diet-server/product/product.utils";
-import mealApi from "../meal/meal.api";
+import { getISODate } from "@/diet-server/utils/date.utils";
 
 function parseToValidProduct(product: t.Product): t.Product {
   if (!product.name) {
@@ -40,6 +40,33 @@ function hasReferenceToMeal(product: t.Product): boolean {
 function getReferencesMeal(product: t.Product) {
   return product.referenceMeals
 }
+
+function addReferenceToMeal(product: t.Product, mealId: string) {
+  const newProduct = { ...product }
+  if (!newProduct.referenceMeals) newProduct.referenceMeals = {}
+  newProduct.referenceMeals[mealId] = true
+  return newProduct
+}
+
+function removeReferenceToMeal(product: t.Product, mealId: string) {
+  const newProduct = { ...product }
+  delete newProduct.referenceMeals[mealId]
+  return newProduct
+}
+
+function addReferenceToDaily(product: t.Product, dailyId: string) {
+  const newProduct = { ...product }
+  if (!newProduct.referenceDailies) newProduct.referenceDailies = {}
+  newProduct.referenceDailies[dailyId] = true
+  return newProduct
+}
+
+function removeReferenceToDaily(product: t.Product, dailyId: string) {
+  const newProduct = { ...product }
+  delete newProduct.referenceDailies[dailyId]
+  return newProduct
+}
+
 
 
 type GetProductInput = {
@@ -93,15 +120,17 @@ type UpdateProductInput = {
   updatedProduct: t.Product
 }
 async function updateProduct({ userId, updatedProduct }: UpdateProductInput) {
-  console.log('updateProduct', updatedProduct);
+  const up = { ...updatedProduct, updatedAt: getISODate() }
+
+  console.log('updateProduct', up);
   await baseApi.makeReqAndExec<t.Product>({
     proc: "updateProduct",
     vars: {
       userId,
-      product: updatedProduct
+      product: up
     }
   })
-  return updatedProduct
+  return up
 }
 
 type UpdateProductAndReferencesInput = {
@@ -171,15 +200,19 @@ async function restoreDeletedProduct({
 type DeleteProductInput = {
   userId: string,
   product: t.Product,
+  fromDaily?: string
 }
 async function deleteProduct({
   userId,
-  product
+  product,
+  fromDaily
 }: DeleteProductInput) {
+  let productToDelete = fromDaily ? productApi.removeReferenceToDaily(product, fromDaily) : product
+
   // we cannot delete the product if it is referenced by a meal
-  console.log('delteProd', product);
-  if (productApi.hasReferences(product)) {
-    return productApi.softDeleteProduct({ userId, product })
+  console.log('delteProd', productToDelete);
+  if (productApi.hasReferences(productToDelete)) {
+    return productApi.softDeleteProduct({ userId, product:productToDelete })
   } else {
 
     console.log('delete forever',);
@@ -188,10 +221,10 @@ async function deleteProduct({
       proc: "deleteProduct",
       vars: {
         userId,
-        id: product.id,
+        id: productToDelete.id,
       }
     })
-    return product
+    return productToDelete
   }
 }
 
@@ -207,6 +240,10 @@ const productApi = {
 
   getReferencesMeal,
   getReferencesDaily,
+  addReferenceToMeal,
+  removeReferenceToMeal,
+  addReferenceToDaily,
+  removeReferenceToDaily,
 
   getProduct,
   getProducts,

@@ -22,12 +22,6 @@ function MealItem({
     onChange({ ...meal, [key]: value })
   }
 
-  const onMealItemChanged = (meal: t.Meal) => {
-    console.log('onMealItemChanged', meal)
-    // update the meal
-    onChange(meal)
-  }
-
   console.log('mmmmmmmmmmmmm',meal );
   const isDeleted = meal.isDeleted
 
@@ -84,7 +78,6 @@ function MealItem({
 
       <MealItemList
         meal={meal}
-        onMealItemChanged={onMealItemChanged}
       />
 
 

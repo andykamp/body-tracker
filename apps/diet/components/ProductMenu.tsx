@@ -23,9 +23,11 @@ function ProductMenu(props: ProductMenuProps) {
   } = props
 
   const [showCustomMealProducts, setShowCustomMealProducts] = useState(true);
+  const [showCustomDailyProducts, setShowCustomDailyProducts] = useState(true);
   const [showDeletedProducts, setShowDeletedProducts] = useState(false);
 
   let filteredProducts = showCustomMealProducts ? products : products.filter((product) => !product.fromCustomMeal)
+  filteredProducts = showCustomDailyProducts ? products : products.filter((product) => !product.fromCustomDaily)
   filteredProducts = showDeletedProducts ? filteredProducts : filteredProducts.filter((product) => !product.isDeleted)
   const sortedProducts = filteredProducts.sort((a, b) => {
     return new Date(a.createdAt as string).getTime() - new Date(b.createdAt as string).getTime();
@@ -40,6 +42,12 @@ function ProductMenu(props: ProductMenuProps) {
           onChange={(e) => setShowCustomMealProducts(e.target.checked)}
         >
           Show products created in meals
+        </Checkbox>
+        <Checkbox
+          checked={showCustomMealProducts}
+          onChange={(e) => setShowCustomDailyProducts(e.target.checked)}
+        >
+          Show products created in daily
         </Checkbox>
 
         <Checkbox

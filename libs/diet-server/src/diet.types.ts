@@ -84,6 +84,7 @@ export type Product = {
 
   isStockItem: boolean // makes it easy to find the source just from looking at the item
   fromCustomMeal?: boolean; // shows if it is not a stored product. But nice to use for future suggestions on autocomplete
+  fromCustomDaily?: boolean; // shows if it is not a stored product. But nice to use for future suggestions on autocomplete
   createdAt?: string;
   updatedAt?: string;
 

@@ -5,6 +5,7 @@ import baseApi from "@/diet-server/base.api";
 import itemApi, { type GetItemInput } from '@/diet-server/item/item.api'
 import { STOCK_TYPE } from "@/diet-server/stock/stock.constants";
 import { createMealObject, createMealObjectEmpty } from "@/diet-server/meal/meal.utils";
+import { getISODate } from "@/diet-server/utils/date.utils";
 
 function minimizeMeal(meal: t.Meal): t.MealMinimal {
   const { protein, calories, grams, products, ...rest } = meal
@@ -42,6 +43,19 @@ function hasReferenceToDaily(meal: t.Meal): boolean {
   return meal.referenceDailies && Object.keys(meal.referenceDailies).length > 0
 }
 
+function addReferenceToDaily(meal: t.Meal, dailyId: string): t.Meal {
+  const newMeal = { ...meal }
+  if (!newMeal.referenceDailies) newMeal.referenceDailies = {}
+  newMeal.referenceDailies[dailyId] = true
+  return newMeal
+}
+
+function removeReferenceToDaily(meal: t.Meal, dailyId: string): t.Meal {
+  const newMeal = { ...meal }
+  if (!newMeal.referenceDailies) throw new Error('Meal does not have referenceDailies')
+  delete newMeal.referenceDailies[dailyId]
+  return newMeal
+}
 
 // @todo: merge with populate Daily
 async function populateMeal(mealMinimal: t.MealMinimal, lookup: GetItemInput) {
@@ -126,14 +140,15 @@ async function updateMeal({
 ) {
   // @todo: update all dependent product to remove this meal as a dependency if a meal is removed
 
+  const updatedMeal = { ...meal, updatedAt: getISODate() }
   await baseApi.makeReqAndExec<t.MealMinimal>({
     proc: "updateMeal",
     vars: {
       userId,
-      meal: minimizeMeal(meal)
+      meal: minimizeMeal(updatedMeal)
     }
   })
-  return meal
+  return updatedMeal
 }
 
 type SoftDeleteMealInput = {
@@ -145,11 +160,10 @@ async function softDeleteMeal({
   meal
 }: SoftDeleteMealInput) {
   const updatedMeal: t.Meal = { ...meal, isDeleted: true }
-  await mealApi.updateMeal({
+  return await mealApi.updateMeal({
     userId,
     meal: updatedMeal
   })
-  return updatedMeal
 }
 
 type RestoreDeletedMealInput = {
@@ -162,39 +176,46 @@ async function restoreDeletedMeal({
   meal
 }: RestoreDeletedMealInput) {
   const updatedMeal: t.Meal = { ...meal, isDeleted: false }
-  await mealApi.updateMeal({
+  return await mealApi.updateMeal({
     userId,
     meal: updatedMeal
   })
-  return updatedMeal
 }
 
 type DeleteMealInput = {
   userId: string;
   meal: t.Meal;
+  fromDaily?: string;
 }
 
 async function deleteMeal({
   userId,
-  meal
+  meal,
+  fromDaily
 }: DeleteMealInput) {
 
-  if (mealApi.hasReferences(meal)) {
-    return mealApi.softDeleteMeal({ userId, meal })
+  let mealToDelete = fromDaily ? mealApi.removeReferenceToDaily(
+    meal,
+    fromDaily
+  ) : meal
+
+
+  if (mealApi.hasReferences(mealToDelete)) {
+    return mealApi.softDeleteMeal({ userId, meal: mealToDelete })
   } else {
     // perform the actual update
     await baseApi.makeReqAndExec<t.MealMinimal>({
       proc: "deleteMeal",
       vars: {
         userId,
-        id: meal.id,
+        id: mealToDelete.id,
       }
     })
 
     // @todo: update all dependent product to remove this meal as a dependency
     // productApi.updateReferencedMeals({ userId, mealId: id })
     // @todo: if the product has no more references to meals or daily we permanently delete the product
-    return meal
+    return mealToDelete
   }
 }
 
@@ -210,10 +231,9 @@ async function addProductToMeal({
 }: AddProductToMealInput
 ) {
   // create a ewn product
-  const newProduct = productApi.createProductObjectEmpty(true)
+  let newProduct = productApi.createProductObjectEmpty({fromCustomMeal:true})
   // make sure to store the reference to the meal it is added to
-  if (!newProduct.referenceMeals) newProduct.referenceMeals = {}
-  newProduct.referenceMeals[meal.id] = true // @todo: can add as prop to createProductObjectEmpty
+  newProduct = productApi.addReferenceToMeal(newProduct, meal.id)
 
   await productApi.addProduct({
     userId: userId,
@@ -227,8 +247,8 @@ async function addProductToMeal({
 
   // update the meal
   const newMeal: t.Meal = { ...meal, products: [...meal.products, newItem] }
-  await mealApi.updateMeal({ userId, meal: newMeal })
-  return { newMeal, newProduct }
+  const updatedNewMeal = await mealApi.updateMeal({ userId, meal: newMeal })
+  return { newMeal: updatedNewMeal, newProduct }
 }
 
 type UpdateProductFromMealInput = {
@@ -257,12 +277,11 @@ async function updateProductFromMeal({
   }
 
   // update the new meal
-  // @todo: recalculate the macros
   const newMeal: t.Meal = { ...meal }
   newMeal.products = newMeal.products.map(i => i.id === updatedItem.id ? updatedItem : i);
   const newMealWithMacros = updateMacros(newMeal)
-  await mealApi.updateMeal({ userId, meal: newMealWithMacros })
-  return { newMeal: newMealWithMacros, updatedProduct }
+  const updatedNewMeal = await mealApi.updateMeal({ userId, meal: newMealWithMacros })
+  return { newMeal: updatedNewMeal, updatedProduct }
 }
 
 type RemoveProductFromMealInput = {
@@ -280,17 +299,19 @@ async function removeProductFromMeal({
 
   // perform check
   let deletedProduct: t.Product
-  if (item.updateOriginalItem) {
+  const isCustom = item.updateOriginalItem
+  if (isCustom) {
     deletedProduct = item.item as t.Product
+    // @todo remove this meal as a reference
     productApi.deleteProduct({ userId, product: deletedProduct })
   }
 
   const newMeal: t.Meal = { ...meal }
   newMeal.products = newMeal.products.filter(i => i.id !== item.id);
   const newMealWithMacros = updateMacros(newMeal)
-  await mealApi.updateMeal({ userId, meal: newMealWithMacros })
+  const updatedNewMeal = await mealApi.updateMeal({ userId, meal: newMealWithMacros })
   console.log('removeprodfrommeal', newMealWithMacros);
-  return { newMeal: newMealWithMacros, deletedProduct }
+  return { newMeal: updatedNewMeal, deletedProduct }
 }
 
 type ConvertCustomProductToItemInput = {
@@ -308,9 +329,9 @@ async function convertCustomProductToItem({
 }: ConvertCustomProductToItemInput) {
 
   // delete the custom product that was created
-  const customProductToDelete = oldItem.item as t.Product
+  let customProductToDelete = oldItem.item as t.Product
   // remove this meal as a reference
-  delete customProductToDelete.referenceMeals[meal.id]
+  customProductToDelete = productApi.removeReferenceToMeal(customProductToDelete, meal.id)
 
   console.log('delete custom item', customProductToDelete);
   // @todo:update cache also
@@ -326,8 +347,8 @@ async function convertCustomProductToItem({
   newMeal.products = newMeal.products.map(i => i.id === oldItem.id ? newItem : i);
   console.log('newMeal', newMeal.products);
   const newMealWithMacros = updateMacros(newMeal)
-  await mealApi.updateMeal({ userId, meal: newMealWithMacros })
-  return { newMeal: newMealWithMacros, customProductToDelete }
+  const updatedNewMeal = await mealApi.updateMeal({ userId, meal: newMealWithMacros })
+  return { newMeal: updatedNewMeal, customProductToDelete }
 }
 
 type ConvertItemToCustomProductInput = {
@@ -351,7 +372,7 @@ async function convertItemToCustomProduct({
   for (const key in adjustedAttributes) {
     addedProduct[key] = adjustedAttributes[key]
   }
-  console.log('added name',addedProduct.name );
+  console.log('added name', addedProduct.name);
 
   // create standalone product in database
   productApi.addProduct({
@@ -360,11 +381,12 @@ async function convertItemToCustomProduct({
   })
 
   // create a new item that references the standalone product
-  const newItem:t.Item = {
+  const newItem: t.Item = {
     ...item,
     name: addedProduct.name,
     item: addedProduct,
     itemId: addedProduct.id,
+    itemType: addedProduct.type,
     updateOriginalItem: true,
     isStockItem: false,
   }
@@ -372,10 +394,10 @@ async function convertItemToCustomProduct({
   // @todo: recalculate the macros
   const newMeal: t.Meal = { ...meal }
   newMeal.products = newMeal.products.map(i => i.id === newItem.id ? newItem : i);
-  console.log('newMeal.products ',newMeal.products  );
+  console.log('newMeal.products ', newMeal.products);
   const newMealWithMacros = updateMacros(newMeal)
-  await mealApi.updateMeal({ userId, meal: newMealWithMacros })
-  return { newMeal: newMealWithMacros, addedProduct }
+  const updatedNewMeal = await mealApi.updateMeal({ userId, meal: newMealWithMacros })
+  return { newMeal: updatedNewMeal, addedProduct }
 }
 
 const mealApi = {
@@ -394,6 +416,8 @@ const mealApi = {
 
   hasReferenceToDaily,
   hasReferences,
+  addReferenceToDaily,
+  removeReferenceToDaily,
 
   addProductToMeal,
   updateProductFromMeal,

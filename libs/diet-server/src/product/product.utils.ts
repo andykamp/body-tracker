@@ -11,6 +11,7 @@ export type CreateProductObjectInput = {
   grams?: number;
   isStockItem?: boolean;
   fromCustomMeal?: boolean;
+  fromCustomDaily?: boolean;
   referenceMeals?: t.References;
   referenceDailies?: t.References;
 };
@@ -23,6 +24,7 @@ export function createProductObject({
   grams = 0,
   isStockItem = false,
   fromCustomMeal = false,
+  fromCustomDaily = false,
   referenceMeals,
   referenceDailies,
 }: CreateProductObjectInput): t.Product {
@@ -37,6 +39,7 @@ export function createProductObject({
 
     isStockItem,
     fromCustomMeal,
+    fromCustomDaily,
 
     createdAt: getISODate(),
     updatedAt: undefined,
@@ -48,10 +51,18 @@ export function createProductObject({
   return product;
 }
 
-export function createProductObjectEmpty(fromCustomMeal = false) {
+type CreateProductObjectEmptyInput = {
+  fromCustomMeal?: boolean;
+  fromCustomDaily?: boolean;
+}
+export function createProductObjectEmpty({
+  fromCustomMeal = false,
+  fromCustomDaily = false
+}: CreateProductObjectEmptyInput) {
   const product = createProductObject({
     name: '',
-    fromCustomMeal
+    fromCustomMeal,
+    fromCustomDaily
   })
   return product
 }
