@@ -12,13 +12,24 @@ export function useDailyMutations({
   queryClient
 }: UseDailyMutationsProps) {
 
-  const addDailyItemMutation = useMutation({
-    mutationFn: dailyApi.addDailyItem,
+  const addDailyProductMutation = useMutation({
+    mutationFn: dailyApi.addDailyProduct,
     onSettled: (addedMeal, error) => {
       if (error) {
-        alert('addDailyItemMutation error')
+        alert('addDailyProductMutation error')
       } else if (addedMeal) {
-        console.log('addDailyItemMutation success',addedMeal );
+        console.log('addDailyProductMutation success',addedMeal );
+        queryClient.invalidateQueries({ queryKey: dailyCacheKeys.getDaily })
+      }
+    }
+  })
+  const addDailyMealMutation = useMutation({
+    mutationFn: dailyApi.addDailyMeal,
+    onSettled: (addedMeal, error) => {
+      if (error) {
+        alert('addDailyMealMutation error')
+      } else if (addedMeal) {
+        console.log('addDailyMealMutation success',addedMeal );
         queryClient.invalidateQueries({ queryKey: dailyCacheKeys.getDaily })
       }
     }
@@ -88,7 +99,8 @@ export function useDailyMutations({
   })
 
   return {
-    addDailyItemMutation,
+    addDailyProductMutation,
+    addDailyMealMutation,
     updateDailyMutation,
 
     updateItemMutation,

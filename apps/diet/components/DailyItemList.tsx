@@ -18,15 +18,24 @@ function DailyItemList({
   const queryClient = useQueryClient()
 
   const {
-    addDailyItemMutation,
+    addDailyProductMutation,
+    addDailyMealMutation,
   } = useDailyMutations({ queryClient })
 
-  const onAdd = async () => {
-    addDailyItemMutation.mutate({
+  const onAddProduct = async () => {
+    addDailyProductMutation.mutate({
       userId: user.uid,
       daily,
     })
   }
+
+  const onAddMeal = async () => {
+    addDailyMealMutation.mutate({
+      userId: user.uid,
+      daily,
+    })
+  }
+
   const dailyItemsList = daily?.dailyItems ? daily?.dailyItems : []
 
   return (
@@ -42,9 +51,14 @@ function DailyItemList({
       </ul>
 
       <button
-        onClick={onAdd}
+        onClick={onAddProduct}
       >
         new product
+      </button>
+      <button
+        onClick={onAddMeal}
+      >
+        new meal
       </button>
     </div>
   )

@@ -151,16 +151,18 @@ export async function updateDaily({ userId, daily }: UpdateDailyInput) {
   return updatedDaily
 }
 
-type AddDailyItemInput = {
+type AddDailyProductInput = {
   userId: string,
-  daily: t.DailyDiet
+  daily: t.DailyDiet,
 }
-
 // Add a daily meal to the user's meal history
-export async function addDailyItem({ userId, daily }: AddDailyItemInput) {
+export async function addDailyProduct({
+  userId,
+  daily
+}: AddDailyProductInput) {
 
   // new daily items area always products since it is custom
-  let newProduct = productApi.createProductObjectEmpty({fromCustomDaily:true})
+  let newProduct = productApi.createProductObjectEmpty({ fromCustomDaily: true })
   // make sure to store the reference to the meal it is added to
   newProduct = productApi.addReferenceToDaily(newProduct, daily.id)
 
@@ -170,7 +172,7 @@ export async function addDailyItem({ userId, daily }: AddDailyItemInput) {
   })
 
   // create a item around it
-  const newItem = itemApi.createItemWrapper(newProduct, "product")
+  const newItem = itemApi.createItemWrapper(newProduct, newProduct.type)
   // make sure it is updated directly and not as a item wrapper
   newItem.updateOriginalItem = true
 
@@ -178,10 +180,38 @@ export async function addDailyItem({ userId, daily }: AddDailyItemInput) {
   const newDaily: t.DailyDiet = { ...daily, dailyItems: [...daily.dailyItems, newItem] }
   const updatedDaily = await dailyApi.updateDaily({ userId, daily: newDaily })
   return { newDaily: updatedDaily, newProduct }
-
 }
 
+type AddDailyMealInput = {
+  userId: string,
+  daily: t.DailyDiet,
+}
+// Add a daily meal to the user's meal history
+export async function addDailyMeal({
+  userId,
+  daily
+}: AddDailyMealInput) {
 
+  // new daily items area always products since it is custom
+  let newMeal = mealApi.createMealObjectEmpty({ fromCustomDaily: true })
+  // make sure to store the reference to the meal it is added to
+  newMeal = mealApi.addReferenceToDaily(newMeal, daily.id)
+
+  await mealApi.addMeal({
+    userId: userId,
+    meal: newMeal
+  })
+
+  // create a item around it
+  const newItem = itemApi.createItemWrapper(newMeal, newMeal.type)
+  // make sure it is updated directly and not as a item wrapper
+  newItem.updateOriginalItem = true
+
+  // update the daily item
+  const newDaily: t.DailyDiet = { ...daily, dailyItems: [...daily.dailyItems, newItem] }
+  const updatedDaily = await dailyApi.updateDaily({ userId, daily: newDaily })
+  return { newDaily: updatedDaily, newMeal }
+}
 
 type RemoveDailyInput = {
   userId: string,
@@ -366,7 +396,8 @@ const dailyApi = {
   getPriorDaily,
   getDaily,
   updateDaily,
-  addDailyItem,
+  addDailyProduct,
+  addDailyMeal,
   deleteDailyItem,
 
   updateItem,
