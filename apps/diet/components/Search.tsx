@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Modal, AutoComplete } from "@geist-ui/core";
 import { useDebounce } from "@/diet/utils/misc";
-import {makeOptionBySource } from "./search.utils";
+import { makeOptionBySource } from "./search.utils";
 import SearchShowAll from "./SearchShowAll";
 
 const MAX_DISPLAY_NUMBER = 5
@@ -73,7 +73,6 @@ export function SearchInputControlled({
       setIsModalVisible(true);
       setKeyCounter(prev => prev + 1); // increment the key counter to remount the component
     } else {
-      // const selectedItem = results.find(item => item.id === value);
       const selectedItem = latestResult.current.find((o: any) => o.value === value)?.item
       if (selectedItem) {
         onSelect(selectedItem);

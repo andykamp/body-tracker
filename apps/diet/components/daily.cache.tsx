@@ -40,6 +40,7 @@ const DailyCacheApi = {
   updateDaily,
   removeDaily,
 }
+
 export type MealCacheApi = typeof DailyCacheApi
 export default DailyCacheApi
 

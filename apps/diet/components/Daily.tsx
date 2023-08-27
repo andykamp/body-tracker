@@ -8,7 +8,7 @@ import { dailyCacheKeys } from '@/diet/components/daily.cache'
 import DailySummary from "./DailySummary";
 import DailyItemList from "./DailyItemList";
 
-function DailyPage() {
+function Daily() {
   const { user: authUser } = useAuthContext()
 
   const todaysDailyKey = React.useMemo(() => dailyApi.getTodaysDailyKey(), [])
@@ -34,4 +34,4 @@ function DailyPage() {
   )
 }
 
-export default DailyPage;
+export default Daily;

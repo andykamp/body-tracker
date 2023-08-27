@@ -18,7 +18,6 @@ function MealProductItem({
   item,
 }: MealProductItem) {
   const { user } = useAuthContext()
-  console.log('ITEMMM', item.name);
 
   const queryClient = useQueryClient()
 

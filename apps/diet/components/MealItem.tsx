@@ -17,12 +17,10 @@ function MealItem({
   onRestore
 }: MealItemProps) {
 
-
   const updateField = (key: string, value: any) => {
     onChange({ ...meal, [key]: value })
   }
 
-  console.log('mmmmmmmmmmmmm',meal );
   const isDeleted = meal.isDeleted
 
   return (

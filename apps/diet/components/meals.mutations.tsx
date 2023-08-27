@@ -158,7 +158,6 @@ export function useMealMutations({
     },
   })
 
-
   const deleteProductMutation = useMutation({
     mutationFn: mealApi.removeProductFromMeal,
     onSettled: (data, error) => {

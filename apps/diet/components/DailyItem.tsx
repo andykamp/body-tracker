@@ -18,7 +18,6 @@ function DailyItem({
   item,
 }: DailyItemProps) {
   const { user } = useAuthContext()
-  console.log('ITEMMM', item.name);
 
   const queryClient = useQueryClient()
 
@@ -66,7 +65,6 @@ function DailyItem({
         daily,
         item
       })
-
   }
 
   const onSearchChange = (searchTerm: string) => {
@@ -117,6 +115,6 @@ function DailyItem({
       onDelete={onDelete}
     />
   );
-
 };
+
 export default DailyItem;

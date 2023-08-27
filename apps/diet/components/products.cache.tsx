@@ -28,14 +28,6 @@ function updateProduct(product: t.Product, queryClient: QueryClient) {
   })
 }
 
-// function removeProduct(product: t.Product, queryClient: QueryClient) {
-//   removeFromCacheOnMutate({
-//     queryClient,
-//     mutatedObj: product,
-//     cacheKey: productCacheKeys.getProducts,
-//   })
-// }
-
 export function removeProduct(product: t.Product, queryClient: QueryClient) {
   // we only added the isDeleteFlag
   if (product.isDeleted) {
@@ -55,13 +47,14 @@ export function removeProduct(product: t.Product, queryClient: QueryClient) {
       cacheKey: productCacheKeys.getProducts,
     })
   }
-
 }
+
 const productCacheApi = {
   addProduct,
   updateProduct,
   removeProduct,
 }
+
 export type ProductCacheApi = typeof productCacheApi
 export default productCacheApi
 

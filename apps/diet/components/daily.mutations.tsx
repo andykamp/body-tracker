@@ -3,7 +3,7 @@ import {
   QueryClient,
 } from '@tanstack/react-query'
 import dailyApi from "@/diet-server/daily/daily.api"
-import dailyCacheApi , {dailyCacheKeys} from './daily.cache'
+import {dailyCacheKeys} from './daily.cache'
 
 type UseDailyMutationsProps = {
   queryClient: QueryClient
@@ -23,6 +23,7 @@ export function useDailyMutations({
       }
     }
   })
+
   const addDailyMealMutation = useMutation({
     mutationFn: dailyApi.addDailyMeal,
     onSettled: (addedMeal, error) => {
@@ -58,8 +59,6 @@ export function useDailyMutations({
       }
     }
   })
-
-  // -----------------------------------
 
   const updateItemMutation = useMutation({
     mutationFn: dailyApi.updateItem,

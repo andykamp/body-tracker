@@ -30,8 +30,6 @@ function Meals() {
   }
 
   const meals: t.Meal[] = mealsQuery.data || []
-  console.log('mealfetch', mealsQuery.isLoading, mealsQuery.isFetched);
-  console.log('---', meals);
 
   return (
     <div className="">
@@ -40,7 +38,7 @@ function Meals() {
         onCreate={() => {
           addMealMutation.mutate({
             userId: user?.uid,
-            meal: mealApi.createMealObjectEmpty()
+            meal: mealApi.createMealObjectEmpty({})
           })
         }}
         onChange={(meal: t.Meal) => {
@@ -57,6 +55,7 @@ function Meals() {
           })
         }}
         onRestore={(meal: t.Meal) => {
+
         }}
         isFetching={mealsQuery.isFetching}
       />

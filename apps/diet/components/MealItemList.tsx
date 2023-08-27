@@ -15,7 +15,7 @@ function MealItemList(props: MealItemListProps) {
 
   const queryClient = useQueryClient()
 
-    const {
+  const {
     addProductMutation
   } = useMealMutations({ queryClient })
 
@@ -26,9 +26,7 @@ function MealItemList(props: MealItemListProps) {
     })
   }
 
-
   const sortedItems = meal.products
-  console.log('sortedItem', sortedItems)
 
   return (
     <div className="p-4 flex flex-col">
