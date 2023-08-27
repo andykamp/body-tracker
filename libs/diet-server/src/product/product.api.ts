@@ -1,9 +1,13 @@
 import type * as t from "@/diet-server/diet.types"
+import type * as pt from "@/diet-server/product/product.types"
 import baseApi from "@/diet-server/base.api";
 import { createProductObject, createProductObjectEmpty } from "@/diet-server/product/product.utils";
 import { getISODate } from "@/diet-server/utils/date.utils";
 
-function parseToValidProduct(product: t.Product): t.Product {
+function parseToValidProduct(
+  product: t.Product
+): t.Product {
+
   if (!product.name) {
     throw new Error("Product name is required");
   }
@@ -21,60 +25,79 @@ function parseToValidProduct(product: t.Product): t.Product {
   });
 }
 
-function hasReferences(product: t.Product): boolean {
+function hasReferences(
+  product: t.Product
+): boolean {
   return hasReferenceToDaily(product) || hasReferenceToMeal(product)
 }
 
-function hasReferenceToDaily(product: t.Product): boolean {
+function hasReferenceToDaily(
+  product: t.Product
+): boolean {
   return product.referenceDailies && Object.keys(product.referenceDailies).length > 0
 }
 
-function getReferencesDaily(product: t.Product) {
+function getReferencesDaily(
+  product: t.Product
+) {
   return product.referenceDailies
 }
 
-function hasReferenceToMeal(product: t.Product): boolean {
+function hasReferenceToMeal(
+  product: t.Product
+): boolean {
   return product.referenceMeals && Object.keys(product.referenceMeals).length > 0
 }
 
-function getReferencesMeal(product: t.Product) {
+function getReferencesMeal(
+  product: t.Product
+) {
   return product.referenceMeals
 }
 
-function addReferenceToMeal(product: t.Product, mealId: string) {
+function addReferenceToMeal(
+  product: t.Product,
+  mealId: string
+) {
   const newProduct = { ...product }
   if (!newProduct.referenceMeals) newProduct.referenceMeals = {}
   newProduct.referenceMeals[mealId] = true
   return newProduct
 }
 
-function removeReferenceToMeal(product: t.Product, mealId: string) {
+function removeReferenceToMeal(
+  product: t.Product,
+  mealId: string
+) {
   const newProduct = { ...product }
   delete newProduct.referenceMeals[mealId]
   return newProduct
 }
 
-function addReferenceToDaily(product: t.Product, dailyId: string) {
+function addReferenceToDaily(
+  product: t.Product,
+  dailyId: string
+) {
   const newProduct = { ...product }
   if (!newProduct.referenceDailies) newProduct.referenceDailies = {}
   newProduct.referenceDailies[dailyId] = true
   return newProduct
 }
 
-function removeReferenceToDaily(product: t.Product, dailyId: string) {
+function removeReferenceToDaily(
+  product: t.Product,
+  dailyId: string
+) {
   const newProduct = { ...product }
   delete newProduct.referenceDailies[dailyId]
   return newProduct
 }
 
+async function getProduct({
+  userId,
+  id
+}: pt.GetProductInput){
 
-
-type GetProductInput = {
-  userId: string
-  id: string
-}
-
-async function getProduct({ userId, id }: GetProductInput): Promise<t.Product> {
   const r = await baseApi.makeReqAndExec<t.Product>({
     proc: "getProduct",
     vars: {
@@ -83,13 +106,12 @@ async function getProduct({ userId, id }: GetProductInput): Promise<t.Product> {
     }
   })
   return r
-
 }
 
-type GetProductsInput = {
-  userId: string
-}
-async function getProducts({ userId }: GetProductsInput): Promise<t.Product[]> {
+async function getProducts({
+  userId
+}: pt.GetProductsInput){
+
   const r = await baseApi.makeReqAndExec<t.Product>({
     proc: "getProducts",
     vars: { userId }
@@ -97,13 +119,13 @@ async function getProducts({ userId }: GetProductsInput): Promise<t.Product[]> {
   return r
 }
 
-type AddProductInput = {
-  userId: string,
-  product: t.Product
-}
-async function addProduct({ userId, product }: AddProductInput) {
-  console.log('addproddddd',);
+async function addProduct({
+  userId,
+  product
+}: pt.AddProductInput) {
+
   const newProduct: t.Product = { ...product };
+
   await baseApi.makeReqAndExec<t.Product>({
     proc: "addProduct",
     vars: {
@@ -115,14 +137,13 @@ async function addProduct({ userId, product }: AddProductInput) {
 }
 
 
-type UpdateProductInput = {
-  userId: string,
-  updatedProduct: t.Product
-}
-async function updateProduct({ userId, updatedProduct }: UpdateProductInput) {
+async function updateProduct({
+  userId,
+  updatedProduct
+}: pt.UpdateProductInput) {
+
   const up = { ...updatedProduct, updatedAt: getISODate() }
 
-  console.log('updateProduct', up);
   await baseApi.makeReqAndExec<t.Product>({
     proc: "updateProduct",
     vars: {
@@ -133,63 +154,27 @@ async function updateProduct({ userId, updatedProduct }: UpdateProductInput) {
   return up
 }
 
-type UpdateProductAndReferencesInput = {
-  userId: string,
-  updatedProduct: t.Product
-}
-
-async function updateProductAndReferences({
-  userId,
-  updatedProduct
-}: UpdateProductAndReferencesInput) {
-
-  // productApi.updateProduct({ userId, updatedProduct })
-
-  // // @todo: update all dependent meals
-  // if (productApi.hasReferenceToMeal(updatedProduct)) {
-  //   const references = productApi.getReferencesMeal(updatedProduct)
-  //   for (const mealRef of Object.keys(references)) {
-  //     // .. get the meal
-  //     const meal = await mealApi.getMeal({ userId, id: mealRef })
-  //     // ..update the meal
-  //     const newMeal: t.Meal = { ...meal }
-  //     newMeal.products = newMeal.products.map(i => i.id === updatedItem.id ? updatedItem : i);
-  //     await mealApi.updateMeal({ userId, meal: newMeal })
-
-  //   }
-  // }
-  // mealApi.updateReferencedMeals
-
-  return updatedProduct
-}
-
-type SoftDeleteProductInput = {
-  userId: string,
-  product: t.Product,
-}
-
 async function softDeleteProduct({
   userId,
   product
-}: SoftDeleteProductInput) {
+}: pt.SoftDeleteProductInput) {
+
   const updatedProduct: t.Product = { ...product, isDeleted: true }
+
   await productApi.updateProduct({
     userId,
     updatedProduct: updatedProduct
   })
   return updatedProduct
-}
-
-type RestoreDeletedProductInput = {
-  userId: string,
-  product: t.Product,
 }
 
 async function restoreDeletedProduct({
   userId,
   product
-}: RestoreDeletedProductInput) {
+}: pt.RestoreDeletedProductInput) {
+
   const updatedProduct: t.Product = { ...product, isDeleted: false }
+
   await productApi.updateProduct({
     userId,
     updatedProduct: updatedProduct
@@ -197,16 +182,12 @@ async function restoreDeletedProduct({
   return updatedProduct
 }
 
-type DeleteProductInput = {
-  userId: string,
-  product: t.Product,
-  fromDaily?: string
-}
 async function deleteProduct({
   userId,
   product,
   fromDaily
-}: DeleteProductInput) {
+}: pt.DeleteProductInput) {
+
   let productToDelete = fromDaily ? productApi.removeReferenceToDaily(product, fromDaily) : product
 
   // we cannot delete the product if it is referenced by a meal
@@ -228,7 +209,6 @@ async function deleteProduct({
   }
 }
 
-
 const productApi = {
   createProductObject,
   createProductObjectEmpty,
@@ -249,7 +229,6 @@ const productApi = {
   getProducts,
   addProduct,
   updateProduct,
-  updateProductAndReferences,
   deleteProduct,
   softDeleteProduct,
   restoreDeletedProduct,
