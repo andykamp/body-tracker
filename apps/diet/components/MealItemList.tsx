@@ -4,7 +4,7 @@ import {
   useQueryClient,
 } from '@tanstack/react-query'
 import { useAuthContext } from "@/auth-client/firebase/Provider";
-import { useMealMutations } from "./meals.mutations";
+import { useMealMutations } from "@/diet-client/meal/meals.mutations";
 
 type MealItemListProps = {
   meal: t.Meal;

@@ -5,9 +5,9 @@ import {
 } from '@tanstack/react-query'
 import { useAuthContext } from "@/auth-client/firebase/Provider";
 import mealApi from "@/diet-server/meal/meal.api"
-import { useMealMutations } from "./meals.mutations";
+import { useMealMutations } from "@/diet-client/meal/meals.mutations";
 import MealMenu from "./MealMenu";
-import { mealCacheKeys } from './meals.cache';
+import { mealCacheKeys } from '@/diet-client/meal/meals.cache';
 
 function Meals() {
   const { user } = useAuthContext()

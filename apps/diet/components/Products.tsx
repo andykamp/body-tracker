@@ -6,7 +6,7 @@ import {
 import { useAuthContext } from "@/auth-client/firebase/Provider";
 import productApi from "@/diet-server/product/product.api"
 import ProductMenu from "./ProductMenu";
-import { useProductMutations } from "./products.mutations";
+import { useProductMutations } from "@/diet-client/product/products.mutations";
 
 function Products() {
   const { user } = useAuthContext()

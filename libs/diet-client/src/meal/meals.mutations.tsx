@@ -5,7 +5,7 @@ import {
 import mealApi from "@/diet-server/meal/meal.api"
 import productCacheApi from '@/diet-client/product/products.cache';
 import mealCacheApi from '@/diet-client/meal/meals.cache'
-import { dailyCacheKeys } from '@/diet/components/daily.cache'
+import { dailyCacheKeys } from '@/diet-client/daily/daily.cache'
 
 type UseMealMutationsProps = {
   queryClient: QueryClient

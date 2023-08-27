@@ -7,9 +7,9 @@ import {
   useQuery,
 } from '@tanstack/react-query'
 import { getSearchResultsOptions } from "./search.utils";
-import { mealCacheKeys } from './meals.cache';
+import { mealCacheKeys } from '@/diet-client/meal/meals.cache';
 import productApi from "@/diet-server/product/product.api"
-import { productCacheKeys } from './products.cache';
+import { productCacheKeys } from '@/diet-client/product/products.cache';
 import mealApi from "@/diet-server/meal/meal.api"
 
 const stockItems = getStockItems({ type: 'both' })

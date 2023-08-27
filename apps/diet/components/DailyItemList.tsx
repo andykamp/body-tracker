@@ -5,7 +5,7 @@ import {
 } from '@tanstack/react-query'
 import { useAuthContext } from "@/auth-client/firebase/Provider";
 import DailyItem from "@/diet/components/DailyItem";
-import { useDailyMutations } from "./daily.mutations";
+import { useDailyMutations } from "@/diet-client/daily/daily.mutations";
 
 type DailyItemListProps = {
   daily: t.DailyDiet

@@ -4,7 +4,7 @@ import {
 } from '@tanstack/react-query'
 import dailyApi from "@/diet-server/daily/daily.api"
 import { useAuthContext } from "@/auth-client/firebase/Provider";
-import { dailyCacheKeys } from '@/diet/components/daily.cache'
+import { dailyCacheKeys } from '@/diet-client/daily/daily.cache'
 import DailySummary from "./DailySummary";
 import DailyItemList from "./DailyItemList";
 
