@@ -8,6 +8,7 @@ export type GetDailyInput = {
 export type UpdateDailyInput = {
   userId: string,
   daily: t.DailyDiet
+  updateMacros?: boolean
 }
 
 export type AddDailyProductInput = {

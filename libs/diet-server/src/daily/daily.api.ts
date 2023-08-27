@@ -155,9 +155,17 @@ async function getDaily({
 // Update a daily diet for a given user and date
 async function updateDaily({
   userId,
-  daily
+  daily,
+  updateMacros = false
 }: dt.UpdateDailyInput) {
-  const updatedDaily: t.DailyDiet = { ...daily, updatedAt: getISODate() }
+  let updatedDaily: t.DailyDiet = { ...daily, updatedAt: getISODate() }
+
+  // update macros if specified
+  if (updateMacros) {
+    updatedDaily = dailyApi.updateMacros(updatedDaily)
+  }
+
+  // store to database
   await baseApi.makeReqAndExec<t.DailyDietMinimal>({
     proc: "updateDaily",
     vars: {
@@ -190,10 +198,13 @@ async function addDailyProduct({
   newItem.updateOriginalItem = true
 
   // update the daily item
-  let newDaily: t.DailyDiet = { ...daily, dailyItems: [...daily.dailyItems, newItem] }
-  // @todo: make the updateMacros optional as part of updateDaily
-  newDaily = dailyApi.updateMacros(newDaily)
-  const updatedDaily = await dailyApi.updateDaily({ userId, daily: newDaily })
+  const newDaily: t.DailyDiet = { ...daily, dailyItems: [...daily.dailyItems, newItem] }
+  const updatedDaily = await dailyApi.updateDaily({
+    userId,
+    daily: newDaily,
+    updateMacros: true
+  })
+
   return { newDaily: updatedDaily, newProduct }
 }
 
@@ -219,9 +230,13 @@ async function addDailyMeal({
   newItem.updateOriginalItem = true
 
   // update the daily item
-  let newDaily: t.DailyDiet = { ...daily, dailyItems: [...daily.dailyItems, newItem] }
-  newDaily = dailyApi.updateMacros(newDaily)
-  const updatedDaily = await dailyApi.updateDaily({ userId, daily: newDaily })
+  const newDaily: t.DailyDiet = { ...daily, dailyItems: [...daily.dailyItems, newItem] }
+  const updatedDaily = await dailyApi.updateDaily({
+    userId,
+    daily: newDaily,
+    updateMacros: true
+  })
+
   return { newDaily: updatedDaily, newMeal }
 }
 
@@ -253,13 +268,15 @@ async function deleteDailyItem({
     }
   }
 
-  let newDaily: t.DailyDiet = { ...daily }
+  const newDaily: t.DailyDiet = { ...daily }
   newDaily.dailyItems = daily.dailyItems.filter(i => {
     return i.id !== item.id;
   });
-
-  newDaily = dailyApi.updateMacros(newDaily)
-  const updatedDaily = await dailyApi.updateDaily({ userId, daily: newDaily });
+  const updatedDaily = await dailyApi.updateDaily({
+    userId,
+    daily: newDaily,
+    updateMacros: true
+  })
   return { newDaily: updatedDaily, deletedItem };
 }
 
@@ -293,11 +310,14 @@ async function updateItem({
   }
 
   // update the daily item
-  let newDaily: t.DailyDiet = { ...daily }
+  const newDaily: t.DailyDiet = { ...daily }
   newDaily.dailyItems = newDaily.dailyItems.map(i => i.id === updatedItem.id ? updatedItem : i);
-  console.log('newDaily.dailyitem', newDaily.dailyItems);
-  newDaily = dailyApi.updateMacros(newDaily)
-  const updatedDaily = await dailyApi.updateDaily({ userId, daily: newDaily })
+  const updatedDaily = await dailyApi.updateDaily({
+    userId,
+    daily: newDaily,
+    updateMacros: true
+  })
+
   return { newDaily: updatedDaily, updatedItem }
 
 }
@@ -327,10 +347,13 @@ async function convertCustomItemToItem({
 
   console.log('createNeitem', newItem);
   // update the daily item
-  let newDaily: t.DailyDiet = { ...daily }
+  const newDaily: t.DailyDiet = { ...daily }
   newDaily.dailyItems = newDaily.dailyItems.map(i => i.id === oldItem.id ? newItem : i);
-  newDaily = dailyApi.updateMacros(newDaily)
-  const updatedDaily = await dailyApi.updateDaily({ userId, daily: newDaily })
+  const updatedDaily = await dailyApi.updateDaily({
+    userId,
+    daily: newDaily,
+    updateMacros: true
+  })
   return { newDaily: updatedDaily, customProductOrMealToDelete }
 }
 
@@ -376,8 +399,11 @@ async function convertItemToCustomItem({
   // update the daily item
   let newDaily: t.DailyDiet = { ...daily }
   newDaily.dailyItems = newDaily.dailyItems.map(i => i.id === newItem.id ? newItem : i);
-  newDaily = dailyApi.updateMacros(newDaily)
-  const updatedDaily = await dailyApi.updateDaily({ userId, daily: newDaily })
+  const updatedDaily = await dailyApi.updateDaily({
+    userId,
+    daily: newDaily,
+    updateMacros: true
+  })
   return { newDaily: updatedDaily, addedProductOrMeal }
 }
 
