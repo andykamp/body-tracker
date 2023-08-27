@@ -20,6 +20,7 @@
       "@/common/*": ["libs/common/src/*"],
       "@/user-client/*": ["libs/user-client/src/*"],
       "@/diet-server/*": ["libs/diet-server/src/*"],
+      "@/diet-client/*": ["libs/diet-client/src/*"],
       "@/withings/*": ["libs/withings/src/*"],
       "@/withings-client/*": ["libs/withings-client/src/*"],
       "@/oura/*": ["libs/oura/src/*"],
