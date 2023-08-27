@@ -1,4 +1,5 @@
 import * as t from "@/diet-server/diet.types";
+import * as dt from "@/diet-server/daily/daily.types";
 import baseApi from "@/diet-server/base.api";
 import userApi from "@/diet-server/user/user.api";
 import mealApi from "@/diet-server/meal/meal.api";
@@ -10,7 +11,9 @@ import { createDailyObject } from '@/diet-server/daily/daily.utils'
 import { getISODate } from "@/diet-server/utils/date.utils";
 import { assertMeal, assertProduct } from '@/diet-server/utils/asserts.utils'
 
-function minimizeDaily(daily: t.DailyDiet): t.DailyDietMinimal {
+function minimizeDaily(
+  daily: t.DailyDiet
+): t.DailyDietMinimal {
   const { protein, calories, grams, dailyItems, ...rest } = daily
 
   // remove item references
@@ -28,20 +31,26 @@ function minimizeDaily(daily: t.DailyDiet): t.DailyDietMinimal {
   return dailyMinimal
 }
 
-function getMacros(daily: t.DailyDiet) {
+function getMacros(
+  daily: t.DailyDiet
+) {
   const macros = itemApi.calculateMacros(daily.dailyItems)
   return macros
 }
 
-function updateMacros(daily: t.DailyDiet) {
+function updateMacros(
+  daily: t.DailyDiet
+) {
   const macros = dailyApi.getMacros(daily)
   const newDaily = { ...daily, ...macros }
   return newDaily
 }
 
-
 // @todo: merge with populate meal
-async function populateDaily(dailyDietMinimal: t.DailyDietMinimal, lookup: GetItemInput) {
+async function populateDaily(
+  dailyDietMinimal: t.DailyDietMinimal,
+  lookup: GetItemInput
+) {
   const newItems: t.Item[] = []
 
   for (const itemMinimal of dailyDietMinimal.dailyItems) {
@@ -56,7 +65,7 @@ async function populateDaily(dailyDietMinimal: t.DailyDietMinimal, lookup: GetIt
   return newItems
 }
 
- function getTodaysDailyKey() {
+function getTodaysDailyKey() {
   const now = new Date();
   const year = now.getFullYear();
   const month = (now.getMonth() + 1).toString().padStart(2, '0');
@@ -65,7 +74,9 @@ async function populateDaily(dailyDietMinimal: t.DailyDietMinimal, lookup: GetIt
   return `${year}${month}${day}`;
 }
 
- function getPriorDaily(daysAgo: number) {
+function getPriorDaily(
+  daysAgo: number
+) {
   const now = new Date();
   now.setDate(now.getDate() - daysAgo);  // subtract a day
 
@@ -76,11 +87,10 @@ async function populateDaily(dailyDietMinimal: t.DailyDietMinimal, lookup: GetIt
   return `${year}${month}${day}`;
 }
 
-type GetDailyInput = {
-  userId: string,
-  dateKey: string
-}
- async function getDaily({ userId, dateKey }: GetDailyInput): Promise<t.DailyDiet> {
+async function getDaily({
+  userId,
+  dateKey
+}: dt.GetDailyInput) {
   const dailyDietMinimal: t.DailyDietMinimal = await baseApi.makeReqAndExec<t.DailyDiet>({
     proc: "getDaily",
     vars: {
@@ -142,13 +152,11 @@ type GetDailyInput = {
   }
 }
 
-type UpdateDailyInput = {
-  userId: string,
-  daily: t.DailyDiet
-}
-
 // Update a daily diet for a given user and date
- async function updateDaily({ userId, daily }: UpdateDailyInput) {
+async function updateDaily({
+  userId,
+  daily
+}: dt.UpdateDailyInput) {
   const updatedDaily: t.DailyDiet = { ...daily, updatedAt: getISODate() }
   await baseApi.makeReqAndExec<t.DailyDietMinimal>({
     proc: "updateDaily",
@@ -160,15 +168,11 @@ type UpdateDailyInput = {
   return updatedDaily
 }
 
-type AddDailyProductInput = {
-  userId: string,
-  daily: t.DailyDiet,
-}
 // Add a daily meal to the user's meal history
- async function addDailyProduct({
+async function addDailyProduct({
   userId,
   daily
-}: AddDailyProductInput) {
+}: dt.AddDailyProductInput) {
 
   // new daily items area always products since it is custom
   let newProduct = productApi.createProductObjectEmpty({ fromCustomDaily: true })
@@ -187,20 +191,17 @@ type AddDailyProductInput = {
 
   // update the daily item
   let newDaily: t.DailyDiet = { ...daily, dailyItems: [...daily.dailyItems, newItem] }
+  // @todo: make the updateMacros optional as part of updateDaily
   newDaily = dailyApi.updateMacros(newDaily)
   const updatedDaily = await dailyApi.updateDaily({ userId, daily: newDaily })
   return { newDaily: updatedDaily, newProduct }
 }
 
-type AddDailyMealInput = {
-  userId: string,
-  daily: t.DailyDiet,
-}
 // Add a daily meal to the user's meal history
- async function addDailyMeal({
+async function addDailyMeal({
   userId,
   daily
-}: AddDailyMealInput) {
+}: dt.AddDailyMealInput) {
 
   // new daily items area always products since it is custom
   let newMeal = mealApi.createMealObjectEmpty({ fromCustomDaily: true })
@@ -224,13 +225,12 @@ type AddDailyMealInput = {
   return { newDaily: updatedDaily, newMeal }
 }
 
-type RemoveDailyInput = {
-  userId: string,
-  daily: t.DailyDiet,
-  item: t.Item
-}
 // Remove a daily diet for a given user and date
- async function deleteDailyItem({ userId, daily, item }: RemoveDailyInput) {
+async function deleteDailyItem({
+  userId,
+  daily,
+  item
+}: dt.RemoveDailyInput) {
 
   // @todo: remove references
   let deletedItem: t.Product | t.Meal
@@ -263,17 +263,11 @@ type RemoveDailyInput = {
   return { newDaily: updatedDaily, deletedItem };
 }
 
-type UpdateItemInput = {
-  userId: string,
-  daily: t.DailyDiet
-  updatedItem: t.Item
-}
-
 async function updateItem({
   userId,
   daily,
   updatedItem
-}: UpdateItemInput) {
+}: dt.UpdateItemInput) {
   let updatedProductOrMeal: t.Product | t.Meal
   // check if it is a original product or just a item wrapper
   const isCustom = updatedItem.updateOriginalItem
@@ -308,18 +302,12 @@ async function updateItem({
 
 }
 
-type ConvertCustomItemToItemInput = {
-  userId: string;
-  daily: t.DailyDiet;
-  oldItem: t.Item;
-  newProductOrMeal: t.Product | t.Meal;
-}
 async function convertCustomItemToItem({
   userId,
   daily,
   oldItem,
   newProductOrMeal
-}: ConvertCustomItemToItemInput) {
+}: dt.ConvertCustomItemToItemInput) {
   // delete the custom product that was created
   const customProductOrMealToDelete = oldItem.item
 
@@ -346,21 +334,12 @@ async function convertCustomItemToItem({
   return { newDaily: updatedDaily, customProductOrMealToDelete }
 }
 
-type ConvertItemToCustomItemInput = {
-  userId: string;
-  daily: t.DailyDiet;
-  item: t.Item;
-  adjustedAttributes: {
-    name?: string;
-  }
-}
-
 async function convertItemToCustomItem({
   userId,
   daily,
   item,
   adjustedAttributes
-}: ConvertItemToCustomItemInput) {
+}: dt.ConvertItemToCustomItemInput) {
 
   // extract the actual product
   let addedProductOrMeal = item.item
