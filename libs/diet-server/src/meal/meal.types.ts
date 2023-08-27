@@ -12,6 +12,7 @@ export type AddMealInput = {
 export type UpdateMealInput = {
   userId: string;
   meal: t.Meal;
+  updateMacros?: boolean;
 };
 
 export type SoftDeleteMealInput = {
