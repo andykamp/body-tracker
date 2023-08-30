@@ -117,7 +117,6 @@ async function deleteMeal({
     fromDaily
   ) : meal
 
-
   if (mealApi.hasReferences(mealToDelete)) {
     return mealApi.softDeleteMeal({ userId, meal: mealToDelete })
   } else {
@@ -130,9 +129,18 @@ async function deleteMeal({
       }
     })
 
-    // @todo: update all dependent product to remove this meal as a dependency
-    // productApi.updateReferencedMeals({ userId, mealId: id })
-    // @todo: if the product has no more references to meals or daily we permanently delete the product
+    //update all dependent product to remove this meal as a dependency
+    // @todo: do we really want to perm delete product?
+    const products = await productApi.getProducts({ userId })
+    const referencedProducts = products.filter((p: t.Product) => p.referenceMeals?.[mealToDelete.id])
+    for (const product of referencedProducts) {
+      const updatedProduct = productApi.removeReferenceToMeal(product, mealToDelete.id)
+      if (!productApi.hasReferences(updatedProduct)) {
+        await productApi.deleteProduct({ userId, product: updatedProduct })
+      } else {
+        await productApi.updateProduct({ userId, updatedProduct })
+      }
+    }
     return mealToDelete
   }
 }
@@ -240,7 +248,6 @@ async function convertCustomProductToItem({
 
   console.log('createNeitem', newItem);
   // update the new meal
-  // @todo: recalculate the macros
   const newMeal: t.Meal = { ...meal }
   newMeal.products = newMeal.products.map(i => i.id === oldItem.id ? newItem : i);
   const updatedNewMeal = await mealApi.updateMeal({
@@ -282,7 +289,6 @@ async function convertItemToCustomProduct({
     isStockItem: false,
   }
   // update the new meal
-  // @todo: recalculate the macros
   const newMeal: t.Meal = { ...meal }
   newMeal.products = newMeal.products.map(i => i.id === newItem.id ? newItem : i);
   console.log('newMeal.products ', newMeal.products);
