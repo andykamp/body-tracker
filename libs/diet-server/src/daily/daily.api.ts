@@ -9,10 +9,10 @@ import itemApi from '@/diet-server/item/item.api'
 import { STOCK_TYPE } from "@/diet-server/stock/stock.constants";
 import { getISODate } from "@/diet-server/utils/date.utils";
 import { assertMeal, assertProduct } from '@/diet-server/utils/asserts.utils'
+import { populateMinimizedItems } from '@/diet-server/utils/common.utils'
 import {
   createDailyObject,
   minimizeDaily,
-  populateDaily,
   getPriorDaily,
   getTodaysDailyKey,
   getMacros,
@@ -35,13 +35,14 @@ async function getDaily({
     const meals = await mealApi.getMeals({ userId })
     const products = await productApi.getProducts({ userId })
     const stockItems = stockApi.getStockItems({ type: STOCK_TYPE.both })
+
     const lookup = { meals, products, stockItems }
 
-    const dailyItems: t.Item[] = await populateDaily(dailyDietMinimal, lookup)
+    const dailyItems: t.Item[] = await populateMinimizedItems(dailyDietMinimal.dailyItems, lookup)
 
-    let dailyDiet: t.DailyDiet = { ...dailyDietMinimal, dailyItems }
-    dailyDiet = dailyApi.updateMacros(dailyDiet)
-    return dailyDiet
+    let populatedDaily: t.DailyDiet = { ...dailyDietMinimal, dailyItems }
+    populatedDaily = dailyApi.updateMacros(populatedDaily)
+    return populatedDaily
   }
   else {
 

@@ -10,7 +10,6 @@ import {
   createMealObject,
   createMealObjectEmpty,
   minimizeMeal,
-  populateMeal,
   getMacros,
   updateMacros,
   hasReferenceToDaily,
@@ -18,6 +17,7 @@ import {
   addReferenceToDaily,
   removeReferenceToDaily,
 } from "@/diet-server/meal/meal.utils";
+import { populateMinimizedItems } from '@/diet-server/utils/common.utils'
 
 async function getMeals({
   userId
@@ -30,9 +30,13 @@ async function getMeals({
   const products = await productApi.getProducts({ userId })
   const stockItems = stockApi.getStockItems({ type: STOCK_TYPE.both })
 
+  const lookup = { meals: [], products, stockItems }
   const meals: t.Meal[] = []
   for (const mealMinimal of mealsMinimal) {
-    const populatedMeal = await populateMeal(mealMinimal, { meals: [], products, stockItems })
+    const mealProducts = await populateMinimizedItems(mealMinimal.products, lookup)
+    let populatedMeal: t.Meal = { ...mealMinimal, products: mealProducts }
+    populatedMeal = mealApi.updateMacros(populatedMeal)
+
     meals.push(populatedMeal)
   }
   return meals

@@ -3,6 +3,7 @@ import * as t from "@/diet-server/diet.types";
 import { ITEM_TYPES } from '@/diet-server/diet.constants'
 import { getISODate } from "@/diet-server/utils/date.utils";
 import itemApi, { type GetItemInput } from '@/diet-server/item/item.api'
+import { populateMinimizedItems } from '@/diet-server/utils/common.utils'
 
 export type CreateMealObjectInput = {
   name: string;
@@ -54,11 +55,10 @@ type CreateMealObjectEmptyInput = {
 export function createMealObjectEmpty(
   props?: CreateMealObjectEmptyInput
 ) {
-  const { fromCustomDaily = null } = props
   const meal = createMealObject({
     name: '',
     products: [],
-    fromCustomDaily
+    fromCustomDaily: props?.fromCustomDaily || false,
   })
   return meal
 }
@@ -132,26 +132,3 @@ export function removeReferenceToDaily(
   delete newMeal.referenceDailies[dailyId]
   return newMeal
 }
-
-// @todo: merge with populate Daily
-export async function populateMeal(
-  mealMinimal: t.MealMinimal,
-  lookup: GetItemInput
-) {
-  const newProducts: t.Item[] = []
-  // populate the meal's products with the original product
-  for (const itemMinimal of mealMinimal.products) {
-    // we update the item with the original item in case it has changed
-    const originalItem = await itemApi.getOriginalFromItem(itemMinimal, lookup)
-    if (!originalItem) throw new Error('Could not find meal item. Should display warning: ' + itemMinimal.id);
-    itemMinimal.name = originalItem.name
-    itemMinimal.description = originalItem.description
-
-    newProducts.push({ ...itemMinimal, item: originalItem })
-  }
-
-  const macros = itemApi.calculateMacros(newProducts)
-  const meal: t.Meal = { ...mealMinimal, ...macros, products: newProducts }
-  return meal
-}
-

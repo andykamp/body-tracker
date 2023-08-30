@@ -79,25 +79,6 @@ export function updateMacros(
   return newDaily
 }
 
-// @todo: merge with populate meal
-export async function populateDaily(
-  dailyDietMinimal: t.DailyDietMinimal,
-  lookup: GetItemInput
-) {
-  const newItems: t.Item[] = []
-
-  for (const itemMinimal of dailyDietMinimal.dailyItems) {
-    // we update the item with the original item in case it has changed
-    const originalItem = await itemApi.getOriginalFromItem(itemMinimal, lookup)
-    if (!originalItem) throw new Error('Could not find daily item. Should display warning: ' + itemMinimal.id);
-    itemMinimal.name = originalItem.name
-    itemMinimal.description = originalItem.description
-
-    newItems.push({ ...itemMinimal, item: originalItem })
-  }
-  return newItems
-}
-
 export function getTodaysDailyKey() {
   const now = new Date();
   const year = now.getFullYear();
