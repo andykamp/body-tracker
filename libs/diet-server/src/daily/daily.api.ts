@@ -5,87 +5,19 @@ import userApi from "@/diet-server/user/user.api";
 import mealApi from "@/diet-server/meal/meal.api";
 import productApi from "@/diet-server/product/product.api";
 import stockApi from "@/diet-server/stock/stock.api";
-import itemApi, { type GetItemInput } from '@/diet-server/item/item.api'
+import itemApi from '@/diet-server/item/item.api'
 import { STOCK_TYPE } from "@/diet-server/stock/stock.constants";
-import { createDailyObject } from '@/diet-server/daily/daily.utils'
 import { getISODate } from "@/diet-server/utils/date.utils";
 import { assertMeal, assertProduct } from '@/diet-server/utils/asserts.utils'
-
-function minimizeDaily(
-  daily: t.DailyDiet
-): t.DailyDietMinimal {
-  const { protein, calories, grams, dailyItems, ...rest } = daily
-
-  // remove item references
-  const itemsMinimal: t.ItemMinimal[] = []
-
-  dailyItems.forEach((i: t.Item) => {
-    const { item, ...rest } = i
-    itemsMinimal.push(rest)
-  })
-
-  const dailyMinimal: t.DailyDietMinimal = {
-    ...rest,
-    dailyItems: itemsMinimal
-  }
-  return dailyMinimal
-}
-
-function getMacros(
-  daily: t.DailyDiet
-) {
-  const macros = itemApi.calculateMacros(daily.dailyItems)
-  return macros
-}
-
-function updateMacros(
-  daily: t.DailyDiet
-) {
-  const macros = dailyApi.getMacros(daily)
-  const newDaily = { ...daily, ...macros }
-  return newDaily
-}
-
-// @todo: merge with populate meal
-async function populateDaily(
-  dailyDietMinimal: t.DailyDietMinimal,
-  lookup: GetItemInput
-) {
-  const newItems: t.Item[] = []
-
-  for (const itemMinimal of dailyDietMinimal.dailyItems) {
-    // we update the item with the original item in case it has changed
-    const originalItem = await itemApi.getOriginalFromItem(itemMinimal, lookup)
-    if (!originalItem) throw new Error('Could not find daily item. Should display warning: ' + itemMinimal.id);
-    itemMinimal.name = originalItem.name
-    itemMinimal.description = originalItem.description
-
-    newItems.push({ ...itemMinimal, item: originalItem })
-  }
-  return newItems
-}
-
-function getTodaysDailyKey() {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = (now.getMonth() + 1).toString().padStart(2, '0');
-  const day = now.getDate().toString().padStart(2, '0');
-
-  return `${year}${month}${day}`;
-}
-
-function getPriorDaily(
-  daysAgo: number
-) {
-  const now = new Date();
-  now.setDate(now.getDate() - daysAgo);  // subtract a day
-
-  const year = now.getFullYear();
-  const month = (now.getMonth() + 1).toString().padStart(2, '0');
-  const day = now.getDate().toString().padStart(2, '0');
-
-  return `${year}${month}${day}`;
-}
+import {
+  createDailyObject,
+  minimizeDaily,
+  populateDaily,
+  getPriorDaily,
+  getTodaysDailyKey,
+  getMacros,
+  updateMacros
+} from '@/diet-server/daily/daily.utils'
 
 async function getDaily({
   userId,
@@ -99,7 +31,6 @@ async function getDaily({
     }
   })
   if (dailyDietMinimal) {
-    console.log('',);
     // add the product and meal objects to the dailyItems for ease of use
     const meals = await mealApi.getMeals({ userId })
     const products = await productApi.getProducts({ userId })
@@ -410,13 +341,11 @@ async function convertItemToCustomItem({
 const dailyApi = {
   getMacros,
   updateMacros,
-
   createDailyObject,
-
   getTodaysDailyKey,
   getPriorDaily,
-  getDaily,
 
+  getDaily,
   updateDaily,
   addDailyProduct,
   addDailyMeal,
@@ -425,7 +354,6 @@ const dailyApi = {
   updateItem,
   convertCustomItemToItem,
   convertItemToCustomItem,
-
 };
 
 export type DailyApi = typeof dailyApi;

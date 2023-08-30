@@ -3,99 +3,21 @@ import * as mt from "@/diet-server/meal/meal.types";
 import productApi from "@/diet-server/product/product.api";
 import stockApi from "@/diet-server/stock/stock.api";
 import baseApi from "@/diet-server/base.api";
-import itemApi, { type GetItemInput } from '@/diet-server/item/item.api'
+import itemApi from '@/diet-server/item/item.api'
 import { STOCK_TYPE } from "@/diet-server/stock/stock.constants";
-import { createMealObject, createMealObjectEmpty } from "@/diet-server/meal/meal.utils";
 import { getISODate } from "@/diet-server/utils/date.utils";
-
-function minimizeMeal(
-  meal: t.Meal
-): t.MealMinimal {
-  const { protein, calories, grams, products, ...rest } = meal
-
-  // remove item references
-  const productsMinimal: t.ItemMinimal[] = []
-
-  products.forEach((i: t.Item) => {
-    const { item, ...rest } = i
-    productsMinimal.push(rest)
-  })
-
-  const mealMinimal: t.MealMinimal = {
-    ...rest,
-    products: productsMinimal
-  }
-  return mealMinimal
-}
-
-function getMacros(
-  meal: t.Meal
-) {
-  const macros = itemApi.calculateMacros(meal.products)
-  return macros
-}
-
-function updateMacros(
-  meal: t.Meal
-) {
-  const macros = mealApi.getMacros(meal)
-  const newMeal = { ...meal, ...macros }
-  return newMeal
-}
-
-function hasReferences(
-  meal: t.Meal
-): boolean {
-  return hasReferenceToDaily(meal)
-}
-
-function hasReferenceToDaily(
-  meal: t.Meal
-): boolean {
-  return meal.referenceDailies && Object.keys(meal.referenceDailies).length > 0
-}
-
-function addReferenceToDaily(
-  meal: t.Meal,
-  dailyId: string
-): t.Meal {
-  const newMeal = { ...meal }
-  if (!newMeal.referenceDailies) newMeal.referenceDailies = {}
-  newMeal.referenceDailies[dailyId] = true
-  return newMeal
-}
-
-function removeReferenceToDaily(
-  meal: t.Meal,
-  dailyId: string
-): t.Meal {
-  const newMeal = { ...meal }
-  if (!newMeal.referenceDailies) throw new Error('Meal does not have referenceDailies')
-  delete newMeal.referenceDailies[dailyId]
-  return newMeal
-}
-
-// @todo: merge with populate Daily
-async function populateMeal(
-  mealMinimal: t.MealMinimal,
-  lookup: GetItemInput
-) {
-  const newProducts: t.Item[] = []
-  // populate the meal's products with the original product
-  for (const itemMinimal of mealMinimal.products) {
-    // we update the item with the original item in case it has changed
-    const originalItem = await itemApi.getOriginalFromItem(itemMinimal, lookup)
-    if (!originalItem) throw new Error('Could not find meal item. Should display warning: ' + itemMinimal.id);
-    itemMinimal.name = originalItem.name
-    itemMinimal.description = originalItem.description
-
-    newProducts.push({ ...itemMinimal, item: originalItem })
-  }
-
-  const macros = itemApi.calculateMacros(newProducts)
-  const meal: t.Meal = { ...mealMinimal, ...macros, products: newProducts }
-  return meal
-}
+import {
+  createMealObject,
+  createMealObjectEmpty,
+  minimizeMeal,
+  populateMeal,
+  getMacros,
+  updateMacros,
+  hasReferenceToDaily,
+  hasReferences,
+  addReferenceToDaily,
+  removeReferenceToDaily,
+} from "@/diet-server/meal/meal.utils";
 
 async function getMeals({
   userId
@@ -116,13 +38,6 @@ async function getMeals({
   return meals
 }
 
-/**
- * Adds a meal to the user's meal list and updates the user's data.
- *
- * @param {AddMealInput} input - The input object containing the user ID, the meal name, and the list of products in the meal.
- *
- * @returns {t.ResponseResult} The result object containing a success flag and a message indicating the success or failure of the operation.
- */
 async function addMeal({
   userId,
   meal
@@ -147,10 +62,10 @@ async function updateMeal({
 }: mt.UpdateMealInput) {
   // @todo: update all dependent product to remove this meal as a dependency if a meal is removed
 
-  let updatedMeal:t.Meal = { ...meal, updatedAt: getISODate() }
+  let updatedMeal: t.Meal = { ...meal, updatedAt: getISODate() }
 
   // update macros if specified
-  if(updateMacros) {
+  if (updateMacros) {
     updatedMeal = mealApi.updateMacros(updatedMeal)
   }
 
@@ -225,7 +140,7 @@ async function addProductToMeal({
 }: mt.AddProductToMealInput
 ) {
   // create a ewn product
-  let newProduct = productApi.createProductObjectEmpty({fromCustomMeal:true})
+  let newProduct = productApi.createProductObjectEmpty({ fromCustomMeal: true })
   // make sure to store the reference to the meal it is added to
   newProduct = productApi.addReferenceToMeal(newProduct, meal.id)
 
@@ -380,6 +295,10 @@ const mealApi = {
   createMealObjectEmpty,
   getMacros,
   updateMacros,
+  hasReferenceToDaily,
+  hasReferences,
+  addReferenceToDaily,
+  removeReferenceToDaily,
 
   getMeals,
   addMeal,
@@ -388,11 +307,6 @@ const mealApi = {
 
   softDeleteMeal,
   restoreDeletedMeal,
-
-  hasReferenceToDaily,
-  hasReferences,
-  addReferenceToDaily,
-  removeReferenceToDaily,
 
   addProductToMeal,
   updateProductFromMeal,

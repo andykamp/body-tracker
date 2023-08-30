@@ -1,102 +1,26 @@
 import type * as t from "@/diet-server/diet.types"
 import type * as pt from "@/diet-server/product/product.types"
 import baseApi from "@/diet-server/base.api";
-import { createProductObject, createProductObjectEmpty } from "@/diet-server/product/product.utils";
 import { getISODate } from "@/diet-server/utils/date.utils";
-
-function parseToValidProduct(
-  product: t.Product
-): t.Product {
-
-  if (!product.name) {
-    throw new Error("Product name is required");
-  }
-
-  if (!product.protein && !product.calories) {
-    throw new Error("At least one of protein or calories is required");
-  }
-
-  return productApi.createProductObject({
-    name: product.name,
-    description: product.description || "",
-    protein: product.protein || 0,
-    calories: product.calories || 0,
-    grams: product.grams || 0,
-  });
-}
-
-function hasReferences(
-  product: t.Product
-): boolean {
-  return hasReferenceToDaily(product) || hasReferenceToMeal(product)
-}
-
-function hasReferenceToDaily(
-  product: t.Product
-): boolean {
-  return product.referenceDailies && Object.keys(product.referenceDailies).length > 0
-}
-
-function getReferencesDaily(
-  product: t.Product
-) {
-  return product.referenceDailies
-}
-
-function hasReferenceToMeal(
-  product: t.Product
-): boolean {
-  return product.referenceMeals && Object.keys(product.referenceMeals).length > 0
-}
-
-function getReferencesMeal(
-  product: t.Product
-) {
-  return product.referenceMeals
-}
-
-function addReferenceToMeal(
-  product: t.Product,
-  mealId: string
-) {
-  const newProduct = { ...product }
-  if (!newProduct.referenceMeals) newProduct.referenceMeals = {}
-  newProduct.referenceMeals[mealId] = true
-  return newProduct
-}
-
-function removeReferenceToMeal(
-  product: t.Product,
-  mealId: string
-) {
-  const newProduct = { ...product }
-  delete newProduct.referenceMeals[mealId]
-  return newProduct
-}
-
-function addReferenceToDaily(
-  product: t.Product,
-  dailyId: string
-) {
-  const newProduct = { ...product }
-  if (!newProduct.referenceDailies) newProduct.referenceDailies = {}
-  newProduct.referenceDailies[dailyId] = true
-  return newProduct
-}
-
-function removeReferenceToDaily(
-  product: t.Product,
-  dailyId: string
-) {
-  const newProduct = { ...product }
-  delete newProduct.referenceDailies[dailyId]
-  return newProduct
-}
+import {
+  createProductObject,
+  createProductObjectEmpty,
+  parseToValidProduct,
+  hasReferenceToMeal,
+  hasReferenceToDaily,
+  hasReferences,
+  getReferencesMeal,
+  getReferencesDaily,
+  addReferenceToMeal,
+  removeReferenceToMeal,
+  addReferenceToDaily,
+  removeReferenceToDaily,
+} from "@/diet-server/product/product.utils";
 
 async function getProduct({
   userId,
   id
-}: pt.GetProductInput){
+}: pt.GetProductInput) {
 
   const r = await baseApi.makeReqAndExec<t.Product>({
     proc: "getProduct",
@@ -110,7 +34,7 @@ async function getProduct({
 
 async function getProducts({
   userId
-}: pt.GetProductsInput){
+}: pt.GetProductsInput) {
 
   const r = await baseApi.makeReqAndExec<t.Product>({
     proc: "getProducts",
@@ -193,7 +117,7 @@ async function deleteProduct({
   // we cannot delete the product if it is referenced by a meal
   console.log('delteProd', productToDelete);
   if (productApi.hasReferences(productToDelete)) {
-    return productApi.softDeleteProduct({ userId, product:productToDelete })
+    return productApi.softDeleteProduct({ userId, product: productToDelete })
   } else {
 
     console.log('delete forever',);
