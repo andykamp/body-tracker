@@ -38,7 +38,7 @@ function Meals() {
         onCreate={() => {
           addMealMutation.mutate({
             userId: user?.uid,
-            meal: mealApi.createMealObjectEmpty({})
+            meal: mealApi.createMealObjectEmpty()
           })
         }}
         onChange={(meal: t.Meal) => {

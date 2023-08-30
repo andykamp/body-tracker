@@ -63,7 +63,7 @@ function Products() {
         console.log('adddd',);
         addProductMutation.mutate({
           userId: user.uid,
-          product: productApi.createProductObjectEmpty({})
+          product: productApi.createProductObjectEmpty()
         })
       }}
       isFetching={productsQuery.isFetching}

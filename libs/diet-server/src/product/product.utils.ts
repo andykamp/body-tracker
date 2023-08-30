@@ -54,10 +54,14 @@ type CreateProductObjectEmptyInput = {
   fromCustomMeal?: boolean;
   fromCustomDaily?: boolean;
 }
-export function createProductObjectEmpty({
+export function createProductObjectEmpty(
+  props?: CreateProductObjectEmptyInput
+) {
+  const {
+
   fromCustomMeal = false,
   fromCustomDaily = false
-}: CreateProductObjectEmptyInput) {
+} = props
   const product = createProductObject({
     name: '',
     fromCustomMeal,

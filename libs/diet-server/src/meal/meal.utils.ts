@@ -50,9 +50,11 @@ export function createMealObject({
 type CreateMealObjectEmptyInput = {
   fromCustomDaily?: boolean;
 }
-export function createMealObjectEmpty({
-  fromCustomDaily = false
-}: CreateMealObjectEmptyInput){
+
+export function createMealObjectEmpty(
+  props?: CreateMealObjectEmptyInput
+) {
+  const { fromCustomDaily = null } = props
   const meal = createMealObject({
     name: '',
     products: [],
