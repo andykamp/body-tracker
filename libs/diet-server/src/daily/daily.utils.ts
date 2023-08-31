@@ -100,3 +100,29 @@ export function getPriorDaily(
 
   return `${year}${month}${day}`;
 }
+
+export function convertToDateObject(
+  dateStr: string
+): { year: number, month: number, day: number } {
+    const year = parseInt(dateStr.substring(0, 4), 10);
+    const month = parseInt(dateStr.substring(4, 6), 10);
+    const day = parseInt(dateStr.substring(6, 8), 10);
+
+    return { year, month, day };
+}
+
+export function adjustDateByXDays(dateStr: string, x: number): string {
+    const year = parseInt(dateStr.substring(0, 4), 10);
+    const month = parseInt(dateStr.substring(4, 6), 10) - 1; // months in JavaScript are 0-indexed
+    const day = parseInt(dateStr.substring(6, 8), 10);
+
+    const dateObj = new Date(year, month, day);
+    dateObj.setDate(dateObj.getDate() + x);
+
+    // Format the new date object back to the format `${year}${month}${day}`
+    const adjustedYear = dateObj.getFullYear().toString();
+    const adjustedMonth = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+    const adjustedDay = dateObj.getDate().toString().padStart(2, '0');
+
+    return `${adjustedYear}${adjustedMonth}${adjustedDay}`;
+}

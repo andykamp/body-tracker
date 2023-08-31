@@ -23,7 +23,7 @@ async function getDaily({
   userId,
   dateKey
 }: dt.GetDailyInput) {
-  const dailyDietMinimal: t.DailyDietMinimal = await baseApi.makeReqAndExec<t.DailyDiet>({
+  const dailyDietMinimal: t.DailyDietMinimal = await baseApi.makeReqAndExec<t.DailyDietMinimal>({
     proc: "getDaily",
     vars: {
       userId,
