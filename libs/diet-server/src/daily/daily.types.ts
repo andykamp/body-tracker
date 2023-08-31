@@ -1,8 +1,24 @@
 import * as t from "@/diet-server/diet.types";
 
+export type addDailyInput = {
+  userId: string,
+  daily: t.DailyDiet
+}
+
+export type getYesterdaysDiffInput = {
+  userId: string,
+  dateKey: string
+}
+export type GetNextDayYesterdayDiffInput = {
+  userId: string,
+  daily: t.DailyDiet,
+  prevDateKey: string
+}
+
 export type GetDailyInput = {
   userId: string,
   dateKey: string
+  skipCreate?: boolean
 }
 
 export type UpdateDailyInput = {

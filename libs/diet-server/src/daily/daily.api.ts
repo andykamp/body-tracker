@@ -13,13 +13,87 @@ import { populateMinimizedItems } from '@/diet-server/utils/common.utils'
 import {
   createDailyObject,
   minimizeDaily,
-  getPriorDaily,
   getTodaysDailyKey,
   getMacros,
-  updateMacros
+  updateMacros,
+  adjustDateByXDays
 } from '@/diet-server/daily/daily.utils'
 
-async function getDaily({
+async function addDaily({
+  userId,
+  daily
+}: dt.addDailyInput) {
+  await baseApi.makeReqAndExec<t.DailyDietMinimal>({
+    proc: "addDaily",
+    vars: {
+      userId,
+      daily: minimizeDaily(daily)
+    }
+  })
+  return daily
+}
+
+async function getYestedaysDiff({
+  userId,
+  dateKey
+}: dt.getYesterdaysDiffInput) {
+
+  // get yesterdays daily to calculate the remaining calories and protein
+  const yesterdaysDateKey = adjustDateByXDays(dateKey, -1)
+  console.log('getting yers', yesterdaysDateKey);
+  const yesterdaysDaily: t.DailyDiet = await dailyApi.getDaily({
+    userId,
+    dateKey: yesterdaysDateKey,
+    skipCreate: true
+  })
+  console.log('yesterad', yesterdaysDaily);
+
+  if (yesterdaysDaily) {
+    const user = await userApi.getUser({ uid: userId })
+    const { targetCalories, targetProteins } = user
+    const yesterdaysCaloryDiff = targetCalories - yesterdaysDaily.calories
+    const yesterdaysProteinDiff = targetProteins - yesterdaysDaily.protein
+    // yesterdayWaterDiff =  targetWater - yesterdaysDaily.water
+    return {
+      yesterdaysCaloryDiff,
+      yesterdaysProteinDiff,
+      // yesterdayWaterDiff,
+    }
+  }
+  else{
+    return {
+      yesterdaysCaloryDiff: null,
+      yesterdaysProteinDiff: null,
+      // yesterdayWaterDiff,
+    }
+  }
+
+
+}
+
+async function getNextDayYesterdayDiff({
+  userId,
+  daily,
+  prevDateKey,
+}: dt.GetNextDayYesterdayDiffInput) {
+
+  // calculate the new diff
+  const user = await userApi.getUser({ uid: userId })
+  const { targetCalories, targetProteins } = user
+  const yesterdaysCaloryDiff = targetCalories - daily.calories
+  const yesterdaysProteinDiff = targetProteins - daily.protein
+
+  // get and return the updated next day daily
+  const nextDateKey = adjustDateByXDays(prevDateKey, 1)
+  const nextDailyDietMinimal: t.DailyDietMinimal = await getDailyMinimal({
+    userId,
+    dateKey: nextDateKey
+  })
+  return { ...nextDailyDietMinimal, yesterdaysCaloryDiff, yesterdaysProteinDiff } as t.DailyDietMinimal
+}
+
+
+async function getDailyMinimal({
   userId,
   dateKey
 }: dt.GetDailyInput) {
@@ -30,6 +104,20 @@ async function getDaily({
       dateKey
     }
   })
+  return dailyDietMinimal
+}
+
+async function getDaily({
+  userId,
+  dateKey,
+  skipCreate = false
+}: dt.GetDailyInput) {
+  const dailyDietMinimal: t.DailyDietMinimal = await getDailyMinimal({
+    userId,
+    dateKey
+  })
+
+  console.log('dailyDietMinimal', dailyDietMinimal);
   if (dailyDietMinimal) {
     // add the product and meal objects to the dailyItems for ease of use
     const meals = await mealApi.getMeals({ userId })
@@ -40,29 +128,18 @@ async function getDaily({
 
     const dailyItems: t.Item[] = await populateMinimizedItems(dailyDietMinimal.dailyItems, lookup)
 
-    let populatedDaily: t.DailyDiet = { ...dailyDietMinimal, dailyItems }
+    let populatedDaily: t.DailyDiet = {
+      ...dailyDietMinimal,
+      dailyItems,
+    }
     populatedDaily = dailyApi.updateMacros(populatedDaily)
     return populatedDaily
   }
-  else {
-
-    let yesterdaysCaloryDiff = 0, yesterdaysProteinDiff = 0
-    // get yesterdays daily to calculate the remaining calories and protein
-    const yesterdaysDateKey = dailyApi.getPriorDaily(1) // 1 day ago
-    const yesterdaysDaily = await baseApi.makeReqAndExec<t.DailyDiet>({
-      proc: "getDaily",
-      vars: {
-        userId,
-        dateKey: yesterdaysDateKey
-      }
-    })
-
-    if (yesterdaysDaily) {
-      const user = await userApi.getUser({ uid: userId })
-      const { targetCalories, targetProteins } = user
-      yesterdaysCaloryDiff = targetCalories - yesterdaysDaily.calories
-      yesterdaysProteinDiff = targetProteins - yesterdaysDaily.protein
-    }
+  else if (!skipCreate) {
+    const {
+      yesterdaysCaloryDiff,
+      yesterdaysProteinDiff,
+    } = await dailyApi.getYestedaysDiff({ userId, dateKey })
 
     let newDaily: t.DailyDiet = dailyApi.createDailyObject({
       dateKey,
@@ -71,16 +148,13 @@ async function getDaily({
     })
     newDaily = dailyApi.updateMacros(newDaily)
 
-
-    // @todo: catch error here
-    await baseApi.makeReqAndExec<t.DailyDiet>({
-      proc: "addDaily",
-      vars: {
-        userId,
-        daily: minimizeDaily(newDaily)
-      }
+    const addedDaily = await dailyApi.addDaily({
+      userId,
+      daily: newDaily
     })
-    return newDaily
+    return addedDaily
+  } else {
+    return null
   }
 }
 
@@ -105,6 +179,18 @@ async function updateDaily({
       daily: minimizeDaily(updatedDaily)
     }
   })
+
+  // udpate next yesterday diff if next exists and is not in the future
+  if (daily.id !== dailyApi.getTodaysDailyKey()) {
+    const updatedNextDay: t.DailyDietMinimal = await dailyApi.getNextDayYesterdayDiff({ userId, daily:updatedDaily, prevDateKey: daily.id })
+    await baseApi.makeReqAndExec<t.DailyDietMinimal>({
+      proc: "updateDaily",
+      vars: {
+        userId,
+        daily: updatedNextDay // already minimized
+      }
+    })
+  }
   return updatedDaily
 }
 
@@ -344,8 +430,11 @@ const dailyApi = {
   updateMacros,
   createDailyObject,
   getTodaysDailyKey,
-  getPriorDaily,
 
+  addDaily,
+  getYestedaysDiff,
+  getNextDayYesterdayDiff,
+  getDailyMinimal,
   getDaily,
   updateDaily,
   addDailyProduct,
