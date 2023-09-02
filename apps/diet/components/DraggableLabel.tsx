@@ -10,7 +10,7 @@ type DraggableLabelProps = {
   increment?: number;
 };
 
- function DraggableLabel({
+function DraggableLabel({
   children,
   value,
   // setValue,
@@ -30,9 +30,12 @@ type DraggableLabelProps = {
 
   // Start the drag to change operation when the mouse button is down.
   const onStart = useCallback(
-    (event:any) => {
-      setStartVal(event.clientX);
+    (event: any) => {
+      // For touch events, you need to get clientX from the touches array.
+      const clientX = event.type === 'touchstart' ? event.touches[0].clientX : event.clientX;
+      setStartVal(clientX);
       setSnapshot(value);
+
     },
     [value]
   );
@@ -42,9 +45,10 @@ type DraggableLabelProps = {
   // the operation..
   useEffect(() => {
     // Only change the value if the drag was actually started.
-    const onUpdate = (event:any) => {
+    const onUpdate = (event: any) => {
       if (startVal) {
-        const deltaX = event.clientX - startVal;
+        const clientX = event.type === 'touchmove' ? event.touches[0].clientX : event.clientX;
+        const deltaX = clientX - startVal;
         let newValue = snapshot + (deltaX * increment);
         newValue = Math.max(Math.min(newValue, max), min); // Clamp to min and max
         setValue(newValue);
@@ -56,11 +60,18 @@ type DraggableLabelProps = {
       setStartVal(0);
     };
 
+    // Add event listeners for mouse and touch events.
     document.addEventListener('mousemove', onUpdate);
     document.addEventListener('mouseup', onEnd);
+    document.addEventListener('touchmove', onUpdate);
+    document.addEventListener('touchend', onEnd);
+
     return () => {
+      // Clean up event listeners for both mouse and touch events.
       document.removeEventListener('mousemove', onUpdate);
       document.removeEventListener('mouseup', onEnd);
+      document.removeEventListener('touchmove', onUpdate);
+      document.removeEventListener('touchend', onEnd);
     };
   }, [startVal, setValue, snapshot]);
 
@@ -68,6 +79,7 @@ type DraggableLabelProps = {
     <div
       className="flex flex-row justify-center items-center px-2 h-full text-gray-500 cursor-ew-resize select-none"
       onMouseDown={onStart}
+      onTouchStart={onStart}
     >
       {children}
     </div>
