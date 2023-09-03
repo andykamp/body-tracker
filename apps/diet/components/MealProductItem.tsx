@@ -7,7 +7,7 @@ import {
 } from '@tanstack/react-query'
 import { useMealMutations } from "@/diet-client/meal/meals.mutations";
 import Item from "./Item";
-import { getUpdatedItem, updateItemIsLocked } from "@/diet-server/utils/common.utils";
+import { getUpdatedItem, onItemSelect, updateItemIsLocked } from "@/diet-server/utils/common.utils";
 
 type MealProductItem = {
   meal: t.Meal;
@@ -78,30 +78,23 @@ function MealProductItem({
   }
 
   const onSearchSelect = (selectedProduct: t.Product) => {
-    const { type } = selectedProduct
-    // toggle to itemwrapper
-    // delete the custom product that was created
-    if (isCustom) {
-      console.log('SELECT_CUSTOM', selectedProduct);
-
-      convertCustomProductToItemMutation.mutate({
-        userId: user.uid,
-        meal,
-        oldItem: item,
-        newProduct: selectedProduct
-
-      })
-    } else {
-      console.log('SELECT NOT CUSTOM', selectedProduct);
-      // create a new wrapper item
-      const newItem = itemApi.createItemWrapper(selectedProduct, type)
-      // onChange(newItem)
-      updateProductMutation.mutate({
-        userId: user.uid,
-        meal,
-        updatedItem: newItem
-      })
-    }
+    onItemSelect({
+      item,
+      selected: selectedProduct,
+      convertToStockItem: (selected: t.Product) =>
+        convertCustomProductToItemMutation.mutate({
+          userId: user.uid,
+          meal,
+          oldItem: item,
+          newProduct: selected
+        }),
+      updateItem: (newItem: t.Item) =>
+        updateProductMutation.mutate({
+          userId: user.uid,
+          meal,
+          updatedItem: newItem
+        })
+    })
   }
 
   const onProsentageChange = (prosentage: number) => {

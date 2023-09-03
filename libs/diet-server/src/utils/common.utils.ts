@@ -2,6 +2,7 @@ import * as t from "@/diet-server/diet.types";
 import itemApi, { type GetItemInput } from '@/diet-server/item/item.api'
 
 
+// @todo: change to use object argument
 export async function populateMinimizedItems(
   minimizedItems: t.ItemMinimal[],
   lookup: GetItemInput
@@ -48,19 +49,19 @@ export function getUpdatedItem(input: GetUpdatedItemInput) {
   return newItem
 }
 
-type onSearchSelectInput = {
+type onItemSelectInput = {
   item: t.Item
   selected: t.Product | t.Meal
   convertToStockItem: (selected: t.Product | t.Meal) => void
-  updateStockItem: (newItem: t.Item) => void
+  updateItem: (newItem: t.Item) => void
 }
 
-export function onSearchSelect(input: onSearchSelectInput) {
+export function onItemSelect(input: onItemSelectInput) {
   const {
     item,
     selected,
     convertToStockItem,
-    updateStockItem,
+    updateItem,
   } = input
 
   const isCustom = item.updateOriginalItem
@@ -76,7 +77,7 @@ export function onSearchSelect(input: onSearchSelectInput) {
     console.log('SELECT NOT CUSTOM', selected);
     // create a new wrapper item
     const newItem = itemApi.createItemWrapper(selected, type)
-    updateStockItem(newItem)
+    updateItem(newItem)
   }
 }
 
