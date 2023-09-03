@@ -49,6 +49,34 @@ export function getUpdatedItem(input: GetUpdatedItemInput) {
   return newItem
 }
 
+type onItemSearchInput = {
+  item: t.Item,
+  searchTerm: string,
+  convertToCustomItem: (item: t.Item) => void
+  updateNameField: (name: any) => void
+}
+
+export function onItemSearch(input: onItemSearchInput) {
+  const {
+    item,
+    searchTerm,
+    convertToCustomItem,
+    updateNameField,
+  } = input
+
+  const isCustom = item.updateOriginalItem
+
+  if (isCustom) {
+    updateNameField(searchTerm)
+  } else {
+    console.log('SEARCH_CONVERT',);
+    convertToCustomItem(item)
+  }
+}
+
+
+
+
 type onItemSelectInput = {
   item: t.Item
   selected: t.Product | t.Meal

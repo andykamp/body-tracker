@@ -1,13 +1,18 @@
 import React from "react";
 import * as t from '@/diet-server/diet.types'
-import itemApi from "@/diet-server/item/item.api";
-import { useAuthContext } from "@/auth-client/firebase/Provider";
+import { useAuthContext }
+  from "@/auth-client/firebase/Provider";
+import {useQueryClient}
+  from '@tanstack/react-query'
+import { useDailyMutations }
+  from "@/diet-client/daily/daily.mutations";
 import {
-  useQueryClient,
-} from '@tanstack/react-query'
-import { useDailyMutations } from "@/diet-client/daily/daily.mutations";
+  getUpdatedItem,
+  onItemSearch,
+  onItemSelect,
+  updateItemIsLocked
+} from "@/diet-server/utils/common.utils";
 import Item from "./Item";
-import { getUpdatedItem, onItemSelect, updateItemIsLocked } from "@/diet-server/utils/common.utils";
 
 type DailyItemProps = {
   daily: t.DailyDiet;
@@ -28,8 +33,6 @@ function DailyItem({
     convertCustomItemToItemMutation,
     convertItemToCustomItemMutation,
   } = useDailyMutations({ queryClient })
-
-  const isCustom = item.updateOriginalItem
 
   const onUpdate = (newItem: t.Item) => {
     updateItemMutation.mutate({
@@ -63,17 +66,19 @@ function DailyItem({
 
   const onSearchChange = (searchTerm: string) => {
     console.log('searchTerm', searchTerm);
-    if (isCustom) {
-      updateField('name', searchTerm)
-    } else {
-      console.log('SEARCH_CONVERT',);
-      convertItemToCustomItemMutation.mutate({
-        userId: user.uid,
-        daily,
-        item,
-        adjustedAttributes: { name: searchTerm }
-      })
-    }
+
+    onItemSearch({
+      item,
+      searchTerm,
+      convertToCustomItem: (item: t.Item) =>
+        convertItemToCustomItemMutation.mutate({
+          userId: user.uid,
+          daily,
+          item,
+          adjustedAttributes: { name: searchTerm }
+        }),
+      updateNameField: (name: string) => updateField('name', name)
+    })
   }
 
   const onSearchSelect = (selected: t.Product | t.Meal) => {

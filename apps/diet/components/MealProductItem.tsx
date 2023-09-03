@@ -1,13 +1,18 @@
 import React from "react";
 import * as t from '@/diet-server/diet.types'
-import itemApi from "@/diet-server/item/item.api";
-import { useAuthContext } from "@/auth-client/firebase/Provider";
+import { useAuthContext }
+  from "@/auth-client/firebase/Provider";
+import {useQueryClient}
+  from '@tanstack/react-query'
+import { useMealMutations }
+  from "@/diet-client/meal/meals.mutations";
 import {
-  useQueryClient,
-} from '@tanstack/react-query'
-import { useMealMutations } from "@/diet-client/meal/meals.mutations";
+  getUpdatedItem,
+  onItemSearch,
+  onItemSelect,
+  updateItemIsLocked
+} from "@/diet-server/utils/common.utils";
 import Item from "./Item";
-import { getUpdatedItem, onItemSelect, updateItemIsLocked } from "@/diet-server/utils/common.utils";
 
 type MealProductItem = {
   meal: t.Meal;
@@ -29,8 +34,6 @@ function MealProductItem({
     convertItemToCustomProductMutation,
   } = useMealMutations({ queryClient })
 
-  const isCustom = item.updateOriginalItem
-
   const onUpdate = (newItem: t.Item) => {
     updateProductMutation.mutate({
       userId: user.uid,
@@ -48,9 +51,9 @@ function MealProductItem({
     onUpdate(newItem)
   }
 
-  const updateNumericField = (key: string, value: any) => {
-    value = +value
-    updateField(key, value)
+  const updateNumericField = (key: string, value: string) => {
+    const number = +value
+    updateField(key, number)
   }
 
   const onDelete = (item: t.Item) => {
@@ -63,18 +66,18 @@ function MealProductItem({
 
   const onSearchChange = (searchTerm: string) => {
     console.log('searchTerm', searchTerm);
-    if (isCustom) {
-      console.log('updatefieldname',);
-      updateField('name', searchTerm)
-    } else {
-      console.log('SEARCH_CONVERT',);
-      convertItemToCustomProductMutation.mutate({
-        userId: user.uid,
-        meal,
-        item,
-        adjustedAttributes: { name: searchTerm }
-      })
-    }
+    onItemSearch({
+      item,
+      searchTerm,
+      convertToCustomItem: (item: t.Item) =>
+        convertItemToCustomProductMutation.mutate({
+          userId: user.uid,
+          meal,
+          item,
+          adjustedAttributes: { name: searchTerm }
+        }),
+      updateNameField: (name: string) => updateField('name', name)
+    })
   }
 
   const onSearchSelect = (selectedProduct: t.Product) => {
@@ -115,7 +118,6 @@ function MealProductItem({
         })
     })
   }
-
 
   return (
     <Item
