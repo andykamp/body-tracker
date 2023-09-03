@@ -10,7 +10,6 @@ type ItemProps = {
   onSearchChange: (search: string) => void;
   onSearchSelect: (selectedProduct: t.Product | t.Meal) => void;
   onFieldChange: (key: string, value: string) => void;
-  onProsentageChange: (prosentage: number) => void;
   onLock: (locked: boolean) => void;
   onDelete: (item: t.Item) => void;
 };
@@ -21,7 +20,6 @@ function Item({
   onSearchChange,
   onSearchSelect,
   onFieldChange,
-  onProsentageChange,
   onLock,
   onDelete,
 
@@ -51,7 +49,7 @@ function Item({
         value={protein?.toString()}
         label="protein"
         onChange={(e) => onFieldChange('protein', e.target.value)}
-        disabled={!isCustom || item.isLocked}
+        disabled={!isCustom || item.isLocked}
       />
 
       <Input
@@ -59,7 +57,7 @@ function Item({
         value={calories?.toString()}
         label="calories"
         onChange={(e) => onFieldChange('calories', e.target.value)}
-        disabled={!isCustom || item.isLocked}
+        disabled={!isCustom || item.isLocked}
       />
 
       {item.isLocked ?
@@ -67,9 +65,11 @@ function Item({
           <GramInput
             originalGrams={item.item.grams}
             initialGrams={grams}
-            onProsentageChange={onProsentageChange}
+            onProsentageChange={(prosentage) =>
+              onFieldChange('prosentage', prosentage.toString())
+            }
           />
-          <button onClick={()=>onLock(false)}>un-lock</button>
+          <button onClick={() => onLock(false)}>un-lock</button>
         </>) :
         (
           <>
@@ -80,7 +80,7 @@ function Item({
               onChange={(e) => onFieldChange('grams', e.target.value)}
               disabled={!isCustom}
             />
-            <button onClick={()=>onLock(true)}>lock</button>
+            <button onClick={() => onLock(true)}>lock</button>
           </>
         )
       }

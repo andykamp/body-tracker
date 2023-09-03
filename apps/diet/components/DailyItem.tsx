@@ -90,16 +90,6 @@ function DailyItem({
     })
   }
 
-  // @todo: bake into onFieldChange??
-  const onProsentageChange = (prosentage: number) => {
-    const newItem = { ...item, prosentage }
-    updateItemMutation.mutate({
-      userId: user.uid,
-      daily,
-      updatedItem: newItem
-    })
-  }
-
   const onLock = (newIsLocked: boolean) => {
     updateItemIsLocked({
       item,
@@ -125,7 +115,6 @@ function DailyItem({
       onSearchChange={onSearchChange}
       onSearchSelect={onSearchSelect}
       onFieldChange={onFieldChange}
-      onProsentageChange={onProsentageChange}
       onLock={onLock}
       onDelete={onDelete}
     />

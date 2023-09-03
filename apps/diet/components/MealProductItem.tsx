@@ -91,15 +91,6 @@ function MealProductItem({
     })
   }
 
-  const onProsentageChange = (prosentage: number) => {
-    const newItem = { ...item, prosentage }
-    updateProductMutation.mutate({
-      userId: user.uid,
-      meal,
-      updatedItem: newItem
-    })
-  }
-
   const onLock = (newIsLocked: boolean) => {
     updateItemIsLocked({
       item,
@@ -116,7 +107,6 @@ function MealProductItem({
           meal,
           updatedItem: newItem
         }),
-
     })
   }
 
@@ -127,7 +117,6 @@ function MealProductItem({
       onSearchChange={onSearchChange}
       onSearchSelect={onSearchSelect}
       onFieldChange={onFieldChange}
-      onProsentageChange={onProsentageChange}
       onLock={onLock}
       onDelete={onDelete}
     />
