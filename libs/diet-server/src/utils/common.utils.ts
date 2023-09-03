@@ -25,24 +25,35 @@ export async function populateMinimizedItems(
 type GetUpdatedItemInput = {
   item: t.Item
   key: string
-  value: any
+  value: string
 }
 
 export function getUpdatedItem(input: GetUpdatedItemInput) {
   const { item, key, value } = input
 
-  const isCustom = item.updateOriginalItem
+  // convert string to number if needed
+  const convertToNumber = ['grams', 'protein', 'calories', 'prosentage']
+  const parsedValue = convertToNumber.includes(key) ? +value : value
+
   const newItem = { ...item }
 
-  // we update the item with the original name also
+  // if the key is prosentage, we only update the item itself
+  // and return early
+  if (key === 'prosentage') {
+    newItem.prosentage = parsedValue as number
+    return newItem
+  }
+
+  // we update the item with the new name aswell as the original item
   if (key === 'name') {
-    newItem.name = value
+    newItem.name = parsedValue as string
   }
 
   // if custom we add the attributes on the custom item also
+  const isCustom = item.updateOriginalItem
   if (isCustom) {
     const product = item.item
-    const updatedProduct = { ...product, [key]: value }
+    const updatedProduct = { ...product, [key]: parsedValue }
     newItem.item = updatedProduct
   }
 
@@ -73,9 +84,6 @@ export function onItemSearch(input: onItemSearchInput) {
     convertToCustomItem(item)
   }
 }
-
-
-
 
 type onItemSelectInput = {
   item: t.Item
@@ -112,24 +120,20 @@ export function onItemSelect(input: onItemSelectInput) {
 type LockItemInput = {
   item: t.Item;
   newIsLocked: boolean;
-  updateItem: (newItem: t.Item) => void;
   convertToCustomItem: (newItem: t.Item) => void;
+  updateItem: (newItem: t.Item) => void;
 }
 
 export function updateItemIsLocked(input: LockItemInput) {
   const {
     item,
     newIsLocked,
-    updateItem,
     convertToCustomItem,
+    updateItem,
   } = input
   const isCustom = item.updateOriginalItem
 
   const newItem = { ...item, isLocked: newIsLocked }
-
-  // @todo: move to daily/meal api?
-  // @todo: only allow on custom items
-  // we need to update the
 
   // on locking, we only update the isLocked field
   if (newIsLocked) {

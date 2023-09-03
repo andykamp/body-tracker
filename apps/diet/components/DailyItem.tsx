@@ -2,7 +2,7 @@ import React from "react";
 import * as t from '@/diet-server/diet.types'
 import { useAuthContext }
   from "@/auth-client/firebase/Provider";
-import {useQueryClient}
+import { useQueryClient }
   from '@tanstack/react-query'
 import { useDailyMutations }
   from "@/diet-client/daily/daily.mutations";
@@ -34,26 +34,17 @@ function DailyItem({
     convertItemToCustomItemMutation,
   } = useDailyMutations({ queryClient })
 
-  const onUpdate = (newItem: t.Item) => {
-    updateItemMutation.mutate({
-      userId: user.uid,
-      daily,
-      updatedItem: newItem
-    })
-  }
-
-  const updateField = (key: string, value: any) => {
+  const onFieldChange = (key: string, value: string) => {
     const newItem = getUpdatedItem({
       item,
       key,
       value,
     })
-    onUpdate(newItem)
-  }
-
-  const updateNumericField = (key: string, value: any) => {
-    value = +value
-    updateField(key, value)
+    updateItemMutation.mutate({
+      userId: user.uid,
+      daily,
+      updatedItem: newItem
+    })
   }
 
   const onDelete = (item: t.Item) => {
@@ -65,8 +56,6 @@ function DailyItem({
   }
 
   const onSearchChange = (searchTerm: string) => {
-    console.log('searchTerm', searchTerm);
-
     onItemSearch({
       item,
       searchTerm,
@@ -77,7 +66,7 @@ function DailyItem({
           item,
           adjustedAttributes: { name: searchTerm }
         }),
-      updateNameField: (name: string) => updateField('name', name)
+      updateNameField: (name: string) => onFieldChange('name', name)
     })
   }
 
@@ -101,21 +90,31 @@ function DailyItem({
     })
   }
 
+  // @todo: bake into onFieldChange??
   const onProsentageChange = (prosentage: number) => {
     const newItem = { ...item, prosentage }
-    onUpdate(newItem)
+    updateItemMutation.mutate({
+      userId: user.uid,
+      daily,
+      updatedItem: newItem
+    })
   }
 
   const onLock = (newIsLocked: boolean) => {
     updateItemIsLocked({
       item,
       newIsLocked,
-      updateItem: onUpdate,
       convertToCustomItem: (newItem: t.Item) =>
         convertItemToCustomItemMutation.mutate({
           userId: user.uid,
           daily,
           item: newItem,
+        }),
+      updateItem: (newItem: t.Item) =>
+        updateItemMutation.mutate({
+          userId: user.uid,
+          daily,
+          updatedItem: newItem
         })
     })
   }
@@ -125,7 +124,7 @@ function DailyItem({
       item={item}
       onSearchChange={onSearchChange}
       onSearchSelect={onSearchSelect}
-      updateNumericField={updateNumericField}
+      onFieldChange={onFieldChange}
       onProsentageChange={onProsentageChange}
       onLock={onLock}
       onDelete={onDelete}

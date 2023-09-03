@@ -2,7 +2,7 @@ import React from "react";
 import * as t from '@/diet-server/diet.types'
 import { useAuthContext }
   from "@/auth-client/firebase/Provider";
-import {useQueryClient}
+import { useQueryClient }
   from '@tanstack/react-query'
 import { useMealMutations }
   from "@/diet-client/meal/meals.mutations";
@@ -34,26 +34,17 @@ function MealProductItem({
     convertItemToCustomProductMutation,
   } = useMealMutations({ queryClient })
 
-  const onUpdate = (newItem: t.Item) => {
-    updateProductMutation.mutate({
-      userId: user.uid,
-      meal,
-      updatedItem: newItem
-    })
-  }
-
-  const updateField = (key: string, value: any) => {
+  const onFieldChange = (key: string, value: string) => {
     const newItem = getUpdatedItem({
       item,
       key,
       value,
     })
-    onUpdate(newItem)
-  }
-
-  const updateNumericField = (key: string, value: string) => {
-    const number = +value
-    updateField(key, number)
+    updateProductMutation.mutate({
+      userId: user.uid,
+      meal,
+      updatedItem: newItem
+    })
   }
 
   const onDelete = (item: t.Item) => {
@@ -76,7 +67,7 @@ function MealProductItem({
           item,
           adjustedAttributes: { name: searchTerm }
         }),
-      updateNameField: (name: string) => updateField('name', name)
+      updateNameField: (name: string) => onFieldChange('name', name)
     })
   }
 
@@ -102,20 +93,30 @@ function MealProductItem({
 
   const onProsentageChange = (prosentage: number) => {
     const newItem = { ...item, prosentage }
-    onUpdate(newItem)
+    updateProductMutation.mutate({
+      userId: user.uid,
+      meal,
+      updatedItem: newItem
+    })
   }
 
   const onLock = (newIsLocked: boolean) => {
     updateItemIsLocked({
       item,
       newIsLocked,
-      updateItem: onUpdate,
       convertToCustomItem: (newItem: t.Item) =>
         convertItemToCustomProductMutation.mutate({
           userId: user.uid,
           meal,
           item: newItem,
-        })
+        }),
+      updateItem: (newItem: t.Item) =>
+        updateProductMutation.mutate({
+          userId: user.uid,
+          meal,
+          updatedItem: newItem
+        }),
+
     })
   }
 
@@ -125,7 +126,7 @@ function MealProductItem({
       searchType="product"
       onSearchChange={onSearchChange}
       onSearchSelect={onSearchSelect}
-      updateNumericField={updateNumericField}
+      onFieldChange={onFieldChange}
       onProsentageChange={onProsentageChange}
       onLock={onLock}
       onDelete={onDelete}

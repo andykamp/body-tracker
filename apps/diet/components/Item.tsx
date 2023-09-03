@@ -9,7 +9,7 @@ type ItemProps = {
   searchType?: 'product' | 'meal' | 'both';
   onSearchChange: (search: string) => void;
   onSearchSelect: (selectedProduct: t.Product | t.Meal) => void;
-  updateNumericField: (key: string, value: any) => void;
+  onFieldChange: (key: string, value: string) => void;
   onProsentageChange: (prosentage: number) => void;
   onLock: (locked: boolean) => void;
   onDelete: (item: t.Item) => void;
@@ -20,7 +20,7 @@ function Item({
   searchType = 'both',
   onSearchChange,
   onSearchSelect,
-  updateNumericField,
+  onFieldChange,
   onProsentageChange,
   onLock,
   onDelete,
@@ -50,7 +50,7 @@ function Item({
         width="130px"
         value={protein?.toString()}
         label="protein"
-        onChange={(e) => updateNumericField('protein', e.target.value)}
+        onChange={(e) => onFieldChange('protein', e.target.value)}
         disabled={!isCustom || item.isLocked}
       />
 
@@ -58,7 +58,7 @@ function Item({
         width="130px"
         value={calories?.toString()}
         label="calories"
-        onChange={(e) => updateNumericField('calories', e.target.value)}
+        onChange={(e) => onFieldChange('calories', e.target.value)}
         disabled={!isCustom || item.isLocked}
       />
 
@@ -77,7 +77,7 @@ function Item({
               width="130px"
               value={grams?.toString()}
               label="grams"
-              onChange={(e) => updateNumericField('grams', e.target.value)}
+              onChange={(e) => onFieldChange('grams', e.target.value)}
               disabled={!isCustom}
             />
             <button onClick={()=>onLock(true)}>lock</button>
