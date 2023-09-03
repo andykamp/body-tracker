@@ -27,9 +27,9 @@ function Item({
   console.log('ITEMMM', item.prosentage, item);
 
   const isCustom = item.updateOriginalItem
-  const protein = (item.item.protein || 0) * item.prosentage
-  const calories = (item.item.calories || 0) * item.prosentage
-  const grams = (item.item.grams || 0) * item.prosentage
+  const protein = Math.round((item.item.protein || 0) * item.prosentage)
+  const calories = Math.round((item.item.calories || 0) * item.prosentage)
+  const grams = Math.round((item.item.grams || 0) * item.prosentage)
   const disableLock = item.item.grams === 0
 
   return (

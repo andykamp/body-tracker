@@ -142,9 +142,10 @@ export function updateItemIsLocked(input: LockItemInput) {
   // on un-locking, we need to update the actual item with the ration
   else {
     newItem.prosentage = 1
-    newItem.item.protein = (newItem.item.protein || 0) * item.prosentage
-    newItem.item.calories = (newItem.item.calories || 0) * item.prosentage
-    newItem.item.grams = (newItem.item.grams || 0) * item.prosentage
+    newItem.item.protein = Math.round((newItem.item.protein || 0) * item.prosentage)
+    newItem.item.calories = Math.round((newItem.item.calories || 0) * item.prosentage)
+    newItem.item.grams = Math.round((newItem.item.grams || 0) * item.prosentage)
+
     if (isCustom) {
       updateItem(newItem)
     } else {
