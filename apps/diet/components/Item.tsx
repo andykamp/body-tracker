@@ -30,6 +30,7 @@ function Item({
   const protein = (item.item.protein || 0) * item.prosentage
   const calories = (item.item.calories || 0) * item.prosentage
   const grams = (item.item.grams || 0) * item.prosentage
+  const disableLock = item.item.grams === 0
 
   return (
     <div
@@ -80,7 +81,13 @@ function Item({
               onChange={(e) => onFieldChange('grams', e.target.value)}
               disabled={!isCustom}
             />
-            <button onClick={() => onLock(true)}>lock</button>
+            <button
+              className={disableLock ? 'text-gray-400 cursor-not-allowed' : ''}
+              disabled={disableLock}
+              onClick={() => onLock(true)}
+            >
+              lock
+            </button>
           </>
         )
       }
