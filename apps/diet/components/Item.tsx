@@ -2,6 +2,7 @@ import React from "react";
 import * as t from '@/diet-server/diet.types'
 import { Input } from "@geist-ui/core";
 import Search from '@/diet/components/SearchWrapper'
+import GramInput from "./GramInput";
 
 type ItemProps = {
   item: t.Item;
@@ -9,21 +10,28 @@ type ItemProps = {
   onSearchChange: (search: string) => void;
   onSearchSelect: (selectedProduct: t.Product | t.Meal) => void;
   updateNumericField: (key: string, value: any) => void;
+  onProsentageChange: (prosentage: number) => void;
+  onLock: (locked: boolean) => void;
   onDelete: (item: t.Item) => void;
 };
 
 function Item({
   item,
-  searchType= 'both',
+  searchType = 'both',
   onSearchChange,
   onSearchSelect,
   updateNumericField,
+  onProsentageChange,
+  onLock,
   onDelete,
 
 }: ItemProps) {
-  console.log('ITEMMM', item.name);
+  console.log('ITEMMM', item.prosentage, item);
 
   const isCustom = item.updateOriginalItem
+  const protein = (item.item.protein || 0) * item.prosentage
+  const calories = (item.item.calories || 0) * item.prosentage
+  const grams = (item.item.grams || 0) * item.prosentage
 
   return (
     <div
@@ -40,28 +48,42 @@ function Item({
 
       <Input
         width="130px"
-        value={item.item.protein?.toString()}
+        value={protein?.toString()}
         label="protein"
         onChange={(e) => updateNumericField('protein', e.target.value)}
-        disabled={!isCustom}
+        disabled={!isCustom || item.isLocked}
       />
 
       <Input
         width="130px"
-        value={item.item.calories?.toString()}
+        value={calories?.toString()}
         label="calories"
         onChange={(e) => updateNumericField('calories', e.target.value)}
-        disabled={!isCustom}
+        disabled={!isCustom || item.isLocked}
       />
 
-
-      <Input
-        width="130px"
-        value={item.item.grams?.toString()}
-        label="grams"
-        onChange={(e) => updateNumericField('grams', e.target.value)}
-        disabled={!isCustom}
-      />
+      {item.isLocked ?
+        (<>
+          <GramInput
+            originalGrams={item.item.grams}
+            initialGrams={grams}
+            onProsentageChange={onProsentageChange}
+          />
+          <button onClick={()=>onLock(false)}>un-lock</button>
+        </>) :
+        (
+          <>
+            <Input
+              width="130px"
+              value={grams?.toString()}
+              label="grams"
+              onChange={(e) => updateNumericField('grams', e.target.value)}
+              disabled={!isCustom}
+            />
+            <button onClick={()=>onLock(true)}>lock</button>
+          </>
+        )
+      }
 
       {
         onDelete &&

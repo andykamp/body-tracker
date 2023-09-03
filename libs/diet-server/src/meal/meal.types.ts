@@ -59,7 +59,7 @@ export type ConvertItemToCustomProductInput = {
   userId: string;
   meal: t.Meal;
   item: t.Item;
-  adjustedAttributes: {
+  adjustedAttributes?: {
     name?: string;
   }
 }

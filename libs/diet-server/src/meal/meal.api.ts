@@ -162,7 +162,7 @@ async function addProductToMeal({
   })
 
   // create a item around it
-  const newItem = itemApi.createItemWrapper(newProduct, "product")
+  const newItem = itemApi.createItemWrapper(newProduct, "product", false)
   // make sure it is updated directly and not as a item wrapper
   newItem.updateOriginalItem = true
 
@@ -262,7 +262,7 @@ async function convertItemToCustomProduct({
   userId,
   meal,
   item,
-  adjustedAttributes
+  adjustedAttributes = {}
 }: mt.ConvertItemToCustomProductInput) {
 
   // extract the actual product
@@ -285,6 +285,7 @@ async function convertItemToCustomProduct({
     item: addedProduct,
     itemId: addedProduct.id,
     itemType: addedProduct.type,
+    isLocked: false,
     updateOriginalItem: true,
     isStockItem: false,
   }

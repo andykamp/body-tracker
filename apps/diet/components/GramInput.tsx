@@ -1,23 +1,30 @@
-import { useEffect, useState } from "react";
-import { Input, useInput } from "@geist-ui/core";
+import { useEffect, useRef, useState } from "react";
+import { Input } from "@geist-ui/core";
 import { Github } from '@geist-ui/icons'
 import ClickAndDragWrapper from "@/diet/components/DraggableLabel";
 
 type GramInputProps = {
-  originalGrams?: number
-  onGramChange: (val: number) => void;
+  originalGrams: number
+  initialGrams: number
+  onProsentageChange: (prosentage: number) => void;
 };
 
 function GramInput({
   originalGrams = 0,
-  onGramChange,
+  initialGrams = 0,
+  onProsentageChange,
 }: GramInputProps) {
 
-  const [grams, setGrams] = useState(originalGrams);
+  const [grams, setGrams] = useState(initialGrams);
   const [modificationMode, setModificationMode] = useState<'grams' | 'percentage' | 'items'>('grams');
+  const initialRender = useRef(true);
 
   useEffect(() => {
-    onGramChange(grams)
+    if (initialRender.current) {
+      initialRender.current = false;
+      return;
+    }
+    onProsentageChange(grams / originalGrams)
   }, [grams])
 
   const handleClick = () => {
@@ -41,7 +48,6 @@ function GramInput({
   };
 
   const handlePercentageChange = (percentage: number) => {
-    // item.prosentage = percentage / 100;
     const newGrams = (originalGrams * percentage) / 100;
     setGrams(newGrams)
   };

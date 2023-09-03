@@ -7,6 +7,7 @@ import {
 } from '@tanstack/react-query'
 import { useMealMutations } from "@/diet-client/meal/meals.mutations";
 import Item from "./Item";
+import { getUpdatedItem, updateItemIsLocked } from "@/diet-server/utils/common.utils";
 
 type MealProductItem = {
   meal: t.Meal;
@@ -38,18 +39,12 @@ function MealProductItem({
     })
   }
 
-  const getUpdatedItem = (key: string, value: any) => {
-    if (isCustom) {
-      const product = item.item
-      const updatedProduct = { ...product, [key]: value }
-      item.item = updatedProduct
-    }
-    return { ...item, [key]: value }
-
-  }
-
   const updateField = (key: string, value: any) => {
-    const newItem = getUpdatedItem(key, value)
+    const newItem = getUpdatedItem({
+      item,
+      key,
+      value,
+    })
     onUpdate(newItem)
   }
 
@@ -69,6 +64,7 @@ function MealProductItem({
   const onSearchChange = (searchTerm: string) => {
     console.log('searchTerm', searchTerm);
     if (isCustom) {
+      console.log('updatefieldname',);
       updateField('name', searchTerm)
     } else {
       console.log('SEARCH_CONVERT',);
@@ -82,6 +78,7 @@ function MealProductItem({
   }
 
   const onSearchSelect = (selectedProduct: t.Product) => {
+    const { type } = selectedProduct
     // toggle to itemwrapper
     // delete the custom product that was created
     if (isCustom) {
@@ -97,7 +94,7 @@ function MealProductItem({
     } else {
       console.log('SELECT NOT CUSTOM', selectedProduct);
       // create a new wrapper item
-      const newItem = itemApi.createItemWrapper(selectedProduct, "product")
+      const newItem = itemApi.createItemWrapper(selectedProduct, type)
       // onChange(newItem)
       updateProductMutation.mutate({
         userId: user.uid,
@@ -107,6 +104,26 @@ function MealProductItem({
     }
   }
 
+  const onProsentageChange = (prosentage: number) => {
+    const newItem = { ...item, prosentage }
+    onUpdate(newItem)
+  }
+
+  const onLock = (newIsLocked: boolean) => {
+    updateItemIsLocked({
+      item,
+      newIsLocked,
+      updateItem: onUpdate,
+      convertToCustomItem: (newItem: t.Item) =>
+        convertItemToCustomProductMutation.mutate({
+          userId: user.uid,
+          meal,
+          item: newItem,
+        })
+    })
+  }
+
+
   return (
     <Item
       item={item}
@@ -114,6 +131,8 @@ function MealProductItem({
       onSearchChange={onSearchChange}
       onSearchSelect={onSearchSelect}
       updateNumericField={updateNumericField}
+      onProsentageChange={onProsentageChange}
+      onLock={onLock}
       onDelete={onDelete}
     />
   );

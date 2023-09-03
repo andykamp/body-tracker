@@ -4,7 +4,11 @@ import { getISODate } from "@/diet-server/utils/date.utils";
 import { parse, _fetch } from "@/common/utils/utils.fetch";
 
 
-function createItemWrapper(item: t.Meal | t.Product, type: t.ItemType): t.Item {
+function createItemWrapper(
+  item: t.Meal | t.Product,
+  type: t.ItemType,
+  isLocked: boolean = true,
+): t.Item {
   return {
     id: uuid(),
     name: item.name,
@@ -15,6 +19,7 @@ function createItemWrapper(item: t.Meal | t.Product, type: t.ItemType): t.Item {
     itemId: item.id,
     itemType: type,
     isStockItem: item.isStockItem,
+    isLocked,
     updateOriginalItem: false,
     item: item
   }
@@ -28,7 +33,9 @@ export type GetItemInput = {
 
 // @todo rename to someting more descriptive
 // @todo: add a isStockItem boolean to the item
-export async function getOriginalFromItem(itemMinimal: t.ItemMinimal, input: GetItemInput) {
+export async function getOriginalFromItem(
+  itemMinimal: t.ItemMinimal, input: GetItemInput
+) {
 
   const item = { ...itemMinimal }
   // Returns item.item if item is not null or undefined

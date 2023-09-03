@@ -7,6 +7,7 @@ import {
 } from '@tanstack/react-query'
 import { useDailyMutations } from "@/diet-client/daily/daily.mutations";
 import Item from "./Item";
+import { getUpdatedItem, updateItemIsLocked } from "@/diet-server/utils/common.utils";
 
 type DailyItemProps = {
   daily: t.DailyDiet;
@@ -31,7 +32,6 @@ function DailyItem({
   const isCustom = item.updateOriginalItem
 
   const onUpdate = (newItem: t.Item) => {
-    console.log('onUpdtae',newItem.name );
     updateItemMutation.mutate({
       userId: user.uid,
       daily,
@@ -39,18 +39,12 @@ function DailyItem({
     })
   }
 
-  const getUpdatedItem = (key: string, value: any) => {
-    if (isCustom) {
-      const i = item.item
-      const updated = { ...i, [key]: value }
-      item.item = updated
-    }
-    return { ...item, [key]: value }
-
-  }
-
   const updateField = (key: string, value: any) => {
-    const newItem = getUpdatedItem(key, value)
+    const newItem = getUpdatedItem({
+      item,
+      key,
+      value,
+    })
     onUpdate(newItem)
   }
 
@@ -60,11 +54,11 @@ function DailyItem({
   }
 
   const onDelete = (item: t.Item) => {
-      deleteItemMutation.mutate({
-        userId: user.uid,
-        daily,
-        item
-      })
+    deleteItemMutation.mutate({
+      userId: user.uid,
+      daily,
+      item
+    })
   }
 
   const onSearchChange = (searchTerm: string) => {
@@ -82,7 +76,7 @@ function DailyItem({
     }
   }
 
-  const onSearchSelect = (selected: t.Product) => {
+  const onSearchSelect = (selected: t.Product | t.Meal) => {
     const { type } = selected
     // toggle to itemwrapper
     // delete the custom product that was created
@@ -106,12 +100,33 @@ function DailyItem({
     }
   }
 
+  const onProsentageChange = (prosentage: number) => {
+    const newItem = { ...item, prosentage }
+    onUpdate(newItem)
+  }
+
+  const onLock = (newIsLocked: boolean) => {
+    updateItemIsLocked({
+      item,
+      newIsLocked,
+      updateItem: onUpdate,
+      convertToCustomItem: (newItem: t.Item) =>
+        convertItemToCustomItemMutation.mutate({
+          userId: user.uid,
+          daily,
+          item: newItem,
+        })
+    })
+  }
+
   return (
     <Item
       item={item}
       onSearchChange={onSearchChange}
       onSearchSelect={onSearchSelect}
       updateNumericField={updateNumericField}
+      onProsentageChange={onProsentageChange}
+      onLock={onLock}
       onDelete={onDelete}
     />
   );

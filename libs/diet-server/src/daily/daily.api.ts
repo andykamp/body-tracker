@@ -211,7 +211,7 @@ async function addDailyProduct({
   })
 
   // create a item around it
-  const newItem = itemApi.createItemWrapper(newProduct, newProduct.type)
+  const newItem = itemApi.createItemWrapper(newProduct, newProduct.type, false)
   // make sure it is updated directly and not as a item wrapper
   newItem.updateOriginalItem = true
 
@@ -243,7 +243,7 @@ async function addDailyMeal({
   })
 
   // create a item around it
-  const newItem = itemApi.createItemWrapper(newMeal, newMeal.type)
+  const newItem = itemApi.createItemWrapper(newMeal, newMeal.type, false)
   // make sure it is updated directly and not as a item wrapper
   newItem.updateOriginalItem = true
 
@@ -379,7 +379,7 @@ async function convertItemToCustomItem({
   userId,
   daily,
   item,
-  adjustedAttributes
+  adjustedAttributes ={}
 }: dt.ConvertItemToCustomItemInput) {
 
   // extract the actual product
@@ -387,6 +387,7 @@ async function convertItemToCustomItem({
   for (const key in adjustedAttributes) {
     addedProductOrMeal[key] = adjustedAttributes[key]
   }
+  addedProductOrMeal.fromCustomDaily = true // so that it does not show up in products unless specified
   console.log('added name', addedProductOrMeal.name);
 
   // create standalone product in database
@@ -412,6 +413,7 @@ async function convertItemToCustomItem({
     itemType: addedProductOrMeal.type,
     updateOriginalItem: true,
     isStockItem: false,
+    isLocked:false,
   }
 
   // update the daily item

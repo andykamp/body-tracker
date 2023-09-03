@@ -46,10 +46,32 @@ export type Oura = {
   access_token: string;
 }
 
+// dietGoals
+// @todo: create own api
+export type DietGoals = {
+  id: string;
+  name?: string;
+  description?: string;
+  targetCalories: number;
+  targetProteins: number;
+  targerWater: number;
+}
+
+// userInfo
+export type UserInfo = {
+  weight: number;
+  height: number;
+  age: number;
+  gender: string;
+}
+
 // user
 
 export type User = {
   id: string;
+
+  dietGoalId: string;
+  dietGoal?:DietGoals;
 
   targetCalories: number;
   targetProteins: number;
@@ -78,9 +100,9 @@ export type Product = {
   description?: string;
   thumbnail?: string;
 
-  protein?: number;
-  calories?: number
-  grams?: number;
+  protein: number;
+  calories: number
+  grams: number;
 
   isStockItem: boolean // makes it easy to find the source just from looking at the item
   fromCustomMeal?: boolean; // shows if it is not a stored product. But nice to use for future suggestions on autocomplete
@@ -139,6 +161,7 @@ export type Item = {
 
   isStockItem?: boolean // makes it easy to find the source just from looking at the item
   updateOriginalItem?: boolean, // if true, one can change all input fields of the original item
+  isLocked?: boolean // if true, one can only change the prosentage, not the actual item
 
   itemType: ItemType
   itemId: string // reference id to the original item
@@ -158,6 +181,7 @@ export type DailyDiet = {
 
   yesterdaysCaloryDiff?: number;
   yesterdaysProteinDiff?: number;
+  yesterdayWaterDiff?: number;
 
   protein?: number;
   calories?: number;
