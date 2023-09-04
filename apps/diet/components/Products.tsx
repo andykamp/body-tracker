@@ -43,11 +43,6 @@ function Products() {
 
       }}
       onDelete={async (product: t.Product) => {
-        // @todo: add a conformation dialog here
-        if (productApi.hasReferences(product)) {
-          alert('reference found here and here. We will archive it but hang on to it for your so you can re-store it at ay time')
-        }
-        // the delete will set isDeleted
         deleteProductMutation.mutate({
           userId: user.uid,
           product: product

@@ -128,7 +128,8 @@ export function removeReferenceToDaily(
   dailyId: string
 ): t.Meal {
   const newMeal = { ...meal }
-  if (!newMeal.referenceDailies) throw new Error('Meal does not have referenceDailies')
-  delete newMeal.referenceDailies[dailyId]
+  if (newMeal.referenceDailies) {
+    delete newMeal.referenceDailies[dailyId]
+  }
   return newMeal
 }

@@ -1,6 +1,7 @@
 import React from "react";
 import * as t from '@/diet-server/diet.types'
 import { Input } from "@geist-ui/core";
+import ConfirmDeleteProduct from "./ConfirmDeleteProduct";
 
 type ProductItemProps = {
   product: t.Product;
@@ -61,11 +62,11 @@ function ProductItem({
       />
 
       {onDelete && !isDeleted &&
-        <button
-          onClick={() => onDelete?.(product)}
-        >
-          delete
-        </button>
+
+        <ConfirmDeleteProduct
+          product={product}
+          onDelete={onDelete}
+        />
       }
       {onRestore && isDeleted &&
         <button

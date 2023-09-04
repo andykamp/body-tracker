@@ -132,7 +132,9 @@ export function removeReferenceToMeal(
   mealId: string
 ) {
   const newProduct = { ...product }
-  delete newProduct.referenceMeals[mealId]
+  if (newProduct.referenceMeals) {
+    delete newProduct.referenceMeals[mealId]
+  }
   return newProduct
 }
 
@@ -151,7 +153,9 @@ export function removeReferenceToDaily(
   dailyId: string
 ) {
   const newProduct = { ...product }
-  delete newProduct.referenceDailies[dailyId]
+  if (newProduct.referenceDailies) {
+    delete newProduct.referenceDailies[dailyId]
+  }
   return newProduct
 }
 

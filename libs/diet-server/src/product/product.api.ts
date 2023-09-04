@@ -109,14 +109,17 @@ async function restoreDeletedProduct({
 async function deleteProduct({
   userId,
   product,
-  fromDaily
+  fromDaily,
+  fromMeal
 }: pt.DeleteProductInput) {
 
   let productToDelete = fromDaily ? productApi.removeReferenceToDaily(product, fromDaily) : product
+  productToDelete = fromMeal ? productApi.removeReferenceToMeal(product, fromMeal) : product
 
   // we cannot delete the product if it is referenced by a meal
   console.log('delteProd', productToDelete);
   if (productApi.hasReferences(productToDelete)) {
+    console.log('softDelete',);
     return productApi.softDeleteProduct({ userId, product: productToDelete })
   } else {
 

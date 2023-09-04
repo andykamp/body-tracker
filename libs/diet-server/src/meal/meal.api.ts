@@ -206,7 +206,6 @@ async function removeProductFromMeal({
   meal,
   item
 }: mt.RemoveProductFromMealInput) {
-  // @todo: update all dependent product to remove this meal as a dependency if a meal is removed
 
   // perform check
   let deletedProduct: t.Product
@@ -214,7 +213,7 @@ async function removeProductFromMeal({
   if (isCustom) {
     deletedProduct = item.item as t.Product
     // @todo remove this meal as a reference
-    productApi.deleteProduct({ userId, product: deletedProduct })
+    productApi.deleteProduct({ userId, product: deletedProduct, fromMeal: meal.id })
   }
 
   const newMeal: t.Meal = { ...meal }

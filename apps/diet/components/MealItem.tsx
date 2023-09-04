@@ -2,6 +2,7 @@ import React from "react";
 import * as t from '@/diet-server/diet.types'
 import { Input } from "@geist-ui/core";
 import MealItemList from "./MealItemList";
+import ConfirmDeleteMeal from "./ConfirmDeleteMeal";
 
 type MealItemProps = {
   meal: t.Meal;
@@ -59,11 +60,10 @@ function MealItem({
         />
 
         {onDelete && !isDeleted &&
-          <button
-            onClick={() => onDelete(meal)}
-          >
-            delete
-          </button>
+          <ConfirmDeleteMeal
+            meal={meal}
+            onDelete={onDelete}
+          />
         }
         {onRestore && isDeleted &&
           <button

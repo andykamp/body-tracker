@@ -38,4 +38,5 @@ export type DeleteProductInput = {
   userId: string,
   product: t.Product,
   fromDaily?: string
+  fromMeal?: string
 }
