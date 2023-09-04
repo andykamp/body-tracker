@@ -23,6 +23,7 @@ function Meals() {
     addMealMutation,
     updateMealMutation,
     deleteMealMutation,
+    restoreDeletedMealMutation
   } = useMealMutations({ queryClient })
 
   if (!user) {
@@ -55,7 +56,10 @@ function Meals() {
           })
         }}
         onRestore={(meal: t.Meal) => {
-
+          restoreDeletedMealMutation.mutate({
+            userId: user?.uid,
+            meal
+          })
         }}
         isFetching={mealsQuery.isFetching}
       />

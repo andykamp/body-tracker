@@ -21,7 +21,7 @@ export function useMealMutations({
         alert('addMealMutation error')
       } else if (addedMeal) {
         console.log('addMealMutation successfull', addedMeal);
-        // update the product state
+        // update the meal state
         mealCacheApi.addMeal(addedMeal, queryClient)
       }
     }
@@ -34,7 +34,7 @@ export function useMealMutations({
         alert('updateMealMutation error')
       } else if (updatedMeal) {
         console.log('updateMealMutation successfull', updatedMeal);
-        // update the product state
+        // update the meal state
         mealCacheApi.updateMeal(updatedMeal, queryClient)
         // @todo: update the getDailyCache
         queryClient.invalidateQueries({ queryKey: dailyCacheKeys.getDaily })
@@ -51,10 +51,10 @@ export function useMealMutations({
         // we only added the isDeleteFlag
         if (deletedMeal.isDeleted) {
           console.log('deleSuccessfull deleteMealMutation', deletedMeal);
-          // update the product state
+          // update the meal state
           mealCacheApi.updateMeal(deletedMeal, queryClient)
         } else {
-          // we have permanently deleted the product and need to remove it from the cache
+          // we have permanently deleted the meal and need to remove it from the cache
           console.log('removeFromCache',);
           mealCacheApi.removeMeal(deletedMeal, queryClient)
           // @todo: update the getDailyCache instead of invalidating it
@@ -167,9 +167,9 @@ export function useMealMutations({
         // @todo: rename to something more descriptive
         const { newMeal, deletedProduct } = data
         console.log('onSuccess deleteProductMutation', newMeal);
-        // update the product state
+        // update the meal state
         mealCacheApi.updateMeal(newMeal, queryClient)
-        // remove the deleted product if it is deleted
+        // remove the deleted meal if it is deleted
         if (deletedProduct) {
           productCacheApi.removeProduct(deletedProduct, queryClient)
         }
@@ -178,6 +178,22 @@ export function useMealMutations({
       }
     }
   })
+
+  const restoreDeletedMealMutation = useMutation({
+    mutationFn: mealApi.restoreDeletedMeal,
+    onSettled: (restoredMeal, error) => {
+      if (error) {
+        alert('restoreDeletedMealMutation error')
+      } else if (restoredMeal) {
+        console.log('restoreSuccessfull', restoredMeal);
+        // update the meal state
+        mealCacheApi.updateMeal(restoredMeal, queryClient)
+        // @todo: update the getDailyCache instead of invalidating it
+        queryClient.invalidateQueries({ queryKey: dailyCacheKeys.getDaily })
+      }
+    },
+  })
+
 
   return {
     addMealMutation,
@@ -190,6 +206,7 @@ export function useMealMutations({
 
     convertCustomProductToItemMutation,
     convertItemToCustomProductMutation,
+    restoreDeletedMealMutation
   }
 }
 

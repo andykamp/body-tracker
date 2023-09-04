@@ -5,6 +5,7 @@ import {
 import productApi from "@/diet-server/product/product.api"
 import productCacheApi from '@/diet-client/product/products.cache';
 import { mealCacheKeys } from '@/diet-client/meal/meals.cache';
+import { dailyCacheKeys } from '@/diet-client/daily/daily.cache'
 
 type UseProductMutationsProps = {
   queryClient: QueryClient
@@ -40,7 +41,7 @@ export function useProductMutations({
 
         // Invalidate and refetch
         queryClient.invalidateQueries({ queryKey: mealCacheKeys.getMeals })
-        queryClient.invalidateQueries({ queryKey: ['getDaily'] })
+        queryClient.invalidateQueries({ queryKey: dailyCacheKeys.getDaily })
       }
     }
   })
