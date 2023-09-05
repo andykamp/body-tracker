@@ -28,7 +28,8 @@ const askQuestion = () => {
         name: obj.title,
         protein: obj.nutrition.protein,
         calories: obj.nutrition.calories,
-        grams: obj.info.grams
+        grams: obj.info.grams,
+        thumbnail: obj.thumbnail
       }))
 
       // Print the result
