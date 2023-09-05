@@ -1,10 +1,11 @@
 import { getContents } from '@/oda-scraper/api';
 // import firebaseCrudApi from '@/oda-scraper/oda.firebase';
-import { writeLargeJsonToFile} from '@/oda-scraper/utils/utils.fs';
+import { writeLargeJsonToFile } from '@/common-scraper/utils/utils.fs';
 // import { products } from './__support__/fixtures/product';
 
 
 (async function main() {
+  const OUTPUT_FILE = 'oda_products.json'
   console.log('---scraping---',);
   const items = await getContents()
   // console.log('final items',);
@@ -15,8 +16,8 @@ import { writeLargeJsonToFile} from '@/oda-scraper/utils/utils.fs';
   // firebaseCrudApi.storeProducts(items)
   console.log('---scraping done---',);
 
-  await writeLargeJsonToFile('oda_products.json', items);
-  console.log('storing to file done', );
+  await writeLargeJsonToFile(OUTPUT_FILE, items);
+  console.log('storing to file done',);
 
   // later...
   // const read_products = await readLargeJsonFromFile('products.json');

@@ -1,7 +1,8 @@
-import { Product } from "@/oda-scraper/types";
+import { Product } from "@/common-scraper/types";
 import fs from 'fs';
 
-const FILE_PATH = '/Users/anderskampenes/side-projects/body-tracker/oda_products.json'
+const INPUT_FILE = 'oda_products.json'
+const FILE_PATH = `/Users/anderskampenes/side-projects/body-tracker/${INPUT_FILE}`
 
 // Check if search term was passed
 if (process.argv.length < 3) {

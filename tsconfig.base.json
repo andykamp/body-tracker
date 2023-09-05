@@ -26,6 +26,7 @@
       "@/oura/*": ["libs/oura/src/*"],
       "@/oura-client/*": ["libs/oura-client/src/*"],
       "@/ui/*": ["libs/ui/src/*"],
+      "@/common-scraper/*": ["libs/common-scraper/src/*"],
       "@/oda-scraper/*": ["libs/oda-scraper/src/*"],
       "@/diet/*": ["apps/diet/*"],
       "@/test-app/*": ["apps/test-app/*"]

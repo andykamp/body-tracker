@@ -1,11 +1,10 @@
 import puppeteer, { type Browser, type Page, } from 'puppeteer'
 import { v4 as uuid } from 'uuid';
-import { BASE_URL } from '@/oda-scraper/constants';
 import { mapInfoToEnglish, mapNutritionToEnglish }
-  from '@/oda-scraper/utils/utils.format';
-import { CATEGORY_WHITLELIST } from '@/oda-scraper/constants'
-import { writeLargeJsonToFile } from '@/oda-scraper/utils/utils.fs';
-import { Product, OdaNutritionInfo, OdaProductInfo } from '@/oda-scraper/types';
+  from '@/common-scraper/utils/utils.format';
+import { BASE_URL,CATEGORY_WHITLELIST } from '@/oda-scraper/constants'
+import { writeLargeJsonToFile } from '@/common-scraper/utils/utils.fs';
+import { Product, OdaNutritionInfo, OdaProductInfo } from '@/common-scraper/types';
 
 const RUN_HEADLESS_MODE = true;
 

@@ -1,10 +1,11 @@
-import { Product } from "../types";
+import { Product } from "@/common-scraper/types";
 import fs from 'fs';
 import readline from 'readline';
 
 // @note: this cannot be run interativly from nx... so we have to spesifically use the ts-node and the path in package.json
 
-const FILE_PATH = '/Users/anderskampenes/side-projects/body-tracker/oda_products.json'
+const INPUT_FILE = 'oda_products.json'
+const FILE_PATH = `/Users/anderskampenes/side-projects/body-tracker/${INPUT_FILE}`
 
 // Read and parse JSON file
 const data: { [key: string]: Product } = JSON.parse(fs.readFileSync(FILE_PATH, 'utf8'));

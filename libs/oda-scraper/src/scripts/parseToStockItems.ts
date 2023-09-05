@@ -1,10 +1,12 @@
-import { Product } from "@/oda-scraper/types";
+import { Product } from "@/common-scraper/types";
 import fs from 'fs';
-import { writeLargeJsonToFile } from '@/oda-scraper/utils/utils.fs';
+import { writeLargeJsonToFile } from '@/common-scraper/utils/utils.fs';
 import type * as t from "@/diet-server/diet.types"
 import { ITEM_TYPES } from "@/diet-server/diet.constants";
 
-const FILE_PATH = '/Users/anderskampenes/side-projects/body-tracker/oda_products.json'
+const INPUT_FILE = 'oda_products.json'
+const FILE_PATH = `/Users/anderskampenes/side-projects/body-tracker/${INPUT_FILE}`
+const OUTPUT_FILE = 'oda_products_normalized.json'
 
 export function formatStockItem(json: Record<string, any>) {
 
@@ -54,4 +56,4 @@ const formatted = formatStockItem(data);
 const normalized = normalizeJson(formatted);
 console.log('nr', normalized);
 
-writeLargeJsonToFile('oda_products_normalized.json', normalized);
+writeLargeJsonToFile(OUTPUT_FILE, normalized);

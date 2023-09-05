@@ -1,4 +1,4 @@
-import { OdaNutritionInfo, OdaProductInfo } from '@/oda-scraper/types';
+import { OdaNutritionInfo, OdaProductInfo } from '@/common-scraper/types';
 
 function removeNullishFields(data: Record<string, any>): Record<string, any> {
   for (const key in data) {

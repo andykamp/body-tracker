@@ -1,4 +1,4 @@
-import crudApi from "@/oda-scraper/firebase/firebase.api";
+import crudApi from "@/common-scraper/firebase/firebase.api";
 import admin from "firebase-admin"
 import { readFileSync } from 'fs';
 
