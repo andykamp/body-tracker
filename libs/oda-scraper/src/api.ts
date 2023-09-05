@@ -104,7 +104,7 @@ async function getProductTitle(page: Page) {
   return title
 }
 async function getProductThumbnail(page: Page) {
-  const IMAGE_SELECTOR = '.image-container img';
+  const IMAGE_SELECTOR = '#modal-container .image-container img';
   const imageUrl = await page.$eval(IMAGE_SELECTOR, img => img.src);
   console.log(imageUrl);
   return imageUrl
