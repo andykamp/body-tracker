@@ -3,7 +3,7 @@ import {
   QueryClient,
 } from '@tanstack/react-query'
 import dailyApi from "@/diet-server/daily/daily.api"
-import {dailyCacheKeys} from '@/diet-client/daily/daily.cache'
+import dailyCacheApi, {dailyCacheKeys} from '@/diet-client/daily/daily.cache'
 
 type UseDailyMutationsProps = {
   queryClient: QueryClient
@@ -14,36 +14,39 @@ export function useDailyMutations({
 
   const addDailyProductMutation = useMutation({
     mutationFn: dailyApi.addDailyProduct,
-    onSettled: (addedMeal, error) => {
+    onSettled: (data, error) => {
       if (error) {
         alert('addDailyProductMutation error')
-      } else if (addedMeal) {
-        console.log('addDailyProductMutation success',addedMeal );
-        queryClient.invalidateQueries({ queryKey: dailyCacheKeys.getDaily })
+      } else if (data) {
+        console.log('addDailyProductMutation success',data );
+        dailyCacheApi.updateDaily(data.newDaily, queryClient)
+        // queryClient.invalidateQueries({ queryKey: dailyCacheKeys.getDaily })
       }
     }
   })
 
   const addDailyMealMutation = useMutation({
     mutationFn: dailyApi.addDailyMeal,
-    onSettled: (addedMeal, error) => {
+    onSettled: (data, error) => {
       if (error) {
         alert('addDailyMealMutation error')
-      } else if (addedMeal) {
-        console.log('addDailyMealMutation success',addedMeal );
-        queryClient.invalidateQueries({ queryKey: dailyCacheKeys.getDaily })
+      } else if (data) {
+        console.log('addDailyMealMutation success',data );
+        dailyCacheApi.updateDaily(data.newDaily, queryClient)
+        // queryClient.invalidateQueries({ queryKey: dailyCacheKeys.getDaily })
       }
     }
   })
 
   const updateDailyMutation = useMutation({
     mutationFn: dailyApi.updateDaily,
-    onSettled: (updatedMeal, error) => {
+    onSettled: (updatedDaily, error) => {
       if (error) {
         alert('updateDailyMutation error')
-      } else if (updatedMeal) {
-        console.log('updateDailyMutation success',updatedMeal );
-        queryClient.invalidateQueries({ queryKey: dailyCacheKeys.getDaily })
+      } else if (updatedDaily) {
+        console.log('updateDailyMutation success',updatedDaily );
+        dailyCacheApi.updateDaily(updatedDaily, queryClient)
+        // queryClient.invalidateQueries({ queryKey: dailyCacheKeys.getDaily })
       }
     }
   })
@@ -55,7 +58,8 @@ export function useDailyMutations({
         alert('deleteItemMutation error')
       } else if (data) {
         console.log('deleteItemMutation success',data );
-        queryClient.invalidateQueries({ queryKey: dailyCacheKeys.getDaily })
+        dailyCacheApi.updateDaily(data.newDaily, queryClient)
+        // queryClient.invalidateQueries({ queryKey: dailyCacheKeys.getDaily })
       }
     }
   })
@@ -67,7 +71,8 @@ export function useDailyMutations({
         alert('updateItemMutation error')
       } else if (data) {
         console.log('updateItemMutation success',data );
-        queryClient.invalidateQueries({ queryKey: dailyCacheKeys.getDaily })
+        dailyCacheApi.updateDaily(data.newDaily, queryClient)
+        // queryClient.invalidateQueries({ queryKey: dailyCacheKeys.getDaily })
       }
     }
   })
@@ -80,7 +85,8 @@ export function useDailyMutations({
         alert('convertCustomItemToItemMutation error')
       } else if (data) {
         console.log('convertCustomItemToItemMutation success',data );
-        queryClient.invalidateQueries({ queryKey: dailyCacheKeys.getDaily })
+        dailyCacheApi.updateDaily(data.newDaily, queryClient)
+        // queryClient.invalidateQueries({ queryKey: dailyCacheKeys.getDaily })
       }
     }
   })
@@ -92,7 +98,8 @@ export function useDailyMutations({
         alert('convertItemToCustomItemMutation error')
       } else if (data) {
         console.log('convertItemToCustomItemMutation success',data );
-        queryClient.invalidateQueries({ queryKey: dailyCacheKeys.getDaily })
+        dailyCacheApi.updateDaily(data.newDaily, queryClient)
+        // queryClient.invalidateQueries({ queryKey: dailyCacheKeys.getDaily })
       }
     }
   })
