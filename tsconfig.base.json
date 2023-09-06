@@ -28,6 +28,7 @@
       "@/ui/*": ["libs/ui/src/*"],
       "@/common-scraper/*": ["libs/common-scraper/src/*"],
       "@/oda-scraper/*": ["libs/oda-scraper/src/*"],
+      "@/foodtable-scraper/*": ["libs/foodtable-scraper/src/*"],
       "@/diet/*": ["apps/diet/*"],
       "@/test-app/*": ["apps/test-app/*"]
     }

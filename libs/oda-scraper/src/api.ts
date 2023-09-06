@@ -1,10 +1,11 @@
 import puppeteer, { type Browser, type Page, } from 'puppeteer'
 import { v4 as uuid } from 'uuid';
 import { mapInfoToEnglish, mapNutritionToEnglish }
-  from '@/common-scraper/utils/utils.format';
-import { BASE_URL,CATEGORY_WHITLELIST } from '@/oda-scraper/constants'
+  from '@/oda-scraper/utils/utils.format';
+import { BASE_URL, CATEGORY_WHITLELIST } from '@/oda-scraper/constants'
 import { writeLargeJsonToFile } from '@/common-scraper/utils/utils.fs';
 import { Product, OdaNutritionInfo, OdaProductInfo } from '@/common-scraper/types';
+import { PRODUCT_SOURCES, UNITS } from '@/common-scraper/constants';
 
 const RUN_HEADLESS_MODE = true;
 
@@ -225,14 +226,14 @@ export async function getItems(page: Page, subCategoryName?: string, categoryNam
         uid: productUid,
         title: productTitle,
         source: {
-          type: 'oda',
+          type: PRODUCT_SOURCES.oda,
           uid: odaUid,
           categoryName: categoryName,
           subCategoryName: subCategoryName,
         },
         info: mapInfoToEnglish(productInfo as OdaProductInfo),
         nutrition: mapNutritionToEnglish(productNutrition as OdaNutritionInfo),
-        unit: 'grams',
+        unit: UNITS.grams,
         thumbnail
       } as Product
 

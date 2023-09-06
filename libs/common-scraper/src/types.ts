@@ -1,3 +1,5 @@
+import { Unit, ProductSources } from "./constants"
+
 export type OdaProductInfo = {
   Størrelse: string;
   Utleveringsdager?: string;
@@ -45,22 +47,20 @@ export type NutritionInfo = {
 };
 
 
-export type ProductType = 'oda'
-
 export type ProductSource = {
-  type: ProductType;
+  type: ProductSources;
   uid: string;
-  categoryName: string;
-  subCategoryName: string;
+  categoryName?: string;
+  subCategoryName?: string;
 }
 
-export type Product= {
+export type Product = {
   uid: string;
   title: string;
   source?: ProductSource;
   info: ProductInfo;
   nutrition: NutritionInfo;
-  unit: string;
+  unit: Unit;
   thumbnail: string;
 };
 

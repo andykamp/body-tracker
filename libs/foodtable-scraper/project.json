@@ -1,0 +1,36 @@
+{
+  "name": "foodtable-scraper",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/foodtable-scraper/src",
+  "projectType": "library",
+  "tags": ["type:backend", "scope:shared"],
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/foodtable-scraper/**/*.ts"]
+      }
+    },
+    "type-check": {
+      "command": "tsc -b ./libs/foodtable-scraper/tsconfig.json --incremental --pretty"
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/foodtable-scraper/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "scrape": {
+      "command": "ts-node -r tsconfig-paths/register --project ./libs/foodtable-scraper/tsconfig.json ./libs/foodtable-scraper/src/scripts/scraper.ts"
+    },
+    "search": {
+      "command": "ts-node -r tsconfig-paths/register --project ./libs/foodtable-scraper/tsconfig.json ./libs/foodtable-scraper/src/scripts/searchScript.ts"
+    },
+    "normalize": {
+      "command": "ts-node -r tsconfig-paths/register --project ./libs/foodtable-scraper/tsconfig.json ./libs/foodtable-scraper/src/scripts/parseToStockItems.ts"
+    }
+  }
+}
