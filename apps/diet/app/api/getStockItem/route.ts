@@ -1,13 +1,16 @@
 // pages/api/getStockItem.js
 import { NextResponse } from 'next/server';
 import { ODA_STOCK_PRODUCTS } from "@/diet-server/stock/oda_products_normalized";
+import { FOOD_TABLE_STOCK_PRODUCTS } from "@/diet-server/stock/foodtable_products_normalized";
 import * as t from '@/diet-server/diet.types'
 
-const data: t.StockStateNormalized<t.Product> = ODA_STOCK_PRODUCTS as t.StockStateNormalized<t.Product>
+const odaData: t.StockStateNormalized<t.Product> = ODA_STOCK_PRODUCTS as t.StockStateNormalized<t.Product>
+const foodtableData: t.StockStateNormalized<t.Product> = FOOD_TABLE_STOCK_PRODUCTS as unknown as t.StockStateNormalized<t.Product>
 
 function getItem(id: string) {
   // Your search code here...
-  return data.byIds[id]
+  if(odaData.byIds[id]) return odaData.byIds[id]
+  else return foodtableData.byIds[id]
 }
 
 export async function GET(req: Request,) {

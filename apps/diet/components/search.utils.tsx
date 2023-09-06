@@ -66,11 +66,29 @@ export function parseSearchResultToOptions(searchResults: t.Product[] | t.Meal[]
   }) as SearchOptions[]
 }
 
+// foodtable
+export async function getSearchResultsFoodtable(search: string) {
+  // get oda search results
+  const foodtableResults = await _fetch(`/api/searchStockItemsFoodtable?search=${search}`, {
+    method: 'GET',
+  });
+  return await parse(foodtableResults) as t.Product[]
+}
+
+export async function getSearchResultsOptionsFoodtable(search: string) {
+  // get oda search results
+  const searchResult = await getSearchResultsFoodtable(search)
+
+  // parse to search optios
+  return parseSearchResultToOptions(searchResult, 'oda')
+}
+
+
 // oda
 
 export async function getSearchResultsOda(search: string) {
   // get oda search results
-  const odaResults = await _fetch(`/api/searchStockItems?search=${search}`, {
+  const odaResults = await _fetch(`/api/searchStockItemsOda?search=${search}`, {
     method: 'GET',
   });
   return await parse(odaResults) as t.Product[]
@@ -139,6 +157,7 @@ export async function getSearchResultsOptions({
 }: GetSearchResultInput) {
 
 
+  const foodtableOptions = await getSearchResultsOptionsFoodtable(search)
   const odaOptions = await getSearchResultsOptionsOda(search)
   const stockOptions = getSearchResultsOptionsStock(search, type, stockItems)
   const productOptions = getSearchResultsOptionsProducts(search, products, blacklistedItemsId)
@@ -148,6 +167,7 @@ export async function getSearchResultsOptions({
     ...productOptions,
     ...mealOptions,
     ...odaOptions,
+    ...foodtableOptions,
     ...stockOptions,
   ]
 

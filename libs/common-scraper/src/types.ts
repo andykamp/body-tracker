@@ -35,15 +35,15 @@ export type ProductInfo = {
 };
 
 export type NutritionInfo = {
-  energy?: string;
-  calories?: string;
-  fat?: string;
-  ofWhichSaturatedFattyAcids?: string;
-  ofWhichMonounsaturatedFattyAcids?: string;
-  ofWhichPolyunsaturatedFattyAcids?: string;
-  carbohydrates?: string;
-  protein?: string;
-  salt?: string;
+  energy?: number;
+  calories?: number;
+  fat?: number;
+  ofWhichSaturatedFattyAcids?: number;
+  ofWhichMonounsaturatedFattyAcids?: number;
+  ofWhichPolyunsaturatedFattyAcids?: number;
+  carbohydrates?: number;
+  protein?: number;
+  salt?: number;
 };
 
 

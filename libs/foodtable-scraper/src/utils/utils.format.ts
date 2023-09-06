@@ -42,6 +42,11 @@ const convertKeys = (inputObj: { [key: number]: any }): t.FoodTableInputRow => {
   return outputObj as t.FoodTableInputRow;
 }
 
+
+function strToFloat(str: string) {
+  return parseFloat(str.replace(',', '.'));
+
+}
 export function mapCsvRowToProduct(r: t.FoodTableInputRow): Product {
   const row = convertKeys(r)
 
@@ -52,17 +57,16 @@ export function mapCsvRowToProduct(r: t.FoodTableInputRow): Product {
   }
 
 
-  // @todo: need to make sure the values has no nubmers etc in them. use the util
   const nutrition = {
-    energy: row.Kilojoule,
-    calories: row.Kilokalorier,
-    fat: row.Fett,
-    ofWhichSaturatedFattyAcids: row.Mettet,
-    ofWhichMonounsaturatedFattyAcids: row.Enumettet,
-    ofWhichPolyunsaturatedFattyAcids: row.Flerumettet,
-    carbohydrates: row.Karbohydrat,
-    protein: row.Protein,
-    salt: row.Salt,
+    energy: strToFloat(row.Kilojoule),
+    calories: strToFloat(row.Kilokalorier),
+    fat: strToFloat(row.Fett),
+    ofWhichSaturatedFattyAcids: strToFloat(row.Mettet),
+    ofWhichMonounsaturatedFattyAcids: strToFloat(row.Enumettet),
+    ofWhichPolyunsaturatedFattyAcids: strToFloat(row.Flerumettet),
+    carbohydrates: strToFloat(row.Karbohydrat),
+    protein: strToFloat(row.Protein),
+    salt: strToFloat(row.Salt),
   }
 
   const info = {

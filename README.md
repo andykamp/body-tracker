@@ -305,3 +305,4 @@ Should also start the emulator on yarn dev!!
             - daily
         -  use optimistic updates https://tanstack.com/query/v4/docs/react/guides/optimistic-updates 
 
+- UPGRADE TOoo node 18!! native fetch!
