@@ -61,7 +61,6 @@ export async function updateCacheOnMutate({
   // replace the entire cache object
   else {
     queryClient.setQueryData(cacheKey, mutatedObj)
-
   }
 
   // @todo: why do in need this?

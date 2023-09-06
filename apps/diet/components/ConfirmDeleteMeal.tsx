@@ -7,7 +7,7 @@ type ConfirmDeleteMealProps = {
   meal: t.Meal;
   onDelete: (meal: t.Meal) => void;
 }
-function ConfirmDeleteProduct(props: ConfirmDeleteMealProps) {
+function ConfirmDeleteMeal(props: ConfirmDeleteMealProps) {
   const { meal, onDelete } = props
   const [shown, setShown] = useState(false);
 
@@ -58,5 +58,5 @@ function ConfirmDeleteProduct(props: ConfirmDeleteMealProps) {
   )
 }
 
-export default ConfirmDeleteProduct;
+export default ConfirmDeleteMeal;
 

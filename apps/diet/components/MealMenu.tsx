@@ -2,28 +2,42 @@ import * as t from "@/diet-server/diet.types";
 import { Checkbox } from "@geist-ui/core";
 import { useState } from "react";
 import MealList from "./MealList";
+import mealApi from "@/diet-server/meal/meal.api"
+import { useMealMutations } from "@/diet-client/meal/meals.mutations";
+import {
+  useQueryClient,
+} from '@tanstack/react-query'
+import { useAuthContext } from "@/auth-client/firebase/Provider";
 
 export type MealMenuProps = {
   meals: t.Meal[],
-  onCreate: () => void,
-  onChange: (Meal: t.Meal) => void,
-  onDelete: (Meal: t.Meal) => void,
-  onRestore: (Meal: t.Meal) => void,
   isFetching: boolean,
 }
 
 function MealMenu(props: MealMenuProps) {
   const {
     meals,
-    onCreate,
-    onChange,
-    onDelete,
-    onRestore,
     isFetching,
   } = props
 
+  const { user } = useAuthContext()
+
+  const queryClient = useQueryClient()
+
   const [showCustomDailyMeals, setShowCustomDailyMeals] = useState(true);
   const [showDeletedMeals, setShowDeletedMeals] = useState(false);
+
+  const {
+    addMealMutation,
+  } = useMealMutations({ queryClient })
+
+  const onCreate = () => {
+    addMealMutation.mutate({
+      userId: user?.uid,
+      meal: mealApi.createMealObjectEmpty()
+    })
+  }
+
 
   let filteredMeals = showCustomDailyMeals ? meals : meals.filter((meal) => !meal.fromCustomDaily)
   filteredMeals = showDeletedMeals ? filteredMeals : filteredMeals.filter((meal) => !meal.isDeleted)
@@ -51,9 +65,6 @@ function MealMenu(props: MealMenuProps) {
 
       <MealList
         meals={sortedMeals}
-        onChange={onChange}
-        onDelete={onDelete}
-        onRestore={onRestore}
       />
 
       {isFetching ?

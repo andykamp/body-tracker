@@ -3,20 +3,49 @@ import * as t from '@/diet-server/diet.types'
 import { Input } from "@geist-ui/core";
 import MealItemList from "./MealItemList";
 import ConfirmDeleteMeal from "./ConfirmDeleteMeal";
+import { useMealMutations } from "@/diet-client/meal/meals.mutations";
+import {
+  useQueryClient,
+} from '@tanstack/react-query'
+import { useAuthContext } from "@/auth-client/firebase/Provider";
 
 type MealItemProps = {
   meal: t.Meal;
-  onChange: (meal: t.Meal) => void;
-  onDelete: (meal: t.Meal) => void;
-  onRestore: (meal: t.Meal) => void,
 };
 
 function MealItem({
   meal,
-  onChange,
-  onDelete,
-  onRestore
 }: MealItemProps) {
+
+  const { user } = useAuthContext()
+
+  const queryClient = useQueryClient()
+
+  const {
+    updateMealMutation,
+    deleteMealMutation,
+    restoreDeletedMealMutation
+  } = useMealMutations({ queryClient })
+
+  const onChange = (meal: t.Meal) => {
+    // @todo:also update daily mutatoin if in daily. add a onChange prop to handle such cases
+    updateMealMutation.mutate({
+      userId: user?.uid,
+      meal
+    })
+  }
+  const onDelete = (meal: t.Meal) => {
+    deleteMealMutation.mutate({
+      userId: user?.uid,
+      meal
+    })
+  }
+  const onRestore = (meal: t.Meal) => {
+    restoreDeletedMealMutation.mutate({
+      userId: user?.uid,
+      meal
+    })
+  }
 
   const updateField = (key: string, value: any) => {
     onChange({ ...meal, [key]: value })
