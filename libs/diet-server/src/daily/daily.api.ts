@@ -60,7 +60,7 @@ async function getYestedaysDiff({
       // yesterdayWaterDiff,
     }
   }
-  else{
+  else {
     return {
       yesterdaysCaloryDiff: null,
       yesterdaysProteinDiff: null,
@@ -182,7 +182,7 @@ async function updateDaily({
 
   // udpate next yesterday diff if next exists and is not in the future
   if (daily.id !== dailyApi.getTodaysDailyKey()) {
-    const updatedNextDay: t.DailyDietMinimal = await dailyApi.getNextDayYesterdayDiff({ userId, daily:updatedDaily, prevDateKey: daily.id })
+    const updatedNextDay: t.DailyDietMinimal = await dailyApi.getNextDayYesterdayDiff({ userId, daily: updatedDaily, prevDateKey: daily.id })
     await baseApi.makeReqAndExec<t.DailyDietMinimal>({
       proc: "updateDaily",
       vars: {
@@ -266,10 +266,11 @@ async function deleteDailyItem({
 }: dt.RemoveDailyInput) {
 
   // @todo: remove references
-  let deletedItem: t.Product | t.Meal
+  let deletedItem: t.Product | t.Meal = item.item
+
+  // if custom we need to delete it from the database
   const isCustom = item.updateOriginalItem
   if (isCustom) {
-    deletedItem = item.item
     if (assertMeal(deletedItem)) {
       mealApi.deleteMeal({
         userId,
@@ -283,6 +284,21 @@ async function deleteDailyItem({
         product: deletedItem,
         fromDaily: daily.id
       })
+    }
+  }
+  // if not custom we might need remove its references if it is not a stock item
+  else {
+    if (assertMeal(deletedItem)) {
+      if (!deletedItem.isStockItem) {
+        const updatedMeal = mealApi.removeReferenceToDaily(deletedItem, daily.id)
+        mealApi.updateMeal({ userId, meal: updatedMeal })
+      }
+    }
+    if (assertProduct(deletedItem)) {
+      if (!deletedItem.isStockItem) {
+        const updatedProduct = productApi.removeReferenceToDaily(deletedItem, daily.id)
+        productApi.updateProduct({ userId, updatedProduct })
+      }
     }
   }
 
@@ -352,12 +368,33 @@ async function convertCustomItemToItem({
   console.log('delete custom item', customProductOrMealToDelete);
   // @todo: not needed??
   if (assertMeal(customProductOrMealToDelete)) {
+    // remove the custom item
     const deletedMeal = mealApi.removeReferenceToDaily(customProductOrMealToDelete, daily.id)
     mealApi.deleteMeal({ userId, meal: deletedMeal })
+    // if the new item is not a stock item we need to update ts reference to be inclide this daily
+    if (assertMeal(newProductOrMeal)) {
+      if (!newProductOrMeal.isStockItem) {
+        const updatedMeal = mealApi.addReferenceToDaily(newProductOrMeal, daily.id)
+        mealApi.updateMeal({ userId, meal: updatedMeal })
+      }
+    } else {
+      alert('adding a product to a meal')
+    }
   }
+
   else if (assertProduct(customProductOrMealToDelete)) {
+    // remove the custom item
     const deletedProduct = productApi.removeReferenceToDaily(customProductOrMealToDelete, daily.id)
     productApi.deleteProduct({ userId, product: deletedProduct })
+    // if the new item is not a stock item we need to update ts reference to be inclide this daily
+    if (assertProduct(newProductOrMeal)) {
+      if (!newProductOrMeal.isStockItem) {
+        const updatedProduct = productApi.addReferenceToDaily(newProductOrMeal, daily.id)
+        productApi.updateProduct({ userId, updatedProduct })
+      }
+    } else {
+      alert('adding a meal to a product')
+    }
   }
 
   // create a new wrapper item
@@ -379,7 +416,7 @@ async function convertItemToCustomItem({
   userId,
   daily,
   item,
-  adjustedAttributes ={}
+  adjustedAttributes = {}
 }: dt.ConvertItemToCustomItemInput) {
 
   // extract the actual product
@@ -413,7 +450,7 @@ async function convertItemToCustomItem({
     itemType: addedProductOrMeal.type,
     updateOriginalItem: true,
     isStockItem: false,
-    isLocked:false,
+    isLocked: false,
   }
 
   // update the daily item
