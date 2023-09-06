@@ -13,8 +13,8 @@ export async function addToCacheOnMutate({
   const prevCache = queryClient.getQueryData(cacheKey)
 
   // Optimistically update to the new value
-  const udpatedCache = [...prevCache, mutatedObj]
-  queryClient.setQueryData(cacheKey, udpatedCache)
+  const updatedCache = [...prevCache, mutatedObj]
+  queryClient.setQueryData(cacheKey, updatedCache)
 
   // @todo: why do in need this?
   return { prevCache }
@@ -44,16 +44,24 @@ export async function updateCacheOnMutate({
   // Snapshot the previous value
   const prevCache = queryClient.getQueryData(cacheKey)
 
-  const udpatedCache = [...prevCache]
-  const index = findIndex(mutatedObj.id, udpatedCache)
+  // find the relevant entry in the array
+  if (Array.isArray(prevCache)) {
+    const updatedCache = [...prevCache]
+    const index = findIndex(mutatedObj.id, updatedCache)
 
-  if (index !== -1) {
-    udpatedCache[index] = {
-      ...udpatedCache[index],
-      ...mutatedObj,
+    if (index !== -1) {
+      updatedCache[index] = {
+        ...updatedCache[index],
+        ...mutatedObj,
+      }
+      // Optimistically update to the new value
+      queryClient.setQueryData(cacheKey, updatedCache)
     }
-    // Optimistically update to the new value
-    queryClient.setQueryData(cacheKey, udpatedCache)
+  }
+  // replace the entire cache object
+  else {
+    queryClient.setQueryData(cacheKey, mutatedObj)
+
   }
 
   // @todo: why do in need this?
@@ -77,6 +85,6 @@ export async function removeFromCacheOnMutate({
   const prevCache = queryClient.getQueryData(cacheKey)
 
   // Optimistically update to the new value
-  const udpatedCache = prevCache.filter((o: any) => o[keyToMatch] !== mutatedObj[keyToMatch])
-  queryClient.setQueryData(cacheKey, udpatedCache)
+  const updatedCache = prevCache.filter((o: any) => o[keyToMatch] !== mutatedObj[keyToMatch])
+  queryClient.setQueryData(cacheKey, updatedCache)
 }
