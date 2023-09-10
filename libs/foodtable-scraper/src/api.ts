@@ -17,7 +17,7 @@ function parseCsvRow(row: t.FoodTableInputRow): Product {
 
 function parseCsv(data: t.FoodTableInputRow[]) {
   const parsedData: Product[] = []
-  for (let row of data) {
+  for (const row of data) {
     const rowParsed = foodTableApi.parseCsvRow(row)
     // only add valid rows
     if (rowParsed) {

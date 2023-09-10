@@ -7,7 +7,7 @@ import { parse, _fetch } from "@/common/utils/utils.fetch";
 function createItemWrapper(
   item: t.Meal | t.Product,
   type: t.ItemType,
-  isLocked: boolean = true,
+  isLocked = true,
 ): t.Item {
   return {
     id: uuid(),

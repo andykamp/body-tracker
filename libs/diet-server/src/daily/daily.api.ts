@@ -266,7 +266,7 @@ async function deleteDailyItem({
 }: dt.RemoveDailyInput) {
 
   // @todo: remove references
-  let deletedItem: t.Product | t.Meal = item.item
+  const deletedItem: t.Product | t.Meal = item.item
 
   // if custom we need to delete it from the database
   const isCustom = item.updateOriginalItem
@@ -420,7 +420,7 @@ async function convertItemToCustomItem({
 }: dt.ConvertItemToCustomItemInput) {
 
   // extract the actual product
-  let addedProductOrMeal = item.item
+  const addedProductOrMeal = item.item
   for (const key in adjustedAttributes) {
     addedProductOrMeal[key] = adjustedAttributes[key]
   }
@@ -454,7 +454,7 @@ async function convertItemToCustomItem({
   }
 
   // update the daily item
-  let newDaily: t.DailyDiet = { ...daily }
+  const newDaily: t.DailyDiet = { ...daily }
   newDaily.dailyItems = newDaily.dailyItems.map(i => i.id === newItem.id ? newItem : i);
   const updatedDaily = await dailyApi.updateDaily({
     userId,

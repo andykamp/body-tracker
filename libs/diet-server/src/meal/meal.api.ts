@@ -112,7 +112,7 @@ async function deleteMeal({
   fromDaily
 }: mt.DeleteMealInput) {
 
-  let mealToDelete = fromDaily ? mealApi.removeReferenceToDaily(
+  const mealToDelete = fromDaily ? mealApi.removeReferenceToDaily(
     meal,
     fromDaily
   ) : meal
