@@ -14,8 +14,9 @@ function OuraSleep() {
 
   // extract data
   const { sleep } = data
+  if (!sleep) return null;
 
-  const parsedWeekData =graphApi.getSleepDataWeeklyAverage(sleep?.data);
+  const parsedWeekData =graphApi.getSleepDataWeeklyAverage(sleep.data);
 
   return (
       <Card className="mt-8">

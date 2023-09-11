@@ -9,7 +9,7 @@ import { Button, Input, useInput } from "@geist-ui/core";
 function GetAccess() {
   const { user } = useUserContext()
 
-  const { state, setState, reset, bindings } = useInput(user.oura?.access_token)
+  const { state, setState, reset, bindings } = useInput(user.oura?.access_token || '')
 
   const queryClient = useQueryClient()
 

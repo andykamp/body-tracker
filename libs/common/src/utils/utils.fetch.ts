@@ -6,7 +6,10 @@ export type FetchOptions = RequestInit & {
 
 export async function _fetch(
   url: string,
-  options?: Omit<FetchOptions, 'body'> & {body?: any}
+  options?: Omit<FetchOptions, 'body' | 'headers'> & {
+    body?: any
+    headers?: Record<string, string>
+  }
 ) {
   if (options?.params) {
     url = `${url}?${stringifyParams(options.params)}`

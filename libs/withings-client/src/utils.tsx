@@ -73,21 +73,21 @@ const getData = async (accessResponse: t.AccessResponse, userId: string) => {
 }
 
 type useDataProps = {
-  userId?: string;
+  userId: string;
   accessResponse?: t.AccessResponse
 }
 
 export function useData({
   userId,
   accessResponse
-}: useDataProps): t.DataState {
+}: useDataProps){
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['getWithingsData'],
-    queryFn: () => getData(accessResponse, userId),
+    queryFn: () => getData(accessResponse as t.AccessResponse, userId),
     enabled: !!userId && !!accessResponse?.access_token
   })
 
-  return { data, error, isLoading }
+  return { data, error, isLoading } as t.DataState
 }
 

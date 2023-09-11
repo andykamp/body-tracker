@@ -60,7 +60,7 @@ export type ConvertItemToCustomProductInput = {
   meal: t.Meal;
   item: t.Item;
   adjustedAttributes?: {
-    name?: string;
+    [key: string]: any;
   }
 }
 

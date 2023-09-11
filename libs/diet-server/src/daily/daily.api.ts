@@ -41,7 +41,7 @@ async function getYestedaysDiff({
   // get yesterdays daily to calculate the remaining calories and protein
   const yesterdaysDateKey = adjustDateByXDays(dateKey, -1)
   console.log('getting yers', yesterdaysDateKey);
-  const yesterdaysDaily: t.DailyDiet = await dailyApi.getDaily({
+  const yesterdaysDaily = await dailyApi.getDaily({
     userId,
     dateKey: yesterdaysDateKey,
     skipCreate: true
@@ -62,13 +62,11 @@ async function getYestedaysDiff({
   }
   else {
     return {
-      yesterdaysCaloryDiff: null,
-      yesterdaysProteinDiff: null,
+      yesterdaysCaloryDiff: 0,
+      yesterdaysProteinDiff: 0,
       // yesterdayWaterDiff,
     }
   }
-
-
 }
 
 async function getNextDayYesterdayDiff({
@@ -91,7 +89,6 @@ async function getNextDayYesterdayDiff({
   })
   return { ...nextDailyDietMinimal, yesterdaysCaloryDiff, yesterdaysProteinDiff } as t.DailyDietMinimal
 }
-
 
 async function getDailyMinimal({
   userId,
@@ -128,10 +125,12 @@ async function getDaily({
 
     const dailyItems: t.Item[] = await populateMinimizedItems(dailyDietMinimal.dailyItems, lookup)
 
-    let populatedDaily: t.DailyDiet = {
-      ...dailyDietMinimal,
+    const { id: dateKey, ...dailyProps } = dailyDietMinimal
+    let populatedDaily: t.DailyDiet = dailyApi.createDailyObject({
+      dateKey,
+      ...dailyProps,
       dailyItems,
-    }
+    })
     populatedDaily = dailyApi.updateMacros(populatedDaily)
     return populatedDaily
   }
@@ -420,9 +419,9 @@ async function convertItemToCustomItem({
 }: dt.ConvertItemToCustomItemInput) {
 
   // extract the actual product
-  const addedProductOrMeal = item.item
+  const addedProductOrMeal: t.Product | t.Meal = item.item
   for (const key in adjustedAttributes) {
-    addedProductOrMeal[key] = adjustedAttributes[key]
+    (addedProductOrMeal as any)[key] = adjustedAttributes[key]
   }
   addedProductOrMeal.fromCustomDaily = true // so that it does not show up in products unless specified
   console.log('added name', addedProductOrMeal.name);

@@ -177,7 +177,7 @@ async function updateProductFromMeal({
   meal,
   updatedItem
 }: mt.UpdateProductFromMealInput) {
-  let updatedProduct: t.Product
+  let updatedProduct: t.Product | undefined
   // check if it is a original product or just a item wrapper
   const isCustom = updatedItem.updateOriginalItem
 
@@ -208,7 +208,7 @@ async function removeProductFromMeal({
 }: mt.RemoveProductFromMealInput) {
 
   // perform check
-  let deletedProduct: t.Product
+  let deletedProduct: t.Product | undefined
   const isCustom = item.updateOriginalItem
   if (isCustom) {
     deletedProduct = item.item as t.Product
@@ -265,9 +265,9 @@ async function convertItemToCustomProduct({
 }: mt.ConvertItemToCustomProductInput) {
 
   // extract the actual product
-  const addedProduct = item.item
+  const addedProduct: t.Product = item.item
   for (const key in adjustedAttributes) {
-    addedProduct[key] = adjustedAttributes[key]
+      (addedProduct as any)[key] = adjustedAttributes[key]
   }
   console.log('added name', addedProduct.name);
 

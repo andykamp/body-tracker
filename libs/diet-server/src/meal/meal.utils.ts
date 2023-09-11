@@ -103,13 +103,13 @@ export function updateMacros(
 
 export function hasReferences(
   meal: t.Meal
-): boolean {
+) {
   return hasReferenceToDaily(meal)
 }
 
 export function hasReferenceToDaily(
   meal: t.Meal
-): boolean {
+) {
   return meal.referenceDailies && Object.keys(meal.referenceDailies).length > 0
 }
 

@@ -15,8 +15,10 @@ function OuraSleep() {
   // extract data
   const { sleep } = data
 
+  if (!sleep) return null;
+
   // parse data
-  const parsedData = graphApi.getSleepData(sleep?.data);
+  const parsedData = graphApi.getSleepData(sleep.data);
 
   return (
       <Card className="mt-8">

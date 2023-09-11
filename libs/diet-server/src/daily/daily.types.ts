@@ -61,6 +61,6 @@ export type ConvertItemToCustomItemInput = {
   daily: t.DailyDiet;
   item: t.Item;
   adjustedAttributes?: {
-    name?: string;
+    [key: string]: any;
   }
 }

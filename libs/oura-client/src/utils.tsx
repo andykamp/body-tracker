@@ -22,14 +22,14 @@ type useDataProps = {
 
 export function useData({
   accessToken
-}: useDataProps): t.DataState {
+}: useDataProps) {
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['getOuraData'],
-    queryFn: () => getData(accessToken),
+    queryFn: () => getData(accessToken as string),
     enabled: !!accessToken
   })
 
-  return { data, error, isLoading }
+  return { data, error, isLoading } as t.DataState
 }
 

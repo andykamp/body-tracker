@@ -89,13 +89,13 @@ export function parseToValidProduct(
 
 export function hasReferences(
   product: t.Product
-): boolean {
+) {
   return hasReferenceToDaily(product) || hasReferenceToMeal(product)
 }
 
 export function hasReferenceToDaily(
   product: t.Product
-): boolean {
+) {
   return product.referenceDailies && Object.keys(product.referenceDailies).length > 0
 }
 
@@ -107,7 +107,7 @@ export function getReferencesDaily(
 
 export function hasReferenceToMeal(
   product: t.Product
-): boolean {
+) {
   return product.referenceMeals && Object.keys(product.referenceMeals).length > 0
 }
 

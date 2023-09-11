@@ -70,8 +70,8 @@ export type UserInfo = {
 export type User = {
   id: string;
 
-  dietGoalId: string;
-  dietGoal?:DietGoals;
+  // dietGoalId: string;
+  // dietGoal?:DietGoals;
 
   targetCalories: number;
   targetProteins: number;
@@ -179,13 +179,13 @@ export type DailyDiet = {
 
   dailyItems: Item[];
 
-  yesterdaysCaloryDiff?: number;
-  yesterdaysProteinDiff?: number;
-  yesterdayWaterDiff?: number;
+  yesterdaysCaloryDiff: number;
+  yesterdaysProteinDiff: number;
+  // yesterdayWaterDiff: number;
 
-  protein?: number;
-  calories?: number;
-  grams?: number;
+  protein: number;
+  calories: number;
+  grams: number;
 
 }
 

@@ -14,7 +14,7 @@ interface AuthContextValue {
 }
 
 export const AuthContext = createContext<AuthContextValue>({
-  user: undefined,
+  user: undefined as any,
   loading: false
 });
 
@@ -52,7 +52,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider value={{ user: user as User, loading }}>
       {children}
     </AuthContext.Provider>
   );

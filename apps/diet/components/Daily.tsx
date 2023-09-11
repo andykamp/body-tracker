@@ -42,7 +42,7 @@ function Daily() {
 
   const daily = data
   console.log('dailyQuery', daily);
-  if (!daily) return 'loading daily'
+  if (!daily) return <div>loading daily</div>
 
   return (
     <div>

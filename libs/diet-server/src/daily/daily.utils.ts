@@ -1,6 +1,6 @@
 import * as t from "@/diet-server/diet.types";
 import { getISODate } from "@/diet-server/utils/date.utils";
-import itemApi, { type GetItemInput } from '@/diet-server/item/item.api'
+import itemApi from '@/diet-server/item/item.api'
 
 export type CreateDailyObjectInput = {
   dateKey: string;

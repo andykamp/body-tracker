@@ -15,6 +15,7 @@ function WithingsWeight() {
 
   // extract data
   const { weight } = data
+  if(!weight) return null;
 
   // parse data
   const parsedData = graphApi.getWeightData(weight.measuregrps);

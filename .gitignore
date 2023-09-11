@@ -5,6 +5,7 @@ firestore-debug.log
 firesbase-debug.log
 **/*.tsbuildinfo
 
+data/
 tags
 tag
 .tag

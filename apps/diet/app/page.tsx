@@ -20,6 +20,7 @@ function HomePage() {
         signIn={goToSignin}
         navigation={NAVIGATION_ROUTES_HOME}
         pathname={pathname}
+        onNavigate={router.push}
       />
       <h1>This is the main page</h1>
     </Page>

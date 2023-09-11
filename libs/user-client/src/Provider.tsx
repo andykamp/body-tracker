@@ -14,7 +14,7 @@ interface UserContextValue {
 }
 
 export const UserContext = createContext<UserContextValue>({
-  user: undefined,
+  user: undefined as any,
   loading: false
 });
 
@@ -50,7 +50,7 @@ export function UserContextProvider({
   console.log('USER RE-RENDER',);
 
   return (
-    <UserContext.Provider value={{ user: user!, loading }}>
+    <UserContext.Provider value={{ user: user as User, loading }}>
       {children}
     </UserContext.Provider>
   );
