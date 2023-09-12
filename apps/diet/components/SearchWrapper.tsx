@@ -49,7 +49,7 @@ function SearchInput({
     })
     return searchOptions
 
-  }, [products, meals, type])
+  }, [products, meals, type, blacklistedItemsId])
 
   return (
     <SearchInputControlled

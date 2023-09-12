@@ -73,7 +73,7 @@ function DraggableLabel({
       document.removeEventListener('touchmove', onUpdate);
       document.removeEventListener('touchend', onEnd);
     };
-  }, [startVal, setValue, snapshot]);
+  }, [startVal, setValue, snapshot, increment, min, max]);
 
   return (
     <div

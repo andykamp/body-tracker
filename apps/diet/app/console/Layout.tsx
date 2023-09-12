@@ -1,8 +1,8 @@
 'use client'
 import { AuthContextProvider } from '@/auth-client/firebase/Provider'
 import { UserContextProvider } from "@/user-client/Provider";
-import { WithingsContextProvider } from '@/withings-client/Provider'
-import { OuraContextProvider } from '@/oura-client/Provider'
+// import { WithingsContextProvider } from '@/withings-client/Provider'
+// import { OuraContextProvider } from '@/oura-client/Provider'
 import Navbar from './navbar'
 import {
   useQueryClient,
@@ -24,7 +24,7 @@ export default function RootLayout({
       console.log('DELETING_ALL_QUERY_CACHE', );
       queryClient.removeQueries()
     }
-  }, []);
+  }, [queryClient]);
   console.log('ROOT layout re-render', );
 
   return (
