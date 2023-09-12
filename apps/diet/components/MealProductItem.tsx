@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import * as t from '@/diet-server/diet.types'
 import { useAuthContext }
   from "@/auth-client/firebase/Provider";
@@ -34,7 +34,7 @@ function MealProductItem({
     convertItemToCustomProductMutation,
   } = useMealMutations({ queryClient })
 
-  const onFieldChange = (key: string, value: string) => {
+  const onFieldChange = useCallback((key: string, value: string) => {
     const newItem = getUpdatedItem({
       item,
       key,
@@ -45,7 +45,12 @@ function MealProductItem({
       meal,
       updatedItem: newItem
     })
-  }
+  }, [
+    updateProductMutation,
+    meal,
+    item,
+    user.uid
+  ])
 
   const onDelete = (item: t.Item) => {
     deleteProductMutation.mutate({

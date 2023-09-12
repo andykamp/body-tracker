@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import * as t from '@/diet-server/diet.types'
 import { useAuthContext }
   from "@/auth-client/firebase/Provider";
@@ -34,7 +34,7 @@ function DailyItem({
     convertItemToCustomItemMutation,
   } = useDailyMutations({ queryClient })
 
-  const onFieldChange = (key: string, value: string) => {
+  const onFieldChange = useCallback((key: string, value: string) => {
     const newItem = getUpdatedItem({
       item,
       key,
@@ -45,7 +45,12 @@ function DailyItem({
       daily,
       updatedItem: newItem
     })
-  }
+  }, [
+    updateItemMutation,
+    daily,
+    item,
+    user.uid
+  ])
 
   const onDelete = (item: t.Item) => {
     deleteItemMutation.mutate({

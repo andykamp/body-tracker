@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import * as t from '@/diet-server/diet.types'
 import { Input } from "@geist-ui/core";
 import Search from '@/diet/components/SearchWrapper'
@@ -31,6 +31,10 @@ function Item({
   const calories = Math.round((item.item.calories || 0) * item.prosentage)
   const grams = Math.round((item.item.grams || 0) * item.prosentage)
   const disableLock = item.item.grams === 0
+
+  const onProsentageChange = useCallback((prosentage: number) => {
+    onFieldChange('prosentage', prosentage.toString())
+  }, [onFieldChange])
 
   return (
     <div
@@ -66,9 +70,7 @@ function Item({
           <GramInput
             originalGrams={item.item.grams}
             initialGrams={grams}
-            onProsentageChange={(prosentage) =>
-              onFieldChange('prosentage', prosentage.toString())
-            }
+            onProsentageChange={onProsentageChange}
           />
           <button onClick={() => onLock(false)}>un-lock</button>
         </>) :

@@ -25,7 +25,7 @@ function GramInput({
       return;
     }
     onProsentageChange(grams / originalGrams)
-  }, [grams])
+  }, [grams, originalGrams ]) // @todo: missing dependency onProsentageChange
 
   const handleClick = () => {
     if (modificationMode === 'grams') {

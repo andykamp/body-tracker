@@ -41,7 +41,7 @@ function DailyItemList({
   return (
     <div className="p-4 flex flex-col">
       <ul>
-        {dailyItemsList.map((item: any) => (
+        {dailyItemsList.map((item: t.Item) => (
           <DailyItem
             key={item.id}
             daily={daily}
