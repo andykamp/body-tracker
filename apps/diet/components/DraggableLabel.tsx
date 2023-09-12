@@ -30,9 +30,16 @@ function DraggableLabel({
 
   // Start the drag to change operation when the mouse button is down.
   const onStart = useCallback(
-    (event: any) => {
-      // For touch events, you need to get clientX from the touches array.
-      const clientX = event.type === 'touchstart' ? event.touches[0].clientX : event.clientX;
+    (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+      let clientX: number;
+
+      if ('clientX' in event) {
+        clientX = event.clientX;
+      } else if (event.touches && event.touches.length > 0) {
+        clientX = event.touches[0].clientX;
+      } else {
+        return; // Exit if no valid event type
+      }
       setStartVal(clientX);
       setSnapshot(value);
 
@@ -45,9 +52,18 @@ function DraggableLabel({
   // the operation..
   useEffect(() => {
     // Only change the value if the drag was actually started.
-    const onUpdate = (event: any) => {
+    const onUpdate = (event: MouseEvent | TouchEvent) => {
       if (startVal) {
-        const clientX = event.type === 'touchmove' ? event.touches[0].clientX : event.clientX;
+        let clientX: number;
+
+        if (event instanceof MouseEvent) {
+          clientX = event.clientX;
+        } else if (event instanceof TouchEvent && event.touches.length > 0) {
+          clientX = event.touches[0].clientX;
+        } else {
+          return; // Exit if no valid event type
+        }
+
         const deltaX = clientX - startVal;
         let newValue = snapshot + (deltaX * increment);
         newValue = Math.max(Math.min(newValue, max), min); // Clamp to min and max
