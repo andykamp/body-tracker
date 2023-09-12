@@ -1,17 +1,12 @@
 import type { StorybookConfig } from '@storybook/react-vite';
+import { mergeConfig } from 'vite';
+const tsConfigPaths = require("vite-tsconfig-paths").default
+
 
 const config: StorybookConfig = {
   stories: ['../src/**/*.stories.@(js|jsx|ts|tsx|mdx)'],
   addons: [
     '@storybook/addon-essentials',
-    {
-      name: '@storybook/addon-styling',
-      options: {
-        // Check out https://github.com/storybookjs/addon-styling/blob/main/docs/api.md
-        // For more details on this addon's options.
-        postCss: true,
-      },
-    }
   ],
   framework: {
     name: '@storybook/react-vite',
@@ -23,7 +18,21 @@ const config: StorybookConfig = {
   },
 };
 
-export default config;
+export default {
+  ...config,
+    viteFinal(config:any) {
+    return mergeConfig(config, {
+      cacheDir: "../../node_modules/.vite/ui-storybook",
+      plugins: [
+        tsConfigPaths({
+          root: "../../",
+          projects: [ "tsconfig.base.json" ],
+          loose: true
+        })
+      ]
+    })
+  }
+};
 
 // To customize your Vite configuration you can use the viteFinal field.
 // Check https://storybook.js.org/docs/react/builders/vite#configuration

@@ -11,6 +11,7 @@
     "lint": "nx run-many --target=lint --parallel --exclude=workspace",
     "type-check": "nx run-many --target=type-check --parallel --exclude=workspace",
     "prepare": "husky install",
+    "ui": "nx run ui:storybook",
     "oda-scrape": "nx run oda-scraper:scrape",
     "oda-search": "nx run oda-scraper:search",
     "oda-repl": "ts-node -r tsconfig-paths/register --project ./libs/oda-scraper/tsconfig.json ./libs/oda-scraper/src/scripts/searchREPL.ts",
@@ -111,7 +112,7 @@
     "vite": "^4.0.1",
     "vite-plugin-dts": "~1.7.1",
     "vite-plugin-eslint": "^1.8.1",
-    "vite-tsconfig-paths": "^4.0.2",
+    "vite-tsconfig-paths": "^4.2.1",
     "vitest": "^0.25.8",
     "wait-on": "^7.0.1"
   }
