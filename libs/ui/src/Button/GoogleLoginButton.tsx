@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-type GoogleLoginButtonProps = {
+export type GoogleLoginButtonProps = {
   signIn(): void
   children?: ReactNode;
 }

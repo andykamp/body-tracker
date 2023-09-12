@@ -1,12 +1,12 @@
 import { Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
-import GoogleLoginButton from '@/ui/GoogleLoginButton'
+import GoogleLoginButton from '@/ui/Button/GoogleLoginButton'
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
-type ProfileProps = {
+export type ProfileProps = {
   user: any,
   signIn?(): void,
   signOut?(): void,

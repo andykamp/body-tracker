@@ -1,6 +1,6 @@
 import { ComponentProps } from "react";
 
-type PageProps = ComponentProps<'div'> &{
+export type PageProps = ComponentProps<'div'> &{
   children: React.ReactNode;
 }
 
@@ -13,3 +13,4 @@ export default function Page({
     </main>
   );
 }
+

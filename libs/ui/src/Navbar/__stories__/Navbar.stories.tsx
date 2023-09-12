@@ -1,5 +1,5 @@
 import { StoryFn, Meta } from '@storybook/react';
-import Navbar from './Navbar';
+import Navbar from '@/ui/Navbar/Navbar';
 
 export default {
   title: 'Components/Navbar',
@@ -37,3 +37,4 @@ NoUser.args = {
   navigation,
   pathname: navigation[0].href,
 };
+

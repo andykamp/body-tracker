@@ -1,4 +1,4 @@
-import GoogleLoginButton from '@/ui/GoogleLoginButton'
+import GoogleLoginButton from '@/ui/Button/GoogleLoginButton'
 import { signInWithGoogle } from "./utils/auth.utils"
 import Page from "@/ui/Page";
 

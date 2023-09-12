@@ -1,5 +1,5 @@
 'use client'
-import GoogleLoginButton from '@/ui/GoogleLoginButton'
+import GoogleLoginButton from '@/ui/Button/GoogleLoginButton'
 import { useRouter } from "next/navigation";
 import { ROUTES_CONSOLE } from "@/diet/app/constants"
 import Page from "@/ui/Page";

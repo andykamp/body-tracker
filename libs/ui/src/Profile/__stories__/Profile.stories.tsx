@@ -1,5 +1,5 @@
 import { StoryFn, Meta } from '@storybook/react';
-import Profile from './Profile';
+import Profile from '@/ui/Profile/Profile';
 
 export default {
   title: 'Components/Profile',
@@ -31,4 +31,5 @@ export const Default = Template.bind({});
 Default.args = {
  user, signIn , signOut
 }
+
 

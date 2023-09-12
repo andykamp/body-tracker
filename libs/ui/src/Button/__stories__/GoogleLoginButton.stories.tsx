@@ -1,8 +1,8 @@
 import { StoryFn, Meta } from '@storybook/react';
-import GoogleLoginButton from './GoogleLoginButton';
+import GoogleLoginButton from '@/ui/Button/GoogleLoginButton';
 
 export default {
-  title: 'Components/GoogleLoginButton',
+  title: 'Components/Button/GoogleLoginButton',
   component: GoogleLoginButton
 } as Meta;
 

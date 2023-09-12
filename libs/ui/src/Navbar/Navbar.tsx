@@ -13,7 +13,7 @@ export type NavigationItem = {
 
 export type Navigation = NavigationItem[]
 
-type NavbarProps = {
+export type NavbarProps = {
   user?: any,
   navigation: Navigation,
   onNavigate(href: string): void,
