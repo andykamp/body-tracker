@@ -6,7 +6,7 @@ type ConfirmDeleteProps = ModalProps & {
   title: string
   content: string | ReactNode
   onConfirmText?: string
-  onConfirm: (props: any) => void,
+  onConfirm: () => void,
   onCloseText?: string
   onClose: () => void,
   children: ReactNode
@@ -40,7 +40,7 @@ function ConfirmDelete(props: ConfirmDeleteProps) {
           passive
           onClick={onClose}
         >
-          Cancel
+          {onCloseText}
         </Modal.Action>
         <Modal.Action
           onClick={onConfirm}

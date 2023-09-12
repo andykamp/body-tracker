@@ -105,7 +105,7 @@ export async function getSearchResultsOptionsOda(search: string) {
 
 
 function getSearchResultsOptionsMeals(search: string, meals: t.Meal[], blacklistedItemsId: string[]) {
-  if (!meals) { }
+  if (!meals) throw new Error('meals not defined')
   // search meals
   const searchResult = meals.filter(i => i.name.includes(search) && !blacklistedItemsId.includes(i.id))
 
@@ -115,7 +115,7 @@ function getSearchResultsOptionsMeals(search: string, meals: t.Meal[], blacklist
 
 
 function getSearchResultsOptionsProducts(search: string, products: t.Product[], blacklistedItemsId: string[]) {
-  if (!products) { }
+  if (!products) throw new Error('products not defined')
   // search product
   const searchResult = products.filter(i => i.name.includes(search) && !blacklistedItemsId.includes(i.id))
 
@@ -124,7 +124,7 @@ function getSearchResultsOptionsProducts(search: string, products: t.Product[], 
 }
 
 function getSearchResultsOptionsStock(search: string, type: t.StockType, stockItems: t.StockStateNormalized<t.StockItem>) {
-  if (!stockItems) { }
+  if (!stockItems) throw new Error('stockItems not defined')
   // search meals
   const searchResult = getStockSearchResults({ type, search })
 

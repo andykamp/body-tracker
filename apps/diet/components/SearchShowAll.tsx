@@ -22,6 +22,7 @@ function SearchShowAll({
       >
         {results.map((item: any) => (
           <div
+            key={item.value}
             className="whitespace-nowrap"
             onClick={() => onSelect(item.item)}
           >

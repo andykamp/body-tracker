@@ -27,10 +27,6 @@ function parseCsv(data: t.FoodTableInputRow[]) {
   return parsedData
 }
 
-function saveParsedCvFile() {
-
-}
-
 const foodTableApi = {
   readCsvFile,
   parseCsvRow,
