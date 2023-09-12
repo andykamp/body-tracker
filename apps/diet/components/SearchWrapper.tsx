@@ -35,10 +35,10 @@ function SearchInput({
     queryFn: () => mealApi.getMeals({ userId: user.uid })
   })
 
-  const products: t.Product[] = productsQuery.data || []
-  const meals: t.Meal[] = mealsQuery.data || []
-
   const onSearch = useCallback(async (search: string) => {
+    const products: t.Product[] = productsQuery.data || []
+    const meals: t.Meal[] = mealsQuery.data || []
+
     const searchOptions = await getSearchResultsOptions({
       type: 'product',
       search,
@@ -49,7 +49,12 @@ function SearchInput({
     })
     return searchOptions
 
-  }, [products, meals, type, blacklistedItemsId])
+  }, [
+    productsQuery.data,
+    mealsQuery.data,
+    type,
+    blacklistedItemsId,
+  ])
 
   return (
     <SearchInputControlled

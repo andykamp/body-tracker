@@ -19,7 +19,7 @@ function SearchItem({
       className="flex space-x-2 items-center">
 
       {item.thumbnail ?
-        <Image width="30px" height="30px" src={item.thumbnail} />
+        <Image width="30px" height="30px" src={item.thumbnail} alt="thumbnail" />
         :
         <Codesandbox width="30px" height="30px" />
       }
