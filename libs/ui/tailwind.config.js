@@ -1,5 +1,6 @@
 const { createGlobPatternsForDependencies } = require('@nx/react/tailwind');
 const { join } = require('path');
+const { THEME } = require("./tailwind.shared.config")
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -12,8 +13,9 @@ module.exports = {
     "./node_modules/@tremor/**/*.{js,ts,jsx,tsx}",
     ...createGlobPatternsForDependencies(__dirname),
   ],
+  darkMode: 'class',
   theme: {
-    extend: {},
+    ...THEME,
   },
   plugins: [],
 };

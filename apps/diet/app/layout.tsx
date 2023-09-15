@@ -1,6 +1,7 @@
-import './globals.css'
+'use client'
+import '@/ui/Theme/global.css'
+import ThemeProvider from '@/ui/Theme/ThemeProvider'
 import { Analytics } from '@vercel/analytics/react'
-import ThemeProvider from '@/diet/components/ThemeProvider'
 import QueryProvider from '@/diet/components/QueryProvider'
 
 type RootLayoutProps = {
