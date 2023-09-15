@@ -1,3 +1,4 @@
+import { Button } from "@geist-ui/core";
 import { ReactNode } from "react";
 
 export type GoogleLoginButtonProps = {
@@ -19,7 +20,7 @@ const GoogleLoginButton = ({
   };
 
   return (
-    <button onClick={handleLogin}>{children}</button>
+    <Button onClick={handleLogin}>{children}</Button>
   );
 };
 
