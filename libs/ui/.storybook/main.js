@@ -1,26 +1,10 @@
-import type { StorybookConfig } from '@storybook/react-vite';
 import { mergeConfig } from 'vite';
-const tsConfigPaths = require("vite-tsconfig-paths").default
-
-
-const config: StorybookConfig = {
-  stories: ['../src/**/*.stories.@(js|jsx|ts|tsx|mdx)'],
-  addons: [
-    '@storybook/addon-essentials',
-  ],
-  framework: {
-    name: '@storybook/react-vite',
-    options: {
-      builder: {
-        viteConfigPath: 'libs/ui/vite.config.ts',
-      },
-    },
-  },
-};
+import rootMain from "../../../.storybook/main"
+import tsConfigPaths from "vite-tsconfig-paths"
 
 export default {
-  ...config,
-    viteFinal(config:any) {
+  ...rootMain,
+    viteFinal(config) {
     return mergeConfig(config, {
       cacheDir: "../../node_modules/.vite/ui-storybook",
       plugins: [

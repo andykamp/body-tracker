@@ -7,6 +7,7 @@ import {
   useState
 } from 'react';
 import GeistProvider from './GeistProvider';
+import './global.css';
 
 export const themes = ['light', 'dark'] as const;
 
@@ -19,7 +20,7 @@ interface Theme {
 
 export const ThemeContext = createContext<Theme>({
   themeType: 'dark',
-  switchTheme: () => { }
+  switchTheme: () => { console.warn('This switchTheme call should be replaced by the ThemeProvider...') }
 });
 
 export const useTheme = (): Theme => useContext(ThemeContext);
@@ -60,12 +61,12 @@ export function ThemeProvider(props: ThemeProviderProps) {
         switchTheme('light');
       }
     }
-  }, []);
+  }, [switchTheme]);
 
   // update on external updates (like storybook)
   useEffect(() => {
     switchTheme(theme);
-  }, [theme]);
+  }, [theme, switchTheme]);
 
   return (
     <ThemeContext.Provider value={{ themeType, switchTheme }}>
