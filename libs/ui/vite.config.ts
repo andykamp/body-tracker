@@ -17,6 +17,8 @@ export default defineConfig({
     react(),
     viteTsConfigPaths({
       root: '../../',
+      projects: [ "tsconfig.base.json" ],
+      loose: true
     }),
   ],
 
@@ -34,7 +36,15 @@ export default defineConfig({
   build: {
     lib: {
       // Could also be a dictionary or array of multiple entry points.
-      entry: "src/*",
+      entry: [
+        "src/Button/index.ts",
+        "src/Login/index.ts",
+        "src/Navbar/index.ts",
+        "src/Page/index.ts",
+        "src/Profile/index.ts",
+        "src/Theme/index.ts",
+        "src/Button/index.ts"
+      ],
       // Could also be a dictionary or array of multiple entry points.
       name: 'ui',
       // fileName: 'index',
