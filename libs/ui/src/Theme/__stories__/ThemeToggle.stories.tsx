@@ -1,15 +1,15 @@
 import { StoryFn, Meta } from '@storybook/react';
-import CookieToast from '@/ui/Cookie/CookieToast';
 import { DecoratorScreenCenter } from '@/ui/Decorators';
+import ThemeToggle from '@/ui/Theme/ThemeToggle';
 
 export default {
-  title: 'Components/Cookie/Toast',
-  component: CookieToast
+  title: 'Components/Theme/ThemeToggle',
+  component: ThemeToggle
 } as Meta;
 
 const Template: StoryFn = () => (
   <DecoratorScreenCenter>
-    <CookieToast />
+    <ThemeToggle />
   </DecoratorScreenCenter>
 )
 

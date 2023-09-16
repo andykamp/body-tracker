@@ -7,7 +7,6 @@ body.cursor-col-resize {
 }
 
 :root {
-  --color-bg-whitee: #FFC0CB;  /* light theme white color */
   /* Light Theme */
   --background: #fff;
   --accents-1: #fafafa;
@@ -59,7 +58,6 @@ body.cursor-col-resize {
 }
 
 .dark {
-  --color-bg-whitee: #888888 !important;  /* dark theme white equivalent */
   /* Dark Theme */
   --background: #000;
   --accents-1: #111;

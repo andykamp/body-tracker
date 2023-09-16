@@ -1,6 +1,7 @@
 import { StoryFn, Meta } from '@storybook/react';
 import Profile from '@/ui/Profile/Profile';
 import { user } from '@/ui/__fixtures__/user.fixtures';
+import { DecoratorScreenCenter } from '@/ui/Decorators';
 
 export default {
   title: 'Components/Profile',
@@ -15,9 +16,9 @@ const signOut = () => {
   console.log('Sign out mock')
 }
 const Template: StoryFn = (props: any) => (
-  <div className="w-full flex justify-end">
+  <DecoratorScreenCenter>
     <Profile {...props} />
-  </div>
+  </DecoratorScreenCenter>
 )
 
 export const Default = Template.bind({});

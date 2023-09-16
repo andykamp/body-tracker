@@ -5,7 +5,7 @@ type DecoratorProps = {
 export function DecoratorScreenCenter(props: DecoratorProps) {
   const { children } = props
   return (
-    <div className="flex justify-center items-center">
+    <div className="h-full w-full flex justify-center items-center">
       {children}
     </div>
   )
