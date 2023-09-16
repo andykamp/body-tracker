@@ -111,6 +111,8 @@
         - ADD geist colors to tailwind
         - add a setTheme on body based on localstorage/database
         - document process in the issue section 
+        - ADD storybook theme toggle so one can test properly there
+    - Create a PWA
 
 - chatbot
 - ai autocomplete/generated meals/products

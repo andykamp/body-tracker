@@ -10,7 +10,7 @@ export type ProfileProps = {
   deleteAccount?(): void
 }
 
-export default function Navbar(props: ProfileProps) {
+export default function Profile(props: ProfileProps) {
   const { user, signIn, signOut, deleteAccount } = props
   console.log('user',user );
 

@@ -1,8 +1,7 @@
 'use client'
-import GoogleLoginButton from '@/ui/Button/GoogleLoginButton'
 import { useRouter } from "next/navigation";
 import { ROUTES_CONSOLE } from "@/diet/app/constants"
-import Page from "@/ui/Page";
+import SignIn from "@/ui/Login/SignIn";
 import { signInWithGoogle } from '@/diet/utils/auth.utils'
 import { useState } from 'react';
 
@@ -23,12 +22,10 @@ function LoginPage() {
   };
 
   return (
-    <Page>
-      <GoogleLoginButton signIn={signIn}>
-        Sign in with Google
-      </GoogleLoginButton>
-      {hasBeenTouched && <div>Follow instructions in popup window</div>}
-    </Page>
+    <SignIn
+    signIn={signIn}
+    isLoggingIn={hasBeenTouched}
+    />
   )
 
 }
