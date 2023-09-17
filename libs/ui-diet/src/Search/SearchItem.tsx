@@ -1,9 +1,8 @@
-import React from "react";
 import * as t from '@/diet-server/diet.types'
 import { Popover, Input, Image } from "@geist-ui/core";
 import { Codepen, Codesandbox } from '@geist-ui/icons'
 
-type SearchItemProps = {
+export type SearchItemProps = {
   item: t.Product | t.Meal;
   source?: 'oda' | 'stock' | 'userproducts' | "usermeals"
 };

@@ -1,14 +1,16 @@
+import { ReactNode } from "react";
 import * as t from "@/diet-server/diet.types";
-import { makeOptionBySource } from "./search.utils";
 
-type SearchShowAllProps = {
+export type SearchShowAllProps = {
   results: any[];
   onSelect: (item: t.Product | t.Meal) => void;
+  parseOption: (value:string, source:string, item:t.Item) => ReactNode;
 }
 
 function SearchShowAll({
   results,
   onSelect,
+  parseOption,
 }: SearchShowAllProps) {
 
 
@@ -26,7 +28,7 @@ function SearchShowAll({
             className="whitespace-nowrap"
             onClick={() => onSelect(item.item)}
           >
-            {makeOptionBySource(item.value, item.source, item.item)}
+            {parseOption(item.value, item.source, item.item)}
           </div>
         ))}
       </div>

@@ -16,11 +16,15 @@ import productApi from "@/diet-server/product/product.api"
 import { productCacheKeys } from '@/diet-client/product/products.cache';
 import mealApi from "@/diet-server/meal/meal.api"
 import { makeOptionBySource } from "./search.utils";
-import SearchShowAll from "./SearchShowAll";
+import SearchShowAll from "@/ui-diet/Search/SearchShowAll";
 
 function showAll(props: ShowAllProps) {
   const { results, onSelect } = props
-  return <SearchShowAll results={results} onSelect={onSelect} />
+  return <SearchShowAll
+    results={results}
+    onSelect={onSelect}
+    parseOption={makeOptionBySource}
+  />
 }
 
 function parseOptions(results: any[]) {
