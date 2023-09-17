@@ -12,7 +12,7 @@ import {
   onItemSelect,
   updateItemIsLocked
 } from "@/diet-server/utils/common.utils";
-import Item from "./Item";
+import Item from "../Item";
 
 type DailyItemProps = {
   daily: t.DailyDiet;

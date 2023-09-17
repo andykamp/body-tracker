@@ -2,13 +2,13 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   useQuery,
 } from '@tanstack/react-query'
-import dailyApi from "@/diet-server/daily/daily.api"
 import { useAuthContext } from "@/auth-client/firebase/Provider";
+import dailyApi from "@/diet-server/daily/daily.api"
 import { dailyCacheKeys } from '@/diet-client/daily/daily.cache'
-import DailySummary from "./DailySummary";
-import DailyItemList from "./DailyItemList";
-import DailyPicker from "./DailyPicker";
 import { adjustDateByXDays } from "@/diet-server/daily/daily.utils";
+import DailySummary from "@/diet/components/Daily/DailySummary";
+import DailyItemList from "@/diet/components/Daily/DailyItemList";
+import DailyPicker from "@/diet/components/Daily/DailyPicker";
 
 function Daily() {
   const { user: authUser } = useAuthContext()
