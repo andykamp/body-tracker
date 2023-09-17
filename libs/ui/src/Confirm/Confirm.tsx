@@ -11,6 +11,7 @@ export type ConfirmProps = ModalProps & {
   onClose: () => void,
   children: ReactNode
 }
+
 function Confirm(props: ConfirmProps) {
   const {
     shown,
