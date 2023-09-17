@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
-type DraggableLabelProps = {
+export type DraggableLabelProps = {
   children: React.ReactNode;
   onClick: () => void;
   onDrag: (value: number) => void;

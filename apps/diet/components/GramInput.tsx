@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Input } from "@geist-ui/core";
 import { Github } from '@geist-ui/icons'
-import ClickAndDragWrapper from "@/diet/components/DraggableLabel";
+import DraggableLabel from "@/ui/Input/DraggableLabel";
 
 type GramInputProps = {
   originalGrams: number
@@ -85,7 +85,7 @@ function GramInput({
         }}
 
         iconRight={
-          <ClickAndDragWrapper
+          <DraggableLabel
             value={currentValue}
             min={0}
             max={max}
@@ -99,7 +99,7 @@ function GramInput({
 
           >
             <Github />
-          </ClickAndDragWrapper >
+          </DraggableLabel >
 
         }
       />
