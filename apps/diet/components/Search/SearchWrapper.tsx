@@ -16,7 +16,7 @@ import productApi from "@/diet-server/product/product.api"
 import { productCacheKeys } from '@/diet-client/product/products.cache';
 import mealApi from "@/diet-server/meal/meal.api"
 import { makeOptionBySource } from "./search.utils";
-import SearchShowAll from "@/ui-diet/Search/SearchShowAll";
+import SearchShowAll from "@/diet/components/Search/SearchShowAll";
 
 function showAll(props: ShowAllProps) {
   const { results, onSelect } = props

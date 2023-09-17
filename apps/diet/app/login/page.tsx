@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { ROUTES_CONSOLE } from "@/diet/app/constants"
 import SignIn from "@/ui/Login/SignIn";
-import { signInWithGoogle } from '@/diet/utils/auth.utils'
+import { signInWithGoogle } from '@/common-client/utils/auth.utils'
 import { useState } from 'react';
 
 function LoginPage() {

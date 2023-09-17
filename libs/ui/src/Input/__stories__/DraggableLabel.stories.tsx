@@ -17,6 +17,8 @@ const Template: StoryFn = () => {
   }
 
   const onClick = () => {
+    //@todo: implement
+    console.log('heohoJ', );
   }
 
   return (

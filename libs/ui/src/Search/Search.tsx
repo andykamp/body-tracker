@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { Modal, AutoComplete } from "@geist-ui/core";
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { useDebounce } from "@/common-client/utils/misc";
 
 export type ShowAllProps = {

@@ -1,7 +1,7 @@
 import * as t from "@/diet-server/diet.types";
 import { getStockSearchResults } from "@/diet-server/stock/stock.api";
 import { AutoComplete } from "@geist-ui/core";
-import SearchItem from "@/ui-diet/Search/SearchItem";
+import SearchItem from "@/diet/components/Search/SearchItem";
 import { parse, _fetch } from "@/common/utils/utils.fetch";
 
 export const makeOptionBySource = (value: string, source: string, item: any) => {

@@ -3,7 +3,7 @@ import Navbar from '@/ui/Navbar'
 import { usePathname } from "next/navigation";
 import { NAVIGATION_ROUTES_CONSOLE, ROUTES_CONSOLE } from "@/diet/app/constants"
 import { useRouter } from "next/navigation";
-import { signInWithGoogle, signOutOfGoogle, deleteAccount } from '@/diet/utils/auth.utils'
+import { signInWithGoogle, signOutOfGoogle, deleteAccount } from '@/common-client/utils/auth.utils'
 import { useAuthContext } from "@/auth-client/firebase/Provider";
 import { useUserContext } from "@/user-client/Provider";
 
