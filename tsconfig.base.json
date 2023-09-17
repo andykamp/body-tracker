@@ -26,6 +26,7 @@
       "@/oura/*": ["libs/oura/src/*"],
       "@/oura-client/*": ["libs/oura-client/src/*"],
       "@/ui/*": ["libs/ui/src/*"],
+      "@/ui-diet/*": ["libs/ui-diet/src/*"],
       "@/common-scraper/*": ["libs/common-scraper/src/*"],
       "@/oda-scraper/*": ["libs/oda-scraper/src/*"],
       "@/foodtable-scraper/*": ["libs/foodtable-scraper/src/*"],

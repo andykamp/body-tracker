@@ -13,6 +13,8 @@
     "prepare": "husky install",
     "ui:dev": "nx run ui:storybook",
     "ui:build": "nx run ui:build-storybook",
+    "ui-diet:dev": "nx run ui-diet:storybook",
+    "ui-diet:build": "nx run ui-diet:build-storybook",
     "oda-scrape": "nx run oda-scraper:scrape",
     "oda-search": "nx run oda-scraper:search",
     "oda-repl": "ts-node -r tsconfig-paths/register --project ./libs/oda-scraper/tsconfig.json ./libs/oda-scraper/src/scripts/searchREPL.ts",
