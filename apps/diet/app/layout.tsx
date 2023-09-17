@@ -2,7 +2,7 @@
 import '@/ui/Theme/global.css'
 import ThemeProvider from '@/ui/Theme/ThemeProvider'
 import { Analytics } from '@vercel/analytics/react'
-import QueryProvider from '@/diet/components/QueryProvider'
+import QueryProvider from '@/common-client/react-query/QueryProvider'
 
 type RootLayoutProps = {
   children: React.ReactNode
