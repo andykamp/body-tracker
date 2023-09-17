@@ -1,12 +1,13 @@
 import { useState } from "react";
 import * as t from "@/diet-server/diet.types";
-import ConfirmDelete from "./ConfirmDelete";
+import Confirm from "@/ui/Confirm/Confirm";
 import productApi from "@/diet-server/product/product.api";
 
 type ConfirmDeleteProductProps = {
   product: t.Product;
   onDelete: (meal: t.Product) => void;
 }
+
 function ConfirmDeleteProduct(props: ConfirmDeleteProductProps) {
   const { product, onDelete } = props
   const [shown, setShown] = useState(false);
@@ -64,7 +65,7 @@ function ConfirmDeleteProduct(props: ConfirmDeleteProductProps) {
   }
 
   return (
-    <ConfirmDelete
+    <Confirm
       shown={shown}
       title="Delete product"
       content={content()}
@@ -77,7 +78,7 @@ function ConfirmDeleteProduct(props: ConfirmDeleteProductProps) {
       >
         delete
       </button>
-    </ConfirmDelete>
+    </Confirm>
   )
 }
 

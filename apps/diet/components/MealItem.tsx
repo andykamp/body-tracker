@@ -2,7 +2,7 @@ import React from "react";
 import * as t from '@/diet-server/diet.types'
 import { Input } from "@geist-ui/core";
 import MealItemList from "./MealItemList";
-import ConfirmDeleteMeal from "./ConfirmDeleteMeal";
+import ConfirmDeleteMeal from "@/diet/components/Confirm/ConfirmDeleteMeal";
 import { useMealMutations } from "@/diet-client/meal/meals.mutations";
 import {
   useQueryClient,

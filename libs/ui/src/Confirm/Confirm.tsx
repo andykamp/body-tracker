@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { Modal, ModalProps } from '@geist-ui/core'
 
-type ConfirmDeleteProps = ModalProps & {
+export type ConfirmProps = ModalProps & {
   shown: boolean
   title: string
   content: string | ReactNode
@@ -11,7 +11,7 @@ type ConfirmDeleteProps = ModalProps & {
   onClose: () => void,
   children: ReactNode
 }
-function ConfirmDelete(props: ConfirmDeleteProps) {
+function Confirm(props: ConfirmProps) {
   const {
     shown,
     title,
@@ -52,5 +52,5 @@ function ConfirmDelete(props: ConfirmDeleteProps) {
   )
 }
 
-export default ConfirmDelete;
+export default Confirm;
 

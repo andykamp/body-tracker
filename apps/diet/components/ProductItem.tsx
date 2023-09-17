@@ -1,7 +1,7 @@
 import React from "react";
 import * as t from '@/diet-server/diet.types'
 import { Input } from "@geist-ui/core";
-import ConfirmDeleteProduct from "./ConfirmDeleteProduct";
+import ConfirmDeleteProduct from "@/diet/components/Confirm/ConfirmDeleteProduct";
 
 type ProductItemProps = {
   product: t.Product;

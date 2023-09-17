@@ -112,13 +112,21 @@
         - add a setTheme on body based on localstorage/database
         - document process in the issue section 
         - ADD storybook theme toggle so one can test properly there
+        - TODO: add discuttion about how to exoprt lib!!!!!!!! currently need to specify all entry points
     - Create a PWA
 
 - chatbot
 - ai autocomplete/generated meals/products
-- scrape mattabellen 
+- scrape
+    - mattabellen
+    - kaffer (cappuchino m havremelk etc)
+    - kosthold
+        - proteinpulver
+        - bccaa
+    - drinker
+    - øl og sideer
 - chart/analytic intergratino
-    - oura
-    - withings
-    - apple health
+- oura
+- withings
+- apple health
 
