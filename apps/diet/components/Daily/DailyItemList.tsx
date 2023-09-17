@@ -39,8 +39,8 @@ function DailyItemList({
   const dailyItemsList = daily?.dailyItems ? daily?.dailyItems : []
 
   return (
-    <div className="p-4 flex flex-col">
-      <ul>
+    <div className="py-4 flex flex-col">
+      <ul className="m-0">
         {dailyItemsList.map((item: t.Item) => (
           <DailyItem
             key={item.id}

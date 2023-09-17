@@ -102,6 +102,7 @@ export function SearchInputControlled(props: SearchInputControlledProps) {
   return (
     <>
       <AutoComplete
+        className="min-w-[60px]"
         key={keyCounter}
         value={controlledValue}
         placeholder={placeholder || "Search..."}

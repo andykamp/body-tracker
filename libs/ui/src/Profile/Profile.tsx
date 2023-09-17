@@ -1,5 +1,5 @@
 import GoogleLoginButton from '@/ui/Button/GoogleLoginButton'
-import { Avatar, Popover } from '@geist-ui/core'
+import { Popover } from '@geist-ui/core'
 import ProfileMenu from './ProfileMenu';
 import ProfileAvatar from './ProfileAvatar';
 
