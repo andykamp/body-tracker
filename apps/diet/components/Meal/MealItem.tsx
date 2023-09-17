@@ -70,21 +70,21 @@ function MealItem({
         <Input
           width="130px"
           value={meal.protein?.toFixed(0).toString()}
-          label="protein"
+          label="p"
           disabled={true}
         />
 
         <Input
           width="130px"
           value={meal.calories?.toFixed(0).toString()}
-          label="calories"
+          label="c"
           disabled={true}
         />
 
         <Input
           width="130px"
           value={meal.grams?.toFixed(0).toString()}
-          label="grams"
+          label="g"
           disabled={true}
         />
 

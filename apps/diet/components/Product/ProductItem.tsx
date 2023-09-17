@@ -42,14 +42,14 @@ function ProductItem({
       <Input
         width="130px"
         value={product.protein?.toString()}
-        label="protein"
+        label="p"
         onChange={(e) => updateNumericField('protein', e.target.value)}
       />
 
       <Input
         width="130px"
         value={product.calories?.toString()}
-        label="calories"
+        label="c"
         onChange={(e) => updateNumericField('calories', e.target.value)}
       />
 
@@ -57,7 +57,7 @@ function ProductItem({
       <Input
         width="130px"
         value={product.grams?.toString()}
-        label="grams"
+        label="g"
         onChange={(e) => updateNumericField('grams', e.target.value)}
       />
 
