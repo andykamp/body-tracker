@@ -1,11 +1,11 @@
-import * as t from "@/diet-server/diet.types";
 import {
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query'
 import { useAuthContext } from "@/auth-client/firebase/Provider";
+import * as t from "@/diet-server/diet.types";
 import productApi from "@/diet-server/product/product.api"
-import ProductMenu from "./ProductMenu";
+import ProductMenu from "@/diet/components/Product/ProductMenu";
 import { useProductMutations } from "@/diet-client/product/products.mutations";
 
 function Products() {

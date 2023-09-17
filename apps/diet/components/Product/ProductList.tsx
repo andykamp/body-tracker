@@ -1,5 +1,5 @@
 import * as t from "@/diet-server/diet.types";
-import ProductItem from "./ProductItem";
+import ProductItem from "@/diet/components/Product/ProductItem";
 
 export type ProductListProps = {
   products: t.Product[],

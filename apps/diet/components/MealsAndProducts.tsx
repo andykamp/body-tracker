@@ -1,6 +1,6 @@
 import { Tabs, useTabs } from "@geist-ui/core";
 import Meals from "@/diet/components/Meal/Meals";
-import Products from "./Products";
+import Products from "@/diet/components/Product/Products";
 
 function MealsAndProductsPage() {
 

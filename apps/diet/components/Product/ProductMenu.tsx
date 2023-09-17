@@ -1,7 +1,7 @@
-import * as t from "@/diet-server/diet.types";
-import { Checkbox } from "@geist-ui/core";
 import { useState } from "react";
-import ProductList from "./ProductList";
+import { Checkbox } from "@geist-ui/core";
+import * as t from "@/diet-server/diet.types";
+import ProductList from "@/diet/components/Product/ProductList";
 
 export type ProductMenuProps = {
   products: t.Product[],
