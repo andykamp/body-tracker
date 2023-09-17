@@ -1,13 +1,13 @@
-import * as t from "@/diet-server/diet.types";
-import { Checkbox } from "@geist-ui/core";
 import { useState } from "react";
-import MealList from "./MealList";
-import mealApi from "@/diet-server/meal/meal.api"
-import { useMealMutations } from "@/diet-client/meal/meals.mutations";
+import { Checkbox } from "@geist-ui/core";
 import {
   useQueryClient,
 } from '@tanstack/react-query'
 import { useAuthContext } from "@/auth-client/firebase/Provider";
+import * as t from "@/diet-server/diet.types";
+import mealApi from "@/diet-server/meal/meal.api"
+import MealList from "@/diet/components/Meal/MealList";
+import { useMealMutations } from "@/diet-client/meal/meals.mutations";
 
 export type MealMenuProps = {
   meals: t.Meal[],

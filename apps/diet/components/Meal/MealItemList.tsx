@@ -1,10 +1,10 @@
 import * as t from "@/diet-server/diet.types";
-import MealProductItem from "./MealProductItem";
 import {
   useQueryClient,
 } from '@tanstack/react-query'
 import { useAuthContext } from "@/auth-client/firebase/Provider";
 import { useMealMutations } from "@/diet-client/meal/meals.mutations";
+import MealProductItem from "@/diet/components/Meal/MealProductItem";
 
 type MealItemListProps = {
   meal: t.Meal;

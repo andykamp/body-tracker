@@ -1,5 +1,5 @@
 import * as t from "@/diet-server/diet.types";
-import MealItem from "./MealItem";
+import MealItem from "@/diet/components/Meal/MealItem";
 
 export type MealListProps = {
   meals: t.Meal[],

@@ -1,18 +1,18 @@
 import React, { useCallback } from "react";
-import * as t from '@/diet-server/diet.types'
-import { useAuthContext }
-  from "@/auth-client/firebase/Provider";
 import { useQueryClient }
   from '@tanstack/react-query'
-import { useMealMutations }
-  from "@/diet-client/meal/meals.mutations";
+import { useAuthContext }
+  from "@/auth-client/firebase/Provider";
+import * as t from '@/diet-server/diet.types'
 import {
   getUpdatedItem,
   onItemSearch,
   onItemSelect,
   updateItemIsLocked
 } from "@/diet-server/utils/common.utils";
-import Item from "./Item";
+import { useMealMutations }
+  from "@/diet-client/meal/meals.mutations";
+import Item from "../Item";
 
 type MealProductItem = {
   meal: t.Meal;

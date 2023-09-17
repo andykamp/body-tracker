@@ -1,11 +1,11 @@
-import * as t from "@/diet-server/diet.types";
 import {
   useQuery,
 } from '@tanstack/react-query'
 import { useAuthContext } from "@/auth-client/firebase/Provider";
+import * as t from "@/diet-server/diet.types";
 import mealApi from "@/diet-server/meal/meal.api"
-import MealMenu from "./MealMenu";
 import { mealCacheKeys } from '@/diet-client/meal/meals.cache';
+import MealMenu from "@/diet/components/Meal/MealMenu";
 
 function Meals() {
   const { user } = useAuthContext()
