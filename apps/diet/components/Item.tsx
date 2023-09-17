@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import * as t from '@/diet-server/diet.types'
 import { Input } from "@geist-ui/core";
-import Search from '@/diet/components/SearchWrapper'
+import Search from '@/diet/components/Search/SearchWrapper'
 import GramInput from "./GramInput";
 
 type ItemProps = {

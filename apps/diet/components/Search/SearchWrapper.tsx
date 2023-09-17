@@ -1,20 +1,35 @@
 import React, { useCallback } from "react";
-import * as t from "@/diet-server/diet.types";
-import { SearchInputControlled, type SearchInputControlledProps } from "./Search";
-import { getStockItems } from "@/diet-server/stock/stock.api";
-import { useAuthContext } from "@/auth-client/firebase/Provider";
 import {
   useQuery,
 } from '@tanstack/react-query'
+import * as t from "@/diet-server/diet.types";
+import {
+  SearchInputControlled,
+  type ShowAllProps,
+  type SearchInputControlledProps
+} from "@/ui/Search";
+import { getStockItems } from "@/diet-server/stock/stock.api";
+import { useAuthContext } from "@/auth-client/firebase/Provider";
 import { getSearchResultsOptions } from "./search.utils";
 import { mealCacheKeys } from '@/diet-client/meal/meals.cache';
 import productApi from "@/diet-server/product/product.api"
 import { productCacheKeys } from '@/diet-client/product/products.cache';
 import mealApi from "@/diet-server/meal/meal.api"
+import { makeOptionBySource } from "./search.utils";
+import SearchShowAll from "./SearchShowAll";
+
+function showAll(props: ShowAllProps) {
+  const { results, onSelect } = props
+  return <SearchShowAll results={results} onSelect={onSelect} />
+}
+
+function parseOptions(results: any[]) {
+  return results.map(item => makeOptionBySource(item.value, item.source, item.item))
+}
 
 const stockItems = getStockItems({ type: 'both' })
 
-type SearchInputProps = Omit<SearchInputControlledProps, 'onSearch'> & {
+type SearchInputProps = Omit<SearchInputControlledProps, 'onSearch' | 'showAll' | 'parseOptions'> & {
   type?: 'product' | 'meal' | 'both'
   blacklistedItemsId?: string[]
 }
@@ -59,6 +74,8 @@ function SearchInput({
   return (
     <SearchInputControlled
       onSearch={onSearch}
+      showAll={showAll}
+      parseOptions={parseOptions}
       {...divProps}
     />
   );

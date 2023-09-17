@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { Modal, AutoComplete } from "@geist-ui/core";
-import { useDebounce } from "@/diet/utils/misc";
-import { makeOptionBySource } from "./search.utils";
-import SearchShowAll from "./SearchShowAll";
+import { useDebounce } from "@/common-client/utils/misc";
 
-const MAX_DISPLAY_NUMBER = 5
+export type ShowAllProps = {
+  results: any[], onSelect: (item: any) => void
+}
 
 export type SearchInputControlledProps = {
   value: string;
@@ -12,15 +12,22 @@ export type SearchInputControlledProps = {
   onSelect: (item: any) => void;
   onChange?: (value: string) => void;
   onSearch: (value: string) => Promise<any[]>;
+  showAll: (props:ShowAllProps) => ReactNode;
+  parseOptions: (results: any[]) => any[];
+  maxDisplayNumber?: number;
 }
 
-export function SearchInputControlled({
-  value: controlledValue,
-  placeholder,
-  onSelect,
-  onChange,
-  onSearch,
-}: SearchInputControlledProps) {
+export function SearchInputControlled(props: SearchInputControlledProps) {
+  const {
+    value: controlledValue,
+    placeholder,
+    onSelect,
+    onChange,
+    onSearch,
+    showAll,
+    parseOptions,
+    maxDisplayNumber=5
+  } = props
 
   const [results, setResults] = useState<any[]>([]);
   const [hasInteracted, setHasInteracted] = useState(false);
@@ -85,11 +92,9 @@ export function SearchInputControlled({
   }
 
   const numberOfResults = results.length;
-  const displayResults = results.slice(0, MAX_DISPLAY_NUMBER);
-  const options = displayResults.length > 0 ?
-    displayResults.map(item => makeOptionBySource(item.value, item.source, item.item))
-    : []
-  if (results.length > MAX_DISPLAY_NUMBER) {
+  const displayResults = results.slice(0, maxDisplayNumber);
+  const options = displayResults.length > 0 ? parseOptions(displayResults) : []
+  if (results.length > maxDisplayNumber) {
     options.push({ label: `Show all(${numberOfResults})`, value: 'show_more' } as any)
   }
 
@@ -114,10 +119,9 @@ export function SearchInputControlled({
       >
         <Modal.Title>Select an Item</Modal.Title>
         <Modal.Content>
-          <SearchShowAll
-            results={results}
-            onSelect={onSelect}
-          />
+          {
+            showAll({results, onSelect})
+          }
         </Modal.Content>
         <Modal.Action passive onClick={() => setIsModalVisible(false)}>
           Cancel
@@ -132,14 +136,20 @@ type SearchInputProps = {
   onSelect: (item: any) => void;
   onChange?: (value: string) => void;
   onSearch: (value: string) => Promise<any[]>;
+  showAll: (props:ShowAllProps) => ReactNode;
+  parseOptions: (results: any[]) => any[];
 }
 
-function SearchInput({
-  placeholder,
-  onSelect: onSelectExternal,
-  onChange: onChangeExternal,
-  onSearch,
-}: SearchInputProps) {
+function SearchInput(props: SearchInputProps) {
+  const {
+    placeholder,
+    onSelect: onSelectExternal,
+    onChange: onChangeExternal,
+    onSearch,
+    showAll,
+    parseOptions
+  } = props
+
   const [searchValue, setSearchValue] = useState<string>("");
 
   const onSelect = (item: any) => {
@@ -157,6 +167,8 @@ function SearchInput({
       onSelect={onSelect}
       onChange={onChange}
       onSearch={onSearch}
+      showAll={showAll}
+      parseOptions={parseOptions}
     />
   );
 }

@@ -43,7 +43,7 @@ export default defineConfig({
         "src/Page/index.ts",
         "src/Profile/index.ts",
         "src/Theme/index.ts",
-        "src/Button/index.ts"
+        "src/Search/index.ts"
       ],
       // Could also be a dictionary or array of multiple entry points.
       name: 'ui',
