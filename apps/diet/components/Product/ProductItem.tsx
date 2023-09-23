@@ -33,21 +33,21 @@ function ProductItem({
       className="flex space-x-2 items-center">
 
       <Input
-        width="130px"
+        className="min-w-[60px]"
         value={product.name}
         placeholder="New item..."
         onChange={(e) => updateField('name', e.target.value)}
       />
 
       <Input
-        width="130px"
+        width="80px"
         value={product.protein?.toString()}
         label="p"
         onChange={(e) => updateNumericField('protein', e.target.value)}
       />
 
       <Input
-        width="130px"
+        width="85px"
         value={product.calories?.toString()}
         label="c"
         onChange={(e) => updateNumericField('calories', e.target.value)}
@@ -55,7 +55,7 @@ function ProductItem({
 
 
       <Input
-        width="130px"
+        width="85px"
         value={product.grams?.toString()}
         label="g"
         onChange={(e) => updateNumericField('grams', e.target.value)}
