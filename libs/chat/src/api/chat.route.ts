@@ -18,7 +18,7 @@ Type Product = {
   grams: number
 }
 
-Type Meal = Product[] 
+Type Meal = Product[]
 
 In case you want to suggest meals, Always wrap the meal/products in a code block with the language «diet» so that I can parse it properly. The content of the codeblic must at all times be an array.The content in the code block MUST AT ALL TIMES be serialisable with JSON.parse.
 Feel free to descibe the meal/product inside the code block`
