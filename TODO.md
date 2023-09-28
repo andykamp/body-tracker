@@ -130,3 +130,5 @@
 - withings
 - apple health
 
+font
+- inter and roboto mono (see https://nextjs.org/conf)

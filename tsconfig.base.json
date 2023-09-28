@@ -19,6 +19,7 @@
       "@/auth/*": ["libs/auth/src/*"],
       "@/common/*": ["libs/common/src/*"],
       "@/common-client/*": ["libs/common-client/src/*"],
+      "@/chat/*": ["libs/chat/src/*"],
       "@/user-client/*": ["libs/user-client/src/*"],
       "@/diet-server/*": ["libs/diet-server/src/*"],
       "@/diet-client/*": ["libs/diet-client/src/*"],
