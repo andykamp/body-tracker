@@ -39,7 +39,7 @@ export function ClearHistory({ clearChats }: ClearHistoryProps) {
 
         startTransition(() => {
           setOpen(false)
-          router.push('/')
+          router.push('console/chat')
         })
       }}
     >

@@ -5,9 +5,6 @@ import { auth } from '@/chat/auth'
 import { getChat } from '@/chat/actions'
 import { Chat } from '@/chat/components/chat'
 
-// export const runtime = 'edge'
-export const preferredRegion = 'home'
-
 export interface ChatPageProps {
   params: {
     id: string

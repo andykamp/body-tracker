@@ -35,7 +35,7 @@ export async function setChat(input: SetChatInput) {
     ]
   }
 
-  console.log('SetChat',);
+  console.log('SetChat', id, userId);
   await adapter.setChat({
     chatId: id,
     userId,
@@ -45,6 +45,7 @@ export async function setChat(input: SetChatInput) {
 }
 
 export async function getChats(userId?: string | null) {
+  console.log('getChats', userId);
   if (!userId) {
     return []
   }
@@ -52,17 +53,18 @@ export async function getChats(userId?: string | null) {
   try {
     const results = await adapter.getChats(userId)
 
-    console.log('GET_CHATS', results);
+    console.log('GET_CHATS', userId, results);
 
     return results as Chat[]
   } catch (error) {
+    console.log('error', error);
     return []
   }
 }
 
 export async function getChat(id: string, userId: string) {
   const chat = await adapter.getChat(id)
-  console.log('GET_CHAT');
+  console.log('GET_CHAT', chat);
 
   if (!chat || (userId && chat.userId !== userId)) {
     return null
@@ -88,20 +90,14 @@ export async function removeChat({ id, path }: { id: string; path: string }) {
   // return revalidatePath(path)
 }
 
-export async function clearChats() {
-  const session = await auth()
-  console.log('clearChats',);
+export async function clearChats({ userId }: { userId: string }) {
 
-  if (!session?.user?.id) {
+  if (!userId) {
     return {
       error: 'Unauthorized'
     }
   }
-  const userId = session.user.id
-  await adapter.clearChats(userId, ()=>redirect('/'))
-
-  // revalidatePath('/')
-  return redirect('/')
+  await adapter.clearChats(userId, () => redirect('/'))
 }
 
 export async function getSharedChat(id: string) {

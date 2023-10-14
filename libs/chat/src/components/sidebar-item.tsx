@@ -7,6 +7,7 @@ import { type Chat } from '@/chat/lib/types'
 import { cn } from '@/chat/lib/utils'
 import { IconMessage, IconUsers } from '@/chat/components/ui/icons'
 import { Tooltip, Text } from '@geist-ui/core'
+
 interface SidebarItemProps {
   chat: Chat
   children: React.ReactNode
@@ -35,7 +36,7 @@ export function SidebarItem({ chat, children }: SidebarItemProps) {
         )}
       </div>
       <Link
-        href={chat.path}
+        href={`console/${chat.path}`}
         className={cn(
           'flex items-center justify-center text-foreground shadow transition-colors group py-2 pl-8 pr-16 hover:bg-accent hover:text-accent-foreground',
           isActive && 'bg-accent'

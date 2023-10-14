@@ -12,12 +12,14 @@ import { useRouter } from 'next/navigation'
 import { cn } from '@/chat/lib/utils'
 
 export interface SidebarProps {
+  userId: string
   children?: React.ReactNode
 }
 
-export function Sidebar({ children }: SidebarProps) {
+export function Sidebar(props: SidebarProps) {
+  const { userId, children } = props
   const router = useRouter()
-  console.log('SIDEBAR', );
+  console.log('SIDEBAR',);
 
   const content = () => (
     <div className="w-[300px] flex-col p-2">
@@ -26,7 +28,7 @@ export function Sidebar({ children }: SidebarProps) {
         <div className="flex flex-row justify-end items-center">
           <SidebarFooter>
             <Tooltip text="Clear History" placement="top">
-              <ClearHistory clearChats={clearChats} />
+              <ClearHistory clearChats={() => clearChats({ userId })} />
             </Tooltip>
           </SidebarFooter>
           <Tooltip text="New Chat" scale={0.5} >
@@ -36,7 +38,7 @@ export function Sidebar({ children }: SidebarProps) {
               onClick={e => {
                 e.preventDefault()
                 router.refresh()
-                router.push('/')
+                router.push('console/chat/')
               }}
               className={cn(
                 '!rounded-full bg-background'

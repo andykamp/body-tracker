@@ -2,6 +2,7 @@
 
 import { useChat } from 'ai/react'
 import type { Message } from '@/chat/lib/types'
+import { useAuthContext } from "@/auth-client/firebase/Provider";
 
 
 import { cn } from '@/chat/lib/utils'
@@ -17,14 +18,19 @@ export interface ChatProps extends React.ComponentProps<'div'> {
 }
 
 export function Chat({ id, initialMessages, className }: ChatProps) {
+  const { user } = useAuthContext()
   const { messages, append, reload, stop, isLoading, input, setInput } =
     useChat({
+      api: '/api/chat',
       initialMessages,
       id,
       body: {
         id,
+        userId: user.uid
       },
       onResponse(response) {
+      console.log('resonse',response );
+      // if this is the first messge, make sure this is added to the history
         if (response.status === 401) {
           toast.error(response.statusText)
         }
