@@ -6,6 +6,7 @@ import {
 import { useAuthContext } from "@/auth-client/firebase/Provider";
 import { useDailyMutations } from "@/diet-client/daily/daily.mutations";
 import DailyItem from "@/diet/components/Daily/DailyItem";
+import AskAI from "@/diet/components/AI/Container";
 
 type DailyItemListProps = {
   daily: t.DailyDiet
@@ -60,6 +61,7 @@ function DailyItemList({
       >
         new meal
       </button>
+      <AskAI/>
     </div>
   )
 }

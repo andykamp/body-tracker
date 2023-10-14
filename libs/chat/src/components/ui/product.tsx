@@ -1,31 +1,36 @@
 import React from "react";
 import { Input } from "@geist-ui/core";
-import * as t from '@/diet-server/diet.types'
-import ConfirmDeleteProduct from "@/diet/components/Confirm/ConfirmDeleteProduct";
+
+export type Product = {
+  id: string,
+  name: string;
+  description?: string;
+
+  protein: number;
+  calories: number
+  grams: number;
+}
 
 type ProductItemProps = {
-  product: t.Product;
-  onChange: (item: t.Product) => void;
-  onDelete?: (item: t.Product) => void;
-  onRestore?: (item: t.Product) => void;
+  product: Product;
 };
 
-function ProductItem({
-  product,
-  onChange,
-  onDelete,
-  onRestore,
+export function ProductItem({
+  product:_product,
 }: ProductItemProps) {
-
-  const updateField = (key: string, value: any) => {
-    onChange(({ ...product, [key]: value }));
-  }
+  const [product, setProduct] = React.useState(_product); 
 
   const updateNumericField = (key: string, value: any) => {
-    onChange(({ ...product, [key]: +value }));
-  }
+    const newValue = parseInt(value);
+    if (isNaN(newValue)) {
+      return;
+    }
 
-  const isDeleted = product.isDeleted
+    setProduct({
+      ...product,
+      [key]: newValue,
+    });
+  }
 
   return (
     <div
@@ -36,7 +41,6 @@ function ProductItem({
         className="min-w-[60px]"
         value={product.name}
         placeholder="New item..."
-        onChange={(e) => updateField('name', e.target.value)}
       />
 
       <Input
@@ -60,23 +64,8 @@ function ProductItem({
         label="g"
         onChange={(e) => updateNumericField('grams', e.target.value)}
       />
-
-      {onDelete && !isDeleted &&
-
-        <ConfirmDeleteProduct
-          product={product}
-          onDelete={onDelete}
-        />
-      }
-      {onRestore && isDeleted &&
-        <button
-          onClick={() => onRestore?.(product)}
-        >
-          restore
-        </button>
-      }
     </div>
   );
 
 };
-export default ProductItem;
+
